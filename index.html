@@ -1794,7 +1794,8 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             </div>
             <div class="auth-field">
               <label class="field-label">Nome de usuário</label>
-              <input type="text" class="field-input" id="auth-signup-user" placeholder="Ex:Marico1234" autocomplete="username">
+              <input type="text" class="field-input" id="auth-signup-user" placeholder="Ex: Marcio_1234" autocomplete="username">
+              <div style="color:var(--text-faint);font-size:.72rem;margin-top:6px;line-height:1.4;">Mín. 6 caracteres, com letra maiúscula, número e caractere especial (ex: _ . -)</div>
             </div>
           </div>
           <div class="auth-field">
@@ -4438,7 +4439,7 @@ function atualizarNomeConta(){
   if(nomePerfilConfig) nomePerfilConfig.textContent = nomeCompleto || 'Visitante';
 
   const usuarioConfig = document.querySelector('.settings-profile-email');
-  if(usuarioConfig && state.perfil) usuarioConfig.textContent = '@' + state.perfil.nome_usuario;
+  if(usuarioConfig && state.perfil) usuarioConfig.textContent = state.perfil.nome_usuario;
 
   // Só atualiza a letra-inicial se ainda não houver um avatar temático (emoji) escolhido —
   // evita sobrescrever a escolha visual do usuário.
@@ -7234,7 +7235,7 @@ function renderAdminMensagens(){
     <div class="admin-msg-item ${m.respondida ? 'is-respondida' : 'is-pendente'}">
       <div class="admin-msg-head">
         <div>
-          <div class="admin-msg-user">${escapeHtml(m.nome_exibicao || m.nome_usuario)} <span class="muted" style="font-weight:400;">· @${escapeHtml(m.nome_usuario)}</span></div>
+          <div class="admin-msg-user">${escapeHtml(m.nome_exibicao || m.nome_usuario)} <span class="muted" style="font-weight:400;">· ${escapeHtml(m.nome_usuario)}</span></div>
           <div class="admin-msg-meta">${new Date(m.criado_em).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'})}</div>
         </div>
         <span class="pill ${m.respondida ? 'pill-sage' : 'pill-gold'}">${m.respondida ? '✓ Tratada' : 'Pendente'}</span>
@@ -7305,7 +7306,7 @@ function adminMemberRowHtml(m){
       <div class="admin-member-avatar">${escapeHtml(inicial)}</div>
       <div>
         <div class="admin-member-name">${escapeHtml(m.nome_exibicao || m.nome_usuario)}</div>
-        <div class="admin-member-meta">@${escapeHtml(m.nome_usuario)} · cadastrado em ${desde}</div>
+        <div class="admin-member-meta">${escapeHtml(m.nome_usuario)} · cadastrado em ${desde}</div>
       </div>
       ${m.membro_desde ? `<span class="admin-member-tag">membro desde ${new Date(m.membro_desde+'T00:00:00').toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}</span>` : ''}
     </div>`;
@@ -8193,6 +8194,11 @@ async function carregarDadosDoUsuario(){
 
       if(!nome || !usuario || !senha){
         showAuthError('auth-signup-error', 'Preencha nome, usuário e senha.');
+        return;
+      }
+      const usuarioForte = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{6,}$/.test(usuario);
+      if(!usuarioForte){
+        showAuthError('auth-signup-error', 'O nome de usuário está fraco. Use pelo menos 6 caracteres, com letra maiúscula, número e caractere especial (ex: _ . -).');
         return;
       }
       if(senha.length < 6){
