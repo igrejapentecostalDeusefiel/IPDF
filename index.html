@@ -7552,8 +7552,8 @@ async function abrirConversa(contatoId){
   if(contato){
     avatarEl.textContent = contato.avatar_emoji || (contato.nome_exibicao||contato.nome_usuario||'?').charAt(0).toUpperCase();
     avatarEl.style.background = contato.avatar_gradient || '';
-    nameEl.textContent = contato.nome_exibicao || contato.nome_usuario;
-    subEl.textContent = '@' + contato.nome_usuario;
+    nameEl.textContent = contato.nome_usuario;
+    subEl.textContent = '';
   }
   supportForm.hidden = true;
   msgForm.hidden = false;
