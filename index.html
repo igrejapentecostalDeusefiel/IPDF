@@ -2311,6 +2311,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             <button class="chip-btn" data-goto="favorites"><span class="em">❤️</span>Favoritos</button>
             <button class="chip-btn" data-goto="notes"><span class="em">📝</span>Minhas anotações</button>
             <button class="chip-btn" data-goto="conversas"><span class="em">💬</span>Ver minhas Conversas</button>
+            <button class="chip-btn" data-goto="comunidade"><span class="em">🏛️</span>Ir para a Comunidade</button>
           </div>
         </div>
 
@@ -7758,6 +7759,7 @@ function adminMemberRowHtml(m){
 let convContatos = [];
 let convAtivo = null; // id do contato ativo, ou 'admin'
 let convMinhasMensagensSuporte = [];
+let convAdminAdicionado = false; // true se algum admin te adicionou como contato (libera o canal "Administração")
 
 let convSolicitacoes = [];
 
@@ -7819,7 +7821,11 @@ async function carregarConversas(){
   if(errContatos){ console.error('Erro ao carregar contatos:', errContatos); return; }
   if(errSuporte){ console.error('Erro ao carregar mensagens de suporte:', errSuporte); }
   if(errSolic){ console.error('Erro ao carregar solicitações de contato:', errSolic); }
-  convContatos = contatosData || [];
+  const todosContatos = contatosData || [];
+  // O canal fixo "Administração" só aparece pra quem um admin adicionou como contato
+  // (contas com admin=true não entram na lista normal de contatos, viram só essa flag)
+  convAdminAdicionado = todosContatos.some(c => c.admin === true);
+  convContatos = todosContatos.filter(c => c.admin !== true);
   if(!errSuporte) convMinhasMensagensSuporte = suporteData || [];
   if(!errSolic) convSolicitacoes = solicData || [];
   renderConvList();
@@ -7859,16 +7865,20 @@ function renderConvList(){
     </div>`;
   }
 
-  const adminPendente = convMinhasMensagensSuporte.some(m => !m.respondida);
-  html += `
-    <div class="conv-item pinned ${convAtivo==='admin' ? 'active' : ''}" data-conv-open="admin">
-      <div class="conv-avatar">🕊️</div>
-      <div class="conv-item-info">
-        <div class="conv-item-name">Administração</div>
-        <div class="conv-item-preview">Dúvidas, sugestões e suporte</div>
-      </div>
-      ${adminPendente ? '<span class="conv-item-unread">•</span>' : ''}
-    </div>`;
+  // Só mostra o canal fixo "Administração" pra quem foi adicionado por um admin
+  // (mesmo quem já tem mensagens antigas de suporte só volta a ver se for adicionado)
+  if(convAdminAdicionado){
+    const adminPendente = convMinhasMensagensSuporte.some(m => !m.respondida);
+    html += `
+      <div class="conv-item pinned ${convAtivo==='admin' ? 'active' : ''}" data-conv-open="admin">
+        <div class="conv-avatar">🕊️</div>
+        <div class="conv-item-info">
+          <div class="conv-item-name">Administração</div>
+          <div class="conv-item-preview">Dúvidas, sugestões e suporte</div>
+        </div>
+        ${adminPendente ? '<span class="conv-item-unread">•</span>' : ''}
+      </div>`;
+  }
 
   if(!convContatos.length){
     html += '<div class="admin-empty-state" style="padding:24px 18px;">Nenhum contato ainda. Toque em "Adicionar contato" para começar a conversar com alguém.</div>';
