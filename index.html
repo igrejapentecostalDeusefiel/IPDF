@@ -42,9 +42,17 @@
   --font-mono:'IBM Plex Mono', monospace;
   --content-scale:1;
   --sidebar-w:264px;
+  --culto-card-start:#1A2540;
+  --culto-card-end:#2C3B5C;
+  --culto-card-text:#FBF8F2;
+  --culto-card-text-dim:#C7CEDE;
 }
 
 [data-theme="dark"]{
+  --culto-card-start:#374264;
+  --culto-card-end:#4C5A88;
+  --culto-card-text:#FAF7EE;
+  --culto-card-text-dim:#D6DAEA;
   --ink:#EDE7D8;
   --parchment:#141A2B;
   --parchment-dim:#1B2338;
@@ -64,6 +72,10 @@
 }
 
 [data-theme="sepia"]{
+  --culto-card-start:#5C4426;
+  --culto-card-end:#7A5A34;
+  --culto-card-text:#F6ECD8;
+  --culto-card-text-dim:#E4CFA5;
   --ink:#3B2E1E;
   --parchment:#F1E4C9;
   --parchment-dim:#E8D8B4;
@@ -346,6 +358,48 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em;
 }
 .hero-ref{margin-top:12px;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;opacity:.75;font-family:var(--font-mono);}
 .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;position:relative;}
+
+/* ---- Comunidade hero (Mural) ---- */
+.comunidade-hero{
+  position:relative;overflow:hidden;
+  border-radius:28px;
+  min-height:260px;
+  padding:60px 40px;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+  text-align:center;
+  background:
+    radial-gradient(560px 320px at 14% -10%, rgba(232,201,138,.28) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(15,20,36,.15) 0%, rgba(15,20,36,.55) 62%, rgba(15,20,36,.92) 100%),
+    url('foto-banner.jpg') center 30%/cover no-repeat;
+  box-shadow:var(--shadow);
+  margin-bottom:26px;
+}
+.comunidade-hero::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(240px 240px at 82% 24%, rgba(232,201,138,.3), transparent 70%);
+  animation:glow 7s ease-in-out infinite;
+  pointer-events:none;
+}
+.comunidade-hero-title{
+  position:relative;
+  font-family:var(--font-display);
+  font-style:italic;font-weight:600;
+  font-size:clamp(1.6rem,3.6vw,2.4rem);
+  letter-spacing:-.01em;
+  color:#FBF8F2;
+  text-shadow:0 2px 14px rgba(0,0,0,.35);
+}
+.comunidade-hero-verse{
+  position:relative;
+  margin-top:14px;
+  font-size:.92rem;
+  font-family:var(--font-body);
+  color:#FBF8F2;
+  opacity:.88;line-height:1.6;
+  max-width:620px;margin-left:auto;margin-right:auto;
+  text-shadow:0 1px 8px rgba(0,0,0,.3);
+}
+@media(max-width:640px){.comunidade-hero{padding:30px 22px;min-height:220px;}}
 .chip-btn{
   display:flex;align-items:center;gap:8px;
   padding:9px 16px;border-radius:30px;border:1px solid rgba(251,248,242,.28);
@@ -966,6 +1020,10 @@ body.show-public-campaign #app-shell{display:none;}
 .chat-input-row{display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--line);}
 .chat-input-row input{flex:1;border:1px solid var(--line);border-radius:30px;padding:11px 18px;background:var(--parchment);color:var(--text);font-size:.9rem;outline:none;}
 .chat-input-row input:focus{border-color:var(--gold);}
+.comunidade-canal-readonly-msg{
+  padding:14px 20px;border-top:1px solid var(--line);
+  text-align:center;font-size:.83rem;color:var(--text-faint);
+}
 .send-btn{width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--parchment);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 [data-theme="dark"] .send-btn{background:var(--gold);color:var(--ink);}
 .typing-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--text-faint);margin-right:3px;animation:bounce 1.2s infinite;}
@@ -1648,6 +1706,145 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   .campaign-past-item.open .campaign-past-media{height:230px;}
 }
 
+/* =========================================================
+   COMUNIDADE
+   ========================================================= */
+.comunidade-grid{display:grid;grid-template-columns:250px 1fr 260px;gap:18px;align-items:start;}
+.comunidade-col{display:flex;flex-direction:column;gap:16px;min-width:0;}
+.comunidade-card{padding:16px;}
+.comunidade-card h3{font-family:var(--font-display);font-size:.98rem;font-weight:600;color:var(--ink);}
+.comunidade-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;}
+.comunidade-card-head h3{margin-bottom:0;}
+.comunidade-empty-mini{color:var(--text-faint);font-size:.8rem;padding:6px 2px;}
+
+.comunidade-list-item{
+  display:flex;align-items:center;gap:9px;padding:9px 6px;border-radius:var(--radius-sm);cursor:pointer;
+}
+.comunidade-list-item:hover{background:var(--parchment-dim);}
+.comunidade-list-emoji{font-size:1.05rem;flex-shrink:0;}
+.comunidade-list-name{flex:1;min-width:0;font-size:.86rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.comunidade-list-count{
+  font-family:var(--font-mono);font-size:.68rem;color:var(--text-faint);background:var(--parchment-dim);
+  border-radius:20px;padding:2px 8px;flex-shrink:0;
+}
+.icon-btn-sm{
+  background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:.8rem;
+  padding:3px 5px;border-radius:6px;flex-shrink:0;
+}
+.icon-btn-sm:hover{color:var(--rose);background:var(--parchment-dim);}
+
+.comunidade-feed-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.comunidade-feed-head h3{font-family:var(--font-display);font-size:1.08rem;font-weight:600;color:var(--ink);}
+#comunidade-feed{display:flex;flex-direction:column;gap:16px;}
+
+.comunidade-post-card{padding:18px 20px;}
+.comunidade-post-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.comunidade-post-eyebrow{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--gold);}
+.comunidade-post-admin-actions{display:flex;gap:4px;flex-shrink:0;}
+.comunidade-post-title{font-family:var(--font-display);font-weight:600;font-size:1.15rem;color:var(--ink);margin-bottom:6px;}
+.comunidade-post-body{font-size:.92rem;line-height:1.65;color:var(--text);white-space:pre-wrap;overflow-wrap:anywhere;}
+.comunidade-event-chip{
+  display:inline-flex;align-items:center;gap:6px;margin-top:12px;
+  background:var(--gold-soft);color:#7A5A21;font-size:.8rem;font-weight:600;
+  padding:6px 12px;border-radius:20px;
+}
+[data-theme="dark"] .comunidade-event-chip{color:var(--gold);}
+.comunidade-post-img{margin-top:12px;border-radius:var(--radius-md);max-height:340px;width:100%;object-fit:cover;}
+.comunidade-post-author-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.comunidade-post-author-name{font-weight:600;font-size:.88rem;color:var(--ink);}
+.comunidade-post-time{font-size:.72rem;color:var(--text-faint);}
+.comunidade-post-foot{display:flex;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
+.comunidade-post-action{
+  background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.83rem;font-weight:600;
+  display:inline-flex;align-items:center;gap:5px;padding:4px 2px;
+}
+.comunidade-post-action:hover{color:var(--ink);}
+.comunidade-post-action.is-liked{color:var(--sage);}
+
+.comunidade-comentarios{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+.comunidade-comentarios-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.comunidade-comentario-item{display:flex;align-items:flex-start;gap:9px;}
+.comunidade-comentario-body{flex:1;min-width:0;background:var(--parchment-dim);border-radius:var(--radius-md);padding:8px 12px;}
+.comunidade-comentario-autor{display:block;font-weight:600;font-size:.78rem;color:var(--ink);}
+.comunidade-comentario-texto{display:block;font-size:.86rem;color:var(--text);line-height:1.5;overflow-wrap:anywhere;}
+.comunidade-comentario-input-row{display:flex;gap:8px;}
+.comunidade-comentario-input{
+  flex:1;border:1px solid var(--line);border-radius:30px;padding:9px 15px;background:var(--parchment);
+  color:var(--text);font-size:.86rem;outline:none;font-family:inherit;
+}
+.comunidade-comentario-input:focus{border-color:var(--gold);}
+
+.comunidade-online-grid{display:flex;flex-wrap:wrap;gap:10px;}
+.comunidade-online-avatar{
+  position:relative;width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--sage),var(--gold));color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;
+}
+.comunidade-online-dot{
+  position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;border-radius:50%;
+  background:var(--sage);border:2px solid var(--paper);
+}
+
+#comunidade-cultos{display:flex;flex-direction:column;gap:10px;}
+.comunidade-culto-item{
+  position:relative;padding:14px 16px;border-radius:var(--radius-md);
+  background:linear-gradient(135deg,var(--culto-card-start) 0%,var(--culto-card-end) 100%);
+  box-shadow:var(--shadow-sm);
+  transition:background .35s ease;
+}
+.comunidade-culto-titulo{font-weight:600;font-size:.87rem;color:var(--culto-card-text);}
+.comunidade-culto-horario{font-size:.78rem;color:var(--culto-card-text-dim);margin-top:4px;}
+.comunidade-culto-admin{position:absolute;top:10px;right:10px;display:flex;gap:2px;}
+.comunidade-culto-admin .icon-btn-sm{color:rgba(255,255,255,.65);}
+.comunidade-culto-admin .icon-btn-sm:hover{color:var(--culto-card-text);background:rgba(255,255,255,.16);}
+
+.comunidade-aniversariante-item{display:flex;align-items:center;gap:10px;padding:8px 0;}
+.comunidade-aniversariante-info{flex:1;min-width:0;}
+.comunidade-aniversariante-nome{font-weight:600;font-size:.85rem;color:var(--ink);}
+.comunidade-aniversariante-data{font-size:.76rem;color:var(--text-dim);}
+
+.comunidade-canal-shell{margin-top:20px;height:70vh;min-height:460px;grid-template-columns:1fr;}
+.comunidade-canal-msg-autor{font-size:.7rem;color:var(--text-faint);margin:0 2px 3px;}
+
+.cf-field{margin-bottom:14px;}
+.cf-row{display:flex;gap:12px;margin-bottom:14px;}
+.cf-row .cf-field{margin-bottom:0;flex:1;}
+.comunidade-form-box textarea.field-input{resize:vertical;min-height:90px;font-family:inherit;line-height:1.6;}
+
+/* Abaixo de 1100px (tablets e smartphones): empilha tudo em coluna única
+   e reordena os blocos — a ordem do desktop (3 colunas) não muda. */
+@media(max-width:1100px){
+  .comunidade-grid{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .comunidade-grid > .comunidade-col{
+    display:contents;
+  }
+  .comunidade-grid .comunidade-card,
+  .comunidade-grid .comunidade-feed-head,
+  .comunidade-grid #comunidade-feed{
+    width:100%;
+    align-self:stretch;
+  }
+  .comunidade-grid > .comunidade-col:last-child > .comunidade-card{
+    flex:none;
+    min-width:0;
+  }
+  /* 1º Mais recentes atividades: testemunhos, avisos e próximos cultos */
+  .comunidade-feed-head{order:1;}
+  #comunidade-feed{order:2;}
+  .cu-card-proximos-cultos{order:3;}
+  /* 2º Conversar: canais e fórum */
+  .cu-card-canais-conversa{order:4;}
+  .cu-card-canais-ipdf{order:5;}
+  .cu-card-topicos-forum{order:6;}
+  /* 3º Membros online e aniversariantes */
+  .cu-card-membros-online{order:7;}
+  .cu-card-aniversariantes{order:8;}
+}
+
 </style>
 </head>
 <body class="show-auth">
@@ -1924,8 +2121,11 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
 <div id="admin-shell">
   <div class="admin-topbar">
-    <div class="admin-brand">🕊️ IPDF <span class="admin-badge">Painel do administrador</span></div>
-    <button class="btn btn-ghost btn-sm" id="admin-logout-btn">Sair</button>
+    <div class="admin-brand">🏺 IPDF <span class="admin-badge">Painel do administrador</span></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" id="admin-back-to-site-btn">← Voltar ao site</button>
+      <button class="btn btn-ghost btn-sm" id="admin-logout-btn">Sair</button>
+    </div>
   </div>
   <div class="admin-layout">
     <nav class="admin-nav">
@@ -2044,6 +2244,12 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <button class="nav-item" data-view="media"><span class="ic">🎧</span>Biblioteca multimídia</button>
       <button class="nav-item" data-view="campaigns"><span class="ic">🔥</span>Campanhas Proféticas</button>
       <button class="nav-item" data-view="conversas"><span class="ic">💬</span>Conversas<span class="badge" id="conv-nav-badge" style="display:none;background:var(--rose);color:#fff;">0</span></button>
+      <button class="nav-item" data-view="comunidade"><span class="ic">🏛️</span>Comunidade</button>
+    </div>
+
+    <div class="nav-group" id="nav-admin-group" hidden>
+      <div class="nav-label">Administração</div>
+      <button class="nav-item" id="nav-open-admin-panel" type="button"><span class="ic">🛠️</span>Painel Admin</button>
     </div>
 
     <div class="sidebar-footer">
@@ -2487,6 +2693,106 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
                 <input id="conv-msg-input" placeholder="Escreva uma mensagem…">
                 <button class="send-btn" id="conv-msg-send" aria-label="Enviar">➤</button>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ COMUNIDADE ============ -->
+      <section class="view" id="view-comunidade">
+        <div class="comunidade-hero">
+          <h1 class="comunidade-hero-title">Mural da Comunidade IPDF</h1>
+          <p class="comunidade-hero-verse">"Alegrai-vos com os que se alegram e chorai com os que choram." — Romanos 12:15</p>
+        </div>
+
+        <div id="comunidade-mural">
+          <div class="comunidade-grid">
+
+            <!-- COLUNA ESQUERDA -->
+            <div class="comunidade-col">
+              <div class="card comunidade-card cu-card-canais-conversa">
+                <div class="comunidade-card-head">
+                  <h3>Canais de Conversa</h3>
+                  <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-canal-conversa-btn" hidden>＋</button>
+                </div>
+                <div id="comunidade-canais-conversa"><div class="comunidade-empty-mini">Carregando…</div></div>
+              </div>
+
+              <div class="card comunidade-card cu-card-canais-ipdf">
+                <div class="comunidade-card-head">
+                  <h3>Canais de IPDF</h3>
+                  <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-canal-ipdf-btn" hidden>＋</button>
+                </div>
+                <div id="comunidade-canais-ipdf"><div class="comunidade-empty-mini">Carregando…</div></div>
+              </div>
+
+              <div class="card comunidade-card cu-card-topicos-forum">
+                <div class="comunidade-card-head">
+                  <h3>Tópicos do Fórum</h3>
+                  <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-canal-forum-btn" hidden>＋</button>
+                </div>
+                <div id="comunidade-topicos-forum"><div class="comunidade-empty-mini">Carregando…</div></div>
+              </div>
+            </div>
+
+            <!-- COLUNA CENTRAL -->
+            <div class="comunidade-col">
+              <div class="comunidade-feed-head">
+                <h3>Mais recente atividade</h3>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                  <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-aviso-btn" hidden>📣 + Aviso</button>
+                  <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-testemunho-btn" hidden>🙌 + Testemunho</button>
+                </div>
+              </div>
+              <div id="comunidade-feed"><div class="admin-empty-state">Carregando…</div></div>
+            </div>
+
+            <!-- COLUNA DIREITA -->
+            <div class="comunidade-col">
+              <div class="card comunidade-card cu-card-membros-online">
+                <h3>Membros Online</h3>
+                <div id="comunidade-membros-online" class="comunidade-online-grid"><div class="comunidade-empty-mini">Carregando…</div></div>
+              </div>
+
+              <div class="card comunidade-card cu-card-proximos-cultos">
+                <div class="comunidade-card-head">
+                  <h3>Próximos Cultos</h3>
+                  <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-culto-btn" hidden>＋</button>
+                </div>
+                <div id="comunidade-cultos"><div class="comunidade-empty-mini">Carregando…</div></div>
+              </div>
+
+              <div class="card comunidade-card cu-card-aniversariantes">
+                <div class="comunidade-card-head">
+                  <h3>Aniversariantes do Mês</h3>
+                  <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-aniversariante-btn" hidden>＋</button>
+                </div>
+                <div id="comunidade-aniversariantes"><div class="comunidade-empty-mini">Carregando…</div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CANAL (chat de grupo) -->
+        <div class="conv-shell comunidade-canal-shell show-thread" id="comunidade-canal-thread" hidden>
+          <div class="conv-thread-pane" style="border-right:none;">
+            <div class="conv-thread-active">
+              <div class="conv-thread-head">
+                <button class="btn btn-ghost btn-sm conv-back-btn" id="comunidade-canal-back-btn" style="display:inline-flex;">← Voltar ao mural</button>
+                <div class="conv-thread-avatar" id="comunidade-canal-avatar">💬</div>
+                <div class="conv-thread-head-info">
+                  <div class="conv-thread-name" id="comunidade-canal-nome">—</div>
+                  <div class="conv-thread-sub">Canal da comunidade</div>
+                </div>
+                <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-canal-del-btn" title="Excluir canal" hidden>🗑️</button>
+              </div>
+              <div class="conv-thread-body" id="comunidade-canal-body"></div>
+              <div class="chat-input-row" id="comunidade-canal-input-row">
+                <input id="comunidade-canal-input" placeholder="Escreva uma mensagem…">
+                <button class="send-btn" id="comunidade-canal-send" aria-label="Enviar">➤</button>
+              </div>
+              <div class="comunidade-canal-readonly-msg" id="comunidade-canal-readonly" hidden>🔒 Somente a administração pode enviar mensagens neste canal.</div>
             </div>
           </div>
         </div>
@@ -2940,6 +3246,89 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
     <div id="verse-share-results" class="contact-search-results" style="margin-top:14px;"></div>
     <div class="confirm-actions">
       <button class="btn btn-ghost" id="verse-share-close-btn">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="comunidade-form-overlay">
+  <div class="confirm-box contact-search-box" id="comunidade-form-box">
+    <div class="confirm-title" id="cf-title">Novo item</div>
+
+    <div class="cf-field" data-cf-group="nome">
+      <label class="field-label" id="cf-nome-label">Nome</label>
+      <input type="text" class="field-input" id="cf-nome" placeholder="">
+    </div>
+
+    <div class="cf-row">
+      <div class="cf-field" data-cf-group="emoji" style="flex:1;">
+        <label class="field-label">Emoji</label>
+        <input type="text" class="field-input" id="cf-emoji" maxlength="4" placeholder="🙏">
+      </div>
+      <div class="cf-field" data-cf-group="grupo" style="flex:2;">
+        <label class="field-label">Onde aparece</label>
+        <select class="field-input" id="cf-grupo">
+          <option value="conversa">Canais de Conversa</option>
+          <option value="ipdf">Canais de IPDF</option>
+          <option value="forum">Tópicos do Fórum</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="cf-field" data-cf-group="corpo">
+      <label class="field-label" id="cf-corpo-label">Mensagem</label>
+      <textarea class="field-input" id="cf-corpo" rows="4" placeholder="Escreva aqui…"></textarea>
+    </div>
+
+    <div class="cf-field" data-cf-group="imagem">
+      <label class="field-label">Link de uma imagem (opcional)</label>
+      <input type="text" class="field-input" id="cf-imagem" placeholder="https://…">
+    </div>
+
+    <div class="cf-row" data-cf-group="evento">
+      <div class="cf-field">
+        <label class="field-label">Data do evento (opcional)</label>
+        <input type="date" class="field-input" id="cf-data">
+      </div>
+      <div class="cf-field">
+        <label class="field-label">Horário</label>
+        <input type="time" class="field-input" id="cf-hora">
+      </div>
+    </div>
+
+    <div class="cf-row" data-cf-group="culto">
+      <div class="cf-field">
+        <label class="field-label">Dia</label>
+        <input type="text" class="field-input" id="cf-dia-semana" placeholder="Ex: Domingo">
+      </div>
+      <div class="cf-field">
+        <label class="field-label">Início</label>
+        <input type="time" class="field-input" id="cf-hora-ini">
+      </div>
+      <div class="cf-field">
+        <label class="field-label">Fim</label>
+        <input type="time" class="field-input" id="cf-hora-fim">
+      </div>
+    </div>
+
+    <div class="cf-row" data-cf-group="aniversario">
+      <div class="cf-field">
+        <label class="field-label">Dia</label>
+        <input type="number" min="1" max="31" class="field-input" id="cf-dia-num" placeholder="14">
+      </div>
+      <div class="cf-field">
+        <label class="field-label">Mês</label>
+        <select class="field-input" id="cf-mes">
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+          <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+          <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+          <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" id="cf-cancel-btn">Cancelar</button>
+      <button class="btn btn-primary" id="cf-save-btn">Salvar</button>
     </div>
   </div>
 </div>
@@ -4051,14 +4440,15 @@ const CAMPAIGNS = [
     id:"vale-ossos-secos",
     status:"ativa",
     period:"Julho 2026",
-    title:"Vale de Ossos Secos",
-    verseRef:"Ezequiel 37:4",
-    verseText:"\"Então me disse: Profetiza sobre estes ossos, e dize-lhes: Ossos secos, ouvi a palavra do Senhor.\"",
-    purpose:"Fortalecer a fé e lembrar que, através da Palavra de Deus, Ele pode restaurar, renovar e trazer vida ao que estava sem esperança.",
-    schedule:"Terça 19h / Domingo 19h",
-    image:"foto03.png",
+    title:"TÍTULO",
+    verseRef:"BASE BÍBLICA",
+    verseText:"\"BASE BIBLICA\"",
+    purpose:"ESCREVA O PROPÓSITO AQUI",
+    schedule:"Terça 19:30h",
+    image:"foto03.jpeg",
     emblem:"🦴"
   },
+ 
   {
     id:"aguas-no-deserto",
     status:"encerrada",
@@ -4264,6 +4654,13 @@ function switchView(view){
     if(typeof iniciarPollingConversas === 'function') iniciarPollingConversas();
   } else if(previousView==='conversas' && typeof pararPollingConversas === 'function'){
     pararPollingConversas();
+  }
+  if(view==='comunidade'){
+    if(typeof carregarComunidade === 'function') carregarComunidade();
+    if(typeof iniciarPollingComunidade === 'function') iniciarPollingComunidade();
+  } else if(previousView==='comunidade'){
+    if(typeof pararPollingComunidade === 'function') pararPollingComunidade();
+    if(typeof fecharCanalComunidade === 'function') fecharCanalComunidade();
   }
   if(previousView==='media' && view!=='media' && typeof closeMediaPlayer === 'function') closeMediaPlayer();
   // Saiu da tela do Quiz bíblico: reinicia XP, acertos, erros e conquistas da sessão
@@ -7553,7 +7950,7 @@ async function abrirConversa(contatoId){
   if(contato){
     avatarEl.textContent = contato.avatar_emoji || (contato.nome_exibicao||contato.nome_usuario||'?').charAt(0).toUpperCase();
     avatarEl.style.background = contato.avatar_gradient || '';
-    nameEl.textContent = contato.nome_usuario;
+    nameEl.textContent = contato.nome_exibicao || contato.nome_usuario;
     subEl.textContent = '';
   }
   supportForm.hidden = true;
@@ -7893,6 +8290,7 @@ async function carregarDadosDoUsuario(){
     return;
   }
   state.perfil = perfil;
+  if(typeof aplicarPermissoesAdmin === 'function') aplicarPermissoesAdmin();
   if(typeof atualizarSaudacao === 'function') atualizarSaudacao();
   if(typeof aplicarAvatarSalvo === 'function') aplicarAvatarSalvo();
   if(typeof atualizarNomeConta === 'function') atualizarNomeConta();
@@ -8042,6 +8440,772 @@ async function carregarDadosDoUsuario(){
   }
 }
 
+/* =========================================================
+   COMUNIDADE — mural, canais de conversa, cultos e aniversariantes.
+   Segue o mesmo padrão de "polling" das Conversas: como o app usa
+   login por token próprio, a atualização em tempo real é feita
+   checando o banco a cada poucos segundos, só enquanto a tela
+   "Comunidade" estiver aberta (ou o canal de chat aberto).
+   ========================================================= */
+let comunidadeCanais = [];
+let comunidadePosts = [];
+let comunidadeCultos = [];
+let comunidadeAniversariantes = [];
+let comunidadeCanalAtivo = null;
+let comunidadeCanalPodeEscrever = false;
+let comunidadePollTimer = null;
+let comunidadeThreadLastSig = null;
+let presencaHeartbeatTimer = null;
+
+const MESES_PT = ['','janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+/* ---- Controla quem vê os botões de administrador (Comunidade + Painel Admin) ---- */
+function aplicarPermissoesAdmin(){
+  const isAdmin = !!(state.perfil && state.perfil.admin);
+  document.querySelectorAll('.cu-admin-only').forEach(el => { el.hidden = !isAdmin; });
+  const navAdminGroup = document.getElementById('nav-admin-group');
+  if(navAdminGroup) navAdminGroup.hidden = !isAdmin;
+}
+
+/* ---- Presença ("Membros Online") — avisa o banco a cada 60s que este usuário está ativo ---- */
+function iniciarHeartbeatPresenca(){
+  if(presencaHeartbeatTimer) return;
+  const tick = async ()=>{
+    if(!state.sessionToken){ clearInterval(presencaHeartbeatTimer); presencaHeartbeatTimer = null; return; }
+    if(document.hidden) return;
+    const { error } = await db.rpc('atualizar_presenca', { p_token: state.sessionToken });
+    if(error) console.error('Erro ao atualizar presença:', error);
+  };
+  tick();
+  presencaHeartbeatTimer = setInterval(tick, 60000);
+}
+
+function tempoRelativoComunidade(iso){
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const min = Math.floor(diffMs / 60000);
+  if(min < 1) return 'agora mesmo';
+  if(min < 60) return min + ' minuto' + (min === 1 ? '' : 's') + ' atrás';
+  const h = Math.floor(min / 60);
+  if(h < 24) return h + ' hora' + (h === 1 ? '' : 's') + ' atrás';
+  const d = Math.floor(h / 24);
+  if(d < 7) return d + ' dia' + (d === 1 ? '' : 's') + ' atrás';
+  return new Date(iso).toLocaleDateString('pt-BR');
+}
+
+/* ---- Carregamento geral ---- */
+async function carregarComunidade(){
+  if(!state.sessionToken) return;
+  await Promise.all([
+    carregarComunidadeCanais(),
+    carregarComunidadeFeed(),
+    carregarComunidadeCultos(),
+    carregarComunidadeAniversariantes(),
+    carregarComunidadeMembrosOnline()
+  ]);
+}
+
+async function carregarComunidadeCanais(){
+  const { data, error } = await db.rpc('listar_canais_comunidade', { p_token: state.sessionToken });
+  if(error){ console.error('Erro ao carregar canais da comunidade:', error); return; }
+  comunidadeCanais = data || [];
+  renderComunidadeCanais();
+}
+
+async function carregarComunidadeFeed(){
+  const { data, error } = await db.rpc('listar_posts_comunidade', { p_token: state.sessionToken });
+  if(error){ console.error('Erro ao carregar o mural:', error); return; }
+  comunidadePosts = data || [];
+  renderComunidadeFeed();
+}
+
+async function carregarComunidadeCultos(){
+  const { data, error } = await db.rpc('listar_cultos_comunidade', { p_token: state.sessionToken });
+  if(error){ console.error('Erro ao carregar os cultos:', error); return; }
+  comunidadeCultos = data || [];
+  renderComunidadeCultos();
+}
+
+async function carregarComunidadeAniversariantes(){
+  const { data, error } = await db.rpc('listar_aniversariantes_mes', { p_token: state.sessionToken });
+  if(error){ console.error('Erro ao carregar os aniversariantes:', error); return; }
+  comunidadeAniversariantes = data || [];
+  renderComunidadeAniversariantes();
+}
+
+async function carregarComunidadeMembrosOnline(){
+  const { data, error } = await db.rpc('listar_membros_online', { p_token: state.sessionToken });
+  if(error){ console.error('Erro ao carregar membros online:', error); return; }
+  renderComunidadeMembrosOnline(data || []);
+}
+
+/* ---- Só o canal "Testemunhos" aceita mensagens de qualquer membro;
+   todos os demais canais de conversa são somente leitura para quem não é admin ---- */
+function canalComunidadeAbertoParaTodos(canal){
+  if(!canal) return false;
+  const nome = (canal.nome || '').trim().toLowerCase();
+  return canal.emoji === '🙌' || nome === 'testemunhos';
+}
+
+/* ---- Canais de conversa (listas + abertura do chat em grupo) ---- */
+function renderComunidadeCanais(){
+  const isAdmin = !!(state.perfil && state.perfil.admin);
+  const grupos = { conversa: [], ipdf: [], forum: [] };
+  comunidadeCanais.forEach(c => { (grupos[c.grupo] || grupos.conversa).push(c); });
+
+  const itemHtml = c => `
+    <div class="comunidade-list-item" data-abrir-canal="${c.id}">
+      <span class="comunidade-list-emoji">${escapeHtml(c.emoji || '💬')}</span>
+      <span class="comunidade-list-name">${escapeHtml(c.nome)}</span>
+      <span class="comunidade-list-count">${c.total_mensagens || 0}</span>
+      ${isAdmin ? `<button class="icon-btn-sm" data-excluir-canal="${c.id}" title="Excluir canal">🗑️</button>` : ''}
+    </div>`;
+
+  const conversaEl = document.getElementById('comunidade-canais-conversa');
+  if(conversaEl) conversaEl.innerHTML = grupos.conversa.length ? grupos.conversa.map(itemHtml).join('') : '<div class="comunidade-empty-mini">Nenhum canal ainda.</div>';
+
+  const ipdfEl = document.getElementById('comunidade-canais-ipdf');
+  if(ipdfEl) ipdfEl.innerHTML = grupos.ipdf.length ? grupos.ipdf.map(itemHtml).join('') : '<div class="comunidade-empty-mini">Nenhum canal ainda.</div>';
+
+  const forumEl = document.getElementById('comunidade-topicos-forum');
+  if(forumEl){
+    forumEl.innerHTML = `
+      <div class="comunidade-list-item" data-goto="prayer">
+        <span class="comunidade-list-emoji">🙏</span>
+        <span class="comunidade-list-name">Pedidos de Oração</span>
+      </div>` + grupos.forum.map(itemHtml).join('');
+  }
+
+  document.querySelectorAll('#view-comunidade [data-goto]').forEach(el=>{
+    el.addEventListener('click', ()=> switchView(el.dataset.goto));
+  });
+  document.querySelectorAll('#view-comunidade [data-abrir-canal]').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if(e.target.closest('[data-excluir-canal]')) return;
+      abrirCanalComunidade(el.dataset.abrirCanal);
+    });
+  });
+  document.querySelectorAll('#view-comunidade [data-excluir-canal]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const id = btn.dataset.excluirCanal;
+      openConfirm({
+        title: 'Excluir canal?',
+        text: 'Todas as mensagens desse canal serão apagadas. Essa ação não pode ser desfeita.',
+        confirmLabel: 'Excluir', cancelLabel: 'Manter canal',
+        onConfirm: async ()=>{
+          const { error } = await db.rpc('excluir_canal_comunidade', { p_token: state.sessionToken, p_canal_id: id });
+          if(error){ console.error('Erro ao excluir canal:', error); toast('Não foi possível excluir o canal', '⚠️'); return; }
+          toast('Canal excluído', '✅');
+          await carregarComunidadeCanais();
+        }
+      });
+    });
+  });
+}
+
+async function abrirCanalComunidade(canalId){
+  comunidadeCanalAtivo = canalId;
+  const canal = comunidadeCanais.find(c => c.id === canalId);
+  const mural = document.getElementById('comunidade-mural');
+  const thread = document.getElementById('comunidade-canal-thread');
+  if(mural) mural.hidden = true;
+  if(thread) thread.hidden = false;
+  const avatarEl = document.getElementById('comunidade-canal-avatar');
+  const nomeEl = document.getElementById('comunidade-canal-nome');
+  if(avatarEl) avatarEl.textContent = (canal && canal.emoji) || '💬';
+  if(nomeEl) nomeEl.textContent = (canal && canal.nome) || 'Canal';
+
+  const isAdmin = !!(state.perfil && state.perfil.admin);
+  comunidadeCanalPodeEscrever = isAdmin || canalComunidadeAbertoParaTodos(canal);
+  const inputRow = document.getElementById('comunidade-canal-input-row');
+  const readonlyMsg = document.getElementById('comunidade-canal-readonly');
+  if(inputRow) inputRow.hidden = !comunidadeCanalPodeEscrever;
+  if(readonlyMsg) readonlyMsg.hidden = comunidadeCanalPodeEscrever;
+
+  const body = document.getElementById('comunidade-canal-body');
+  if(body) body.innerHTML = '<div class="admin-empty-state">Carregando…</div>';
+  await carregarMensagensCanal(canalId);
+}
+
+function fecharCanalComunidade(){
+  comunidadeCanalAtivo = null;
+  comunidadeCanalPodeEscrever = false;
+  comunidadeThreadLastSig = null;
+  const mural = document.getElementById('comunidade-mural');
+  const thread = document.getElementById('comunidade-canal-thread');
+  if(thread) thread.hidden = true;
+  if(mural) mural.hidden = false;
+}
+
+async function carregarMensagensCanal(canalId){
+  const { data, error } = await db.rpc('listar_mensagens_canal', { p_token: state.sessionToken, p_canal_id: canalId });
+  if(error){ console.error('Erro ao carregar mensagens do canal:', error); return; }
+  renderMensagensCanal(data || []);
+  comunidadeThreadLastSig = JSON.stringify((data || []).map(m => m.id));
+}
+
+function renderMensagensCanal(mensagens){
+  const body = document.getElementById('comunidade-canal-body');
+  if(!body) return;
+  if(!mensagens.length){
+    body.innerHTML = '<div class="admin-empty-state">Nenhuma mensagem ainda — comece a conversa! 👋</div>';
+    return;
+  }
+  const meuId = state.perfil && state.perfil.id;
+  body.innerHTML = mensagens.map(m => {
+    const minha = m.usuario_id === meuId;
+    const hora = new Date(m.criado_em).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
+    return `<div class="msg-row ${minha ? 'enviada' : 'recebida'}">
+      ${!minha ? `<div class="comunidade-canal-msg-autor">${escapeHtml(m.nome_exibicao || 'Membro')}</div>` : ''}
+      <div class="msg ${minha ? 'enviada' : 'recebida'}">${escapeHtml(m.texto)}<div class="msg-time">${hora}</div></div>
+    </div>`;
+  }).join('');
+  body.scrollTop = body.scrollHeight;
+}
+
+function pararPollingComunidade(){
+  if(comunidadePollTimer){ clearInterval(comunidadePollTimer); comunidadePollTimer = null; }
+}
+function iniciarPollingComunidade(){
+  pararPollingComunidade();
+  comunidadePollTimer = setInterval(pollComunidadeTick, 4000);
+}
+async function pollComunidadeTick(){
+  if(document.hidden) return;
+  if(!state.sessionToken || state.view !== 'comunidade') return;
+  if(!comunidadeCanalAtivo) return;
+  const { data, error } = await db.rpc('listar_mensagens_canal', { p_token: state.sessionToken, p_canal_id: comunidadeCanalAtivo });
+  if(error) return;
+  const sig = JSON.stringify((data || []).map(m => m.id));
+  if(sig !== comunidadeThreadLastSig){
+    comunidadeThreadLastSig = sig;
+    renderMensagensCanal(data || []);
+  }
+}
+
+/* ---- Mural: avisos da liderança e testemunhos de fé ---- */
+function formatarDataEventoComunidade(dataIso){
+  const [ano, mes, dia] = dataIso.split('-');
+  return dia + '/' + mes + '/' + ano;
+}
+
+function comunidadePostCardHtml(p){
+  const isAdmin = !!(state.perfil && state.perfil.admin);
+  const tipoLabel = p.tipo === 'aviso' ? '📣 Aviso da Liderança' : '🙌 Testemunho de Fé';
+  const adminBtns = isAdmin ? `
+    <div class="comunidade-post-admin-actions">
+      <button class="icon-btn-sm" data-editar-post="${p.id}" title="Editar">✏️</button>
+      <button class="icon-btn-sm" data-excluir-post="${p.id}" title="Excluir">🗑️</button>
+    </div>` : '';
+
+  let corpoHtml;
+  if(p.tipo === 'aviso'){
+    corpoHtml = `
+      <div class="comunidade-post-title">${escapeHtml(p.titulo || '')}</div>
+      <div class="comunidade-post-body">${escapeHtml(p.corpo)}</div>
+      ${p.evento_data ? `
+        <div class="comunidade-event-chip">🗓 ${formatarDataEventoComunidade(p.evento_data)}${p.evento_hora ? ' às ' + p.evento_hora.slice(0,5) : ''}</div>
+        <div><button class="btn btn-primary btn-sm" data-salvar-agenda="${p.id}" style="margin-top:10px;">＋ Salvar na Agenda</button></div>
+      ` : ''}
+      ${p.imagem_url ? `<img src="${escapeHtml(p.imagem_url)}" class="comunidade-post-img" alt="">` : ''}
+    `;
+  } else {
+    corpoHtml = `
+      <div class="comunidade-post-author-row">
+        <div class="conv-avatar" style="width:34px;height:34px;font-size:.85rem;">${escapeHtml(p.autor_emoji || '🙏')}</div>
+        <div>
+          <div class="comunidade-post-author-name">${escapeHtml(p.autor_nome || 'Um membro da igreja')}</div>
+          <div class="comunidade-post-time">${tempoRelativoComunidade(p.criado_em)}</div>
+        </div>
+      </div>
+      <div class="comunidade-post-body">${escapeHtml(p.corpo)}</div>
+      ${p.imagem_url ? `<img src="${escapeHtml(p.imagem_url)}" class="comunidade-post-img" alt="">` : ''}
+    `;
+  }
+
+  return `
+    <div class="card comunidade-post-card" data-post-id="${p.id}">
+      <div class="comunidade-post-head">
+        <span class="comunidade-post-eyebrow">${tipoLabel}</span>
+        ${adminBtns}
+      </div>
+      ${corpoHtml}
+      <div class="comunidade-post-foot">
+        <button class="comunidade-post-action" data-toggle-comentarios="${p.id}">💬 ${p.total_comentarios > 0 ? p.total_comentarios : ''} Comentar</button>
+        <button class="comunidade-post-action ${p.curtido_por_mim ? 'is-liked' : ''}" data-curtir-post="${p.id}">👍 ${p.total_curtidas > 0 ? p.total_curtidas : ''} Curtir</button>
+      </div>
+      <div class="comunidade-comentarios" id="comunidade-comentarios-${p.id}" hidden>
+        <div class="comunidade-comentarios-list" id="comunidade-comentarios-list-${p.id}"></div>
+        <div class="comunidade-comentario-input-row">
+          <input class="comunidade-comentario-input" id="comunidade-comentario-input-${p.id}" placeholder="Escreva um comentário…">
+          <button class="send-btn" data-enviar-comentario="${p.id}" aria-label="Enviar" style="width:36px;height:36px;">➤</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderComunidadeFeed(){
+  const el = document.getElementById('comunidade-feed');
+  if(!el) return;
+  if(!comunidadePosts.length){
+    el.innerHTML = '<div class="admin-empty-state">Nenhuma novidade publicada ainda.</div>';
+    return;
+  }
+  el.innerHTML = comunidadePosts.map(comunidadePostCardHtml).join('');
+  ligarEventosFeedComunidade();
+}
+
+function ligarEventosFeedComunidade(){
+  document.querySelectorAll('#comunidade-feed [data-toggle-comentarios]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.toggleComentarios;
+      const box = document.getElementById('comunidade-comentarios-' + id);
+      if(!box) return;
+      const abrir = box.hidden;
+      box.hidden = !abrir;
+      if(abrir && !box.dataset.loaded){
+        box.dataset.loaded = '1';
+        await carregarComentariosPost(id);
+      }
+    });
+  });
+  document.querySelectorAll('#comunidade-feed [data-curtir-post]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.curtirPost;
+      const { data: curtiu, error } = await db.rpc('curtir_post', { p_token: state.sessionToken, p_post_id: id });
+      if(error){ console.error('Erro ao curtir:', error); toast('Não foi possível curtir', '⚠️'); return; }
+      const post = comunidadePosts.find(p => p.id === id);
+      if(post){
+        post.curtido_por_mim = curtiu;
+        post.total_curtidas = Math.max(0, (post.total_curtidas || 0) + (curtiu ? 1 : -1));
+        btn.classList.toggle('is-liked', curtiu);
+        btn.innerHTML = `👍 ${post.total_curtidas > 0 ? post.total_curtidas : ''} Curtir`;
+      }
+    });
+  });
+  document.querySelectorAll('#comunidade-feed [data-editar-post]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const post = comunidadePosts.find(p => p.id === btn.dataset.editarPost);
+      if(post) abrirFormularioComunidade(post.tipo, post);
+    });
+  });
+  document.querySelectorAll('#comunidade-feed [data-excluir-post]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.excluirPost;
+      openConfirm({
+        title: 'Excluir publicação?', text: 'Essa ação não pode ser desfeita.',
+        confirmLabel: 'Excluir', cancelLabel: 'Manter',
+        onConfirm: async ()=>{
+          const { error } = await db.rpc('excluir_post_comunidade', { p_token: state.sessionToken, p_post_id: id });
+          if(error){ console.error('Erro ao excluir publicação:', error); toast('Não foi possível excluir', '⚠️'); return; }
+          toast('Publicação excluída', '✅');
+          await carregarComunidadeFeed();
+        }
+      });
+    });
+  });
+  document.querySelectorAll('#comunidade-feed [data-salvar-agenda]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const post = comunidadePosts.find(p => p.id === btn.dataset.salvarAgenda);
+      if(post) salvarPostNaAgendaComunidade(post);
+    });
+  });
+  document.querySelectorAll('#comunidade-feed [data-enviar-comentario]').forEach(btn=>{
+    btn.addEventListener('click', ()=> enviarComentarioComunidade(btn.dataset.enviarComentario));
+  });
+  document.querySelectorAll('#comunidade-feed .comunidade-comentario-input').forEach(inp=>{
+    inp.addEventListener('keydown', e=>{
+      if(e.key === 'Enter') enviarComentarioComunidade(inp.id.replace('comunidade-comentario-input-', ''));
+    });
+  });
+}
+
+function salvarPostNaAgendaComunidade(post){
+  if(!post.evento_data) return;
+  const [ano, mes, dia] = post.evento_data.split('-');
+  const horaLimpa = (post.evento_hora || '19:00:00').slice(0,5).replace(':', '');
+  const dtStart = `${ano}${mes}${dia}T${horaLimpa}00`;
+  const linhas = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT',
+    'SUMMARY:' + (post.titulo || 'Evento IPDF'),
+    'DESCRIPTION:' + String(post.corpo || '').replace(/\r?\n/g, ' '),
+    'DTSTART:' + dtStart,
+    'END:VEVENT', 'END:VCALENDAR'
+  ];
+  const blob = new Blob([linhas.join('\r\n')], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (post.titulo || 'evento-ipdf').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.ics';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  toast('Evento baixado — abra o arquivo para adicionar à sua agenda', '📅');
+}
+
+async function carregarComentariosPost(postId){
+  const listEl = document.getElementById('comunidade-comentarios-list-' + postId);
+  if(!listEl) return;
+  listEl.innerHTML = '<div class="admin-empty-state" style="padding:10px;">Carregando…</div>';
+  const { data, error } = await db.rpc('listar_comentarios_post', { p_token: state.sessionToken, p_post_id: postId });
+  if(error){ console.error('Erro ao carregar comentários:', error); listEl.innerHTML = '<div class="admin-empty-state">Não foi possível carregar.</div>'; return; }
+  renderComentariosPost(postId, data || []);
+}
+
+function renderComentariosPost(postId, comentarios){
+  const listEl = document.getElementById('comunidade-comentarios-list-' + postId);
+  if(!listEl) return;
+  const meuId = state.perfil && state.perfil.id;
+  const isAdmin = !!(state.perfil && state.perfil.admin);
+  if(!comentarios.length){
+    listEl.innerHTML = '<div class="comunidade-empty-mini">Seja o primeiro a comentar.</div>';
+    return;
+  }
+  listEl.innerHTML = comentarios.map(c => `
+    <div class="comunidade-comentario-item">
+      <div class="conv-avatar" style="width:28px;height:28px;font-size:.72rem;${c.avatar_gradient ? 'background:'+c.avatar_gradient+';' : ''}">${escapeHtml(c.avatar_emoji || (c.nome_exibicao || '?').charAt(0).toUpperCase())}</div>
+      <div class="comunidade-comentario-body">
+        <span class="comunidade-comentario-autor">${escapeHtml(c.nome_exibicao || 'Membro')}</span>
+        <span class="comunidade-comentario-texto">${escapeHtml(c.texto)}</span>
+      </div>
+      ${(c.usuario_id === meuId || isAdmin) ? `<button class="msg-delete-btn" data-excluir-comentario="${c.id}" title="Excluir">🗑️</button>` : ''}
+    </div>
+  `).join('');
+  listEl.querySelectorAll('[data-excluir-comentario]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const { error } = await db.rpc('excluir_comentario_comunidade', { p_token: state.sessionToken, p_comentario_id: btn.dataset.excluirComentario });
+      if(error){ console.error('Erro ao excluir comentário:', error); toast('Não foi possível excluir', '⚠️'); return; }
+      await carregarComentariosPost(postId);
+      const post = comunidadePosts.find(p => p.id === postId);
+      const contBtn = document.querySelector(`#comunidade-feed [data-toggle-comentarios="${postId}"]`);
+      if(post){ post.total_comentarios = Math.max(0, (post.total_comentarios || 0) - 1); }
+      if(contBtn && post) contBtn.innerHTML = `💬 ${post.total_comentarios > 0 ? post.total_comentarios : ''} Comentar`;
+    });
+  });
+}
+
+async function enviarComentarioComunidade(postId){
+  const input = document.getElementById('comunidade-comentario-input-' + postId);
+  if(!input) return;
+  const texto = input.value.trim();
+  if(!texto) return;
+  input.value = '';
+  const { error } = await db.rpc('comentar_post', { p_token: state.sessionToken, p_post_id: postId, p_texto: texto });
+  if(error){ console.error('Erro ao comentar:', error); toast('Não foi possível comentar', '⚠️'); return; }
+  await carregarComentariosPost(postId);
+  const post = comunidadePosts.find(p => p.id === postId);
+  const btn = document.querySelector(`#comunidade-feed [data-toggle-comentarios="${postId}"]`);
+  if(post){ post.total_comentarios = (post.total_comentarios || 0) + 1; }
+  if(btn && post) btn.innerHTML = `💬 ${post.total_comentarios > 0 ? post.total_comentarios : ''} Comentar`;
+}
+
+/* ---- Próximos cultos ---- */
+function renderComunidadeCultos(){
+  const el = document.getElementById('comunidade-cultos');
+  if(!el) return;
+  const isAdmin = !!(state.perfil && state.perfil.admin);
+  if(!comunidadeCultos.length){
+    el.innerHTML = '<div class="comunidade-empty-mini">Nenhum culto cadastrado ainda.</div>';
+    return;
+  }
+  el.innerHTML = comunidadeCultos.map(c => `
+    <div class="comunidade-culto-item">
+      <div class="comunidade-culto-titulo">${escapeHtml(c.titulo)}</div>
+      <div class="comunidade-culto-horario">${escapeHtml(c.dia_semana || '')}${c.horario_inicio ? ' · ' + c.horario_inicio.slice(0,5) : ''}${c.horario_fim ? ' - ' + c.horario_fim.slice(0,5) : ''}</div>
+      ${isAdmin ? `
+        <div class="comunidade-culto-admin">
+          <button class="icon-btn-sm" data-editar-culto="${c.id}" title="Editar">✏️</button>
+          <button class="icon-btn-sm" data-excluir-culto="${c.id}" title="Excluir">🗑️</button>
+        </div>` : ''}
+    </div>
+  `).join('');
+  el.querySelectorAll('[data-editar-culto]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const c = comunidadeCultos.find(x => x.id === btn.dataset.editarCulto);
+      if(c) abrirFormularioComunidade('culto', c);
+    });
+  });
+  el.querySelectorAll('[data-excluir-culto]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.excluirCulto;
+      openConfirm({
+        title: 'Excluir culto?', text: 'Essa ação não pode ser desfeita.',
+        confirmLabel: 'Excluir', cancelLabel: 'Manter',
+        onConfirm: async ()=>{
+          const { error } = await db.rpc('excluir_culto_comunidade', { p_token: state.sessionToken, p_culto_id: id });
+          if(error){ console.error('Erro ao excluir culto:', error); toast('Não foi possível excluir', '⚠️'); return; }
+          await carregarComunidadeCultos();
+        }
+      });
+    });
+  });
+}
+
+/* ---- Aniversariantes do mês ---- */
+function renderComunidadeAniversariantes(){
+  const el = document.getElementById('comunidade-aniversariantes');
+  if(!el) return;
+  const isAdmin = !!(state.perfil && state.perfil.admin);
+  if(!comunidadeAniversariantes.length){
+    el.innerHTML = '<div class="comunidade-empty-mini">Nenhum aniversário este mês.</div>';
+    return;
+  }
+  el.innerHTML = comunidadeAniversariantes.map(a => `
+    <div class="comunidade-aniversariante-item">
+      <div class="conv-avatar" style="width:32px;height:32px;font-size:.8rem;">${escapeHtml((a.nome || '?').charAt(0).toUpperCase())}</div>
+      <div class="comunidade-aniversariante-info">
+        <div class="comunidade-aniversariante-nome">${escapeHtml(a.nome)}</div>
+        <div class="comunidade-aniversariante-data">${a.dia} de ${MESES_PT[a.mes]}</div>
+      </div>
+      ${isAdmin ? `<button class="icon-btn-sm" data-excluir-aniversariante="${a.id}" title="Excluir">🗑️</button>` : ''}
+    </div>
+  `).join('');
+  el.querySelectorAll('[data-excluir-aniversariante]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.excluirAniversariante;
+      openConfirm({
+        title: 'Remover aniversariante?', text: 'Essa ação não pode ser desfeita.',
+        confirmLabel: 'Remover', cancelLabel: 'Manter',
+        onConfirm: async ()=>{
+          const { error } = await db.rpc('excluir_aniversariante', { p_token: state.sessionToken, p_aniversariante_id: id });
+          if(error){ console.error('Erro ao remover aniversariante:', error); toast('Não foi possível remover', '⚠️'); return; }
+          await carregarComunidadeAniversariantes();
+        }
+      });
+    });
+  });
+}
+
+/* ---- Membros online ---- */
+function renderComunidadeMembrosOnline(membros){
+  const el = document.getElementById('comunidade-membros-online');
+  if(!el) return;
+  if(!membros.length){
+    el.innerHTML = '<div class="comunidade-empty-mini">Ninguém online agora.</div>';
+    return;
+  }
+  el.innerHTML = membros.map(m => `
+    <div class="comunidade-online-avatar" style="${m.avatar_gradient ? 'background:'+m.avatar_gradient+';' : ''}" title="${escapeHtml(m.nome_exibicao || m.nome_usuario)}">
+      ${escapeHtml(m.avatar_emoji || (m.nome_exibicao || m.nome_usuario || '?').charAt(0).toUpperCase())}
+      <span class="comunidade-online-dot"></span>
+    </div>
+  `).join('');
+}
+
+/* ---- Formulário genérico de administração (aviso, testemunho, culto, aniversariante, canal) ---- */
+let cfTipo = null;
+let cfEditandoId = null;
+
+const CF_GROUPS = {
+  aviso: ['nome','corpo','imagem','evento'],
+  testemunho: ['nome','emoji','corpo','imagem'],
+  culto: ['nome','culto'],
+  aniversariante: ['nome','aniversario'],
+  canal: ['nome','emoji','grupo'],
+};
+const CF_TITULOS = {
+  aviso: { novo: 'Novo aviso da liderança', editar: 'Editar aviso' },
+  testemunho: { novo: 'Novo testemunho de fé', editar: 'Editar testemunho' },
+  culto: { novo: 'Novo culto', editar: 'Editar culto' },
+  aniversariante: { novo: 'Novo aniversariante', editar: 'Editar aniversariante' },
+  canal: { novo: 'Novo canal', editar: 'Editar canal' },
+};
+const CF_NOME_LABEL = {
+  aviso: 'Título do aviso', testemunho: 'Nome de quem está testemunhando',
+  culto: 'Nome do culto', aniversariante: 'Nome da pessoa', canal: 'Nome do canal',
+};
+const CF_NOME_PLACEHOLDER = {
+  aviso: 'Ex: Próxima Ceia do Senhor', testemunho: 'Ex: irmão João',
+  culto: 'Ex: Culto de Celebração', aniversariante: 'Nome completo', canal: 'Ex: Jovens',
+};
+
+function abrirFormularioComunidade(tipo, item){
+  cfTipo = tipo;
+  cfEditandoId = item ? item.id : null;
+
+  document.getElementById('cf-title').textContent = item ? CF_TITULOS[tipo].editar : CF_TITULOS[tipo].novo;
+  document.getElementById('cf-nome-label').textContent = CF_NOME_LABEL[tipo];
+  document.getElementById('cf-nome').placeholder = CF_NOME_PLACEHOLDER[tipo];
+  document.getElementById('cf-corpo-label').textContent = tipo === 'aviso' ? 'Mensagem do aviso' : 'Testemunho';
+
+  document.querySelectorAll('#comunidade-form-box [data-cf-group]').forEach(el=>{
+    el.hidden = !CF_GROUPS[tipo].includes(el.dataset.cfGroup);
+  });
+
+  ['cf-nome','cf-emoji','cf-corpo','cf-imagem','cf-data','cf-hora','cf-dia-semana','cf-hora-ini','cf-hora-fim','cf-dia-num'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  document.getElementById('cf-grupo').value = 'conversa';
+  document.getElementById('cf-mes').value = '1';
+
+  if(item){
+    if(tipo === 'aviso'){
+      document.getElementById('cf-nome').value = item.titulo || '';
+      document.getElementById('cf-corpo').value = item.corpo || '';
+      document.getElementById('cf-imagem').value = item.imagem_url || '';
+      document.getElementById('cf-data').value = item.evento_data || '';
+      document.getElementById('cf-hora').value = item.evento_hora ? item.evento_hora.slice(0,5) : '';
+    } else if(tipo === 'testemunho'){
+      document.getElementById('cf-nome').value = item.autor_nome || '';
+      document.getElementById('cf-emoji').value = item.autor_emoji || '';
+      document.getElementById('cf-corpo').value = item.corpo || '';
+      document.getElementById('cf-imagem').value = item.imagem_url || '';
+    } else if(tipo === 'culto'){
+      document.getElementById('cf-nome').value = item.titulo || '';
+      document.getElementById('cf-dia-semana').value = item.dia_semana || '';
+      document.getElementById('cf-hora-ini').value = item.horario_inicio ? item.horario_inicio.slice(0,5) : '';
+      document.getElementById('cf-hora-fim').value = item.horario_fim ? item.horario_fim.slice(0,5) : '';
+    } else if(tipo === 'aniversariante'){
+      document.getElementById('cf-nome').value = item.nome || '';
+      document.getElementById('cf-dia-num').value = item.dia || '';
+      document.getElementById('cf-mes').value = item.mes || '1';
+    } else if(tipo === 'canal'){
+      document.getElementById('cf-nome').value = item.nome || '';
+      document.getElementById('cf-emoji').value = item.emoji || '';
+      document.getElementById('cf-grupo').value = item.grupo || 'conversa';
+    }
+  }
+
+  document.getElementById('comunidade-form-overlay').classList.add('show');
+  setTimeout(()=> document.getElementById('cf-nome').focus(), 50);
+}
+
+function fecharFormularioComunidade(){
+  document.getElementById('comunidade-form-overlay').classList.remove('show');
+}
+
+function abrirFormularioCanalComGrupo(grupo){
+  abrirFormularioComunidade('canal');
+  document.getElementById('cf-grupo').value = grupo;
+}
+
+document.getElementById('cf-cancel-btn')?.addEventListener('click', fecharFormularioComunidade);
+document.getElementById('comunidade-form-overlay')?.addEventListener('click', (e)=>{
+  if(e.target.id === 'comunidade-form-overlay') fecharFormularioComunidade();
+});
+
+document.getElementById('cf-save-btn')?.addEventListener('click', async ()=>{
+  const nome = document.getElementById('cf-nome').value.trim();
+  if(!nome){ toast('Preencha o campo obrigatório', '⚠️'); return; }
+  const saveBtn = document.getElementById('cf-save-btn');
+  saveBtn.disabled = true;
+  try{
+    if(cfTipo === 'aviso' || cfTipo === 'testemunho'){
+      const corpo = document.getElementById('cf-corpo').value.trim();
+      if(!corpo){ toast('Escreva o texto', '⚠️'); saveBtn.disabled = false; return; }
+      const imagem = document.getElementById('cf-imagem').value.trim();
+      if(cfTipo === 'aviso'){
+        const dataEvento = document.getElementById('cf-data').value || null;
+        const horaEvento = document.getElementById('cf-hora').value || null;
+        const params = {
+          p_token: state.sessionToken, p_titulo: nome, p_corpo: corpo, p_imagem_url: imagem,
+          p_autor_nome: null, p_autor_emoji: null, p_evento_data: dataEvento, p_evento_hora: horaEvento
+        };
+        const { error } = cfEditandoId
+          ? await db.rpc('editar_post_comunidade', { ...params, p_post_id: cfEditandoId })
+          : await db.rpc('criar_post_comunidade', { ...params, p_tipo: 'aviso' });
+        if(error) throw error;
+      } else {
+        const emoji = document.getElementById('cf-emoji').value.trim() || '🙏';
+        const params = {
+          p_token: state.sessionToken, p_titulo: null, p_corpo: corpo, p_imagem_url: imagem,
+          p_autor_nome: nome, p_autor_emoji: emoji, p_evento_data: null, p_evento_hora: null
+        };
+        const { error } = cfEditandoId
+          ? await db.rpc('editar_post_comunidade', { ...params, p_post_id: cfEditandoId })
+          : await db.rpc('criar_post_comunidade', { ...params, p_tipo: 'testemunho' });
+        if(error) throw error;
+      }
+      await carregarComunidadeFeed();
+    } else if(cfTipo === 'culto'){
+      const diaSemana = document.getElementById('cf-dia-semana').value.trim();
+      const horaIni = document.getElementById('cf-hora-ini').value || null;
+      const horaFim = document.getElementById('cf-hora-fim').value || null;
+      const { error } = cfEditandoId
+        ? await db.rpc('editar_culto_comunidade', { p_token: state.sessionToken, p_culto_id: cfEditandoId, p_titulo: nome, p_dia_semana: diaSemana, p_horario_inicio: horaIni, p_horario_fim: horaFim })
+        : await db.rpc('criar_culto_comunidade', { p_token: state.sessionToken, p_titulo: nome, p_dia_semana: diaSemana, p_horario_inicio: horaIni, p_horario_fim: horaFim });
+      if(error) throw error;
+      await carregarComunidadeCultos();
+    } else if(cfTipo === 'aniversariante'){
+      const dia = parseInt(document.getElementById('cf-dia-num').value, 10);
+      const mes = parseInt(document.getElementById('cf-mes').value, 10);
+      if(!dia || dia < 1 || dia > 31){ toast('Informe um dia válido', '⚠️'); saveBtn.disabled = false; return; }
+      const { error } = cfEditandoId
+        ? await db.rpc('editar_aniversariante', { p_token: state.sessionToken, p_aniversariante_id: cfEditandoId, p_nome: nome, p_dia: dia, p_mes: mes })
+        : await db.rpc('criar_aniversariante', { p_token: state.sessionToken, p_nome: nome, p_dia: dia, p_mes: mes });
+      if(error) throw error;
+      await carregarComunidadeAniversariantes();
+    } else if(cfTipo === 'canal'){
+      const emoji = document.getElementById('cf-emoji').value.trim() || '💬';
+      const grupo = document.getElementById('cf-grupo').value;
+      const { error } = cfEditandoId
+        ? await db.rpc('editar_canal_comunidade', { p_token: state.sessionToken, p_canal_id: cfEditandoId, p_nome: nome, p_emoji: emoji, p_grupo: grupo })
+        : await db.rpc('criar_canal_comunidade', { p_token: state.sessionToken, p_nome: nome, p_emoji: emoji, p_grupo: grupo });
+      if(error) throw error;
+      await carregarComunidadeCanais();
+    }
+    toast('Salvo com sucesso', '✅');
+    fecharFormularioComunidade();
+  } catch(err){
+    console.error('Erro ao salvar item da comunidade:', err);
+    toast('Não foi possível salvar', '⚠️');
+  } finally {
+    saveBtn.disabled = false;
+  }
+});
+
+document.getElementById('comunidade-add-aviso-btn')?.addEventListener('click', ()=> abrirFormularioComunidade('aviso'));
+document.getElementById('comunidade-add-testemunho-btn')?.addEventListener('click', ()=> abrirFormularioComunidade('testemunho'));
+document.getElementById('comunidade-add-culto-btn')?.addEventListener('click', ()=> abrirFormularioComunidade('culto'));
+document.getElementById('comunidade-add-aniversariante-btn')?.addEventListener('click', ()=> abrirFormularioComunidade('aniversariante'));
+document.getElementById('comunidade-add-canal-conversa-btn')?.addEventListener('click', ()=> abrirFormularioCanalComGrupo('conversa'));
+document.getElementById('comunidade-add-canal-ipdf-btn')?.addEventListener('click', ()=> abrirFormularioCanalComGrupo('ipdf'));
+document.getElementById('comunidade-add-canal-forum-btn')?.addEventListener('click', ()=> abrirFormularioCanalComGrupo('forum'));
+
+/* ---- Chat do canal: envio de mensagem e botão de voltar ---- */
+document.getElementById('comunidade-canal-send')?.addEventListener('click', async ()=>{
+  if(!comunidadeCanalPodeEscrever){ toast('Somente a administração pode enviar mensagens neste canal', '⚠️'); return; }
+  const input = document.getElementById('comunidade-canal-input');
+  const texto = input.value.trim();
+  if(!texto || !comunidadeCanalAtivo) return;
+  input.value = '';
+  const { error } = await db.rpc('enviar_mensagem_canal', { p_token: state.sessionToken, p_canal_id: comunidadeCanalAtivo, p_texto: texto });
+  if(error){ console.error('Erro ao enviar mensagem:', error); toast('Não foi possível enviar', '⚠️'); return; }
+  await carregarMensagensCanal(comunidadeCanalAtivo);
+});
+document.getElementById('comunidade-canal-input')?.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') document.getElementById('comunidade-canal-send').click();
+});
+document.getElementById('comunidade-canal-back-btn')?.addEventListener('click', fecharCanalComunidade);
+document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', ()=>{
+  if(!comunidadeCanalAtivo) return;
+  const canalId = comunidadeCanalAtivo;
+  openConfirm({
+    title: 'Excluir canal?', text: 'Essa ação apaga todas as mensagens do canal e não pode ser desfeita.',
+    confirmLabel: 'Excluir', cancelLabel: 'Manter canal',
+    onConfirm: async ()=>{
+      const { error } = await db.rpc('excluir_canal_comunidade', { p_token: state.sessionToken, p_canal_id: canalId });
+      if(error){ console.error('Erro ao excluir canal:', error); toast('Não foi possível excluir', '⚠️'); return; }
+      toast('Canal excluído', '✅');
+      fecharCanalComunidade();
+      await carregarComunidadeCanais();
+    }
+  });
+});
+
+/* ---- Acesso ao Painel Admin (mensagens de suporte e membros) a partir da Comunidade ---- */
+document.getElementById('nav-open-admin-panel')?.addEventListener('click', ()=>{
+  document.body.classList.add('show-admin');
+  if(typeof carregarPainelAdmin === 'function') carregarPainelAdmin();
+});
+document.getElementById('admin-back-to-site-btn')?.addEventListener('click', ()=>{
+  document.body.classList.remove('show-admin');
+  switchView('comunidade');
+});
+
 (function initAuth(){
   const tabs = document.getElementById('auth-tabs');
   const glass = document.getElementById('auth-glass');
@@ -8137,23 +9301,17 @@ async function carregarDadosDoUsuario(){
       localStorage.removeItem('ipge_token');
     }
 
-    // Confere primeiro se é uma conta de administrador — se for, mostra
-    // só o painel de admin, sem carregar nada da experiência normal do app.
-    const { data: perfilCheck, error: errPerfilCheck } = await db.rpc('buscar_perfil', { p_token: token });
-    if(!errPerfilCheck && perfilCheck && perfilCheck.admin){
-      state.perfil = perfilCheck;
-      document.body.classList.remove('show-auth');
-      document.body.classList.remove('show-admin');
-      document.body.classList.add('show-admin');
-      if(typeof carregarPainelAdmin === 'function') await carregarPainelAdmin();
-      return;
-    }
-
+    // Contas de administrador também entram no app normal (para poder usar a
+    // Comunidade como qualquer membro, com os controles extras de admin). O
+    // Painel Admin (mensagens de suporte e membros) continua disponível à
+    // parte, pelo botão "Painel Admin" que aparece na barra lateral.
     if(typeof carregarDadosDoUsuario === 'function'){
       await carregarDadosDoUsuario();
     }
     document.body.classList.remove('show-auth');
-    switchView('home');
+    document.body.classList.remove('show-admin');
+    if(typeof iniciarHeartbeatPresenca === 'function') iniciarHeartbeatPresenca();
+    switchView(state.perfil && state.perfil.admin ? 'comunidade' : 'home');
   }
 
   const loginBtn = document.getElementById('auth-login-btn');
