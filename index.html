@@ -547,6 +547,16 @@ body.show-admin #admin-shell{display:block;}
   .auth-bg-video{display:none;}
 }
 
+/* Em telas de toque (celular/tablet), os orbes com blur animando continuamente
+   também pesam bastante para renderizar; deixamos parados e com blur mais leve. */
+@media(max-width:900px),(pointer:coarse){
+  .auth-orb{animation:none;filter:blur(38px);}
+  .auth-orb-3{display:none;}
+}
+@media(prefers-reduced-motion:reduce){
+  .auth-orb{animation:none;}
+}
+
 .auth-skyline{position:fixed;left:0;right:0;bottom:-2px;width:100%;height:26vh;min-height:150px;max-height:280px;z-index:1;pointer-events:none;}
 
 /* ---------------- Landing de boas-vindas (antes do login) ---------------- */
@@ -970,8 +980,10 @@ body.show-public-campaign #app-shell{display:none;}
 .msg-row .msg{max-width:100%;}
 .msg.enviada{background:var(--ink);color:var(--parchment);border-bottom-right-radius:5px;padding:12px 15px;border-radius:16px;font-size:.9rem;line-height:1.6;}
 .msg.recebida{background:var(--parchment-dim);border-bottom-left-radius:5px;padding:12px 15px;border-radius:16px;font-size:.9rem;line-height:1.6;}
-.msg-verse-share{border-left:3px solid var(--gold);padding-left:10px;margin-bottom:4px;}
-.msg-verse-share .msg-verse-ref{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;opacity:.75;font-weight:700;}
+.msg-verse-share{border-left:3px solid var(--gold);padding-left:9px;margin-bottom:5px;}
+.msg-verse-share .msg-verse-ref{font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;opacity:.75;font-weight:700;margin-bottom:2px;}
+.msg-verse-share .msg-verse-quote{font-size:.8rem;line-height:1.38;display:block;}
+.msg-verse-share .msg-verse-goto{margin-top:6px;padding:5px 10px;font-size:.68rem;border-radius:8px;}
 .msg.enviada .msg-verse-goto{color:var(--parchment);border-color:rgba(251,248,242,.4);background:rgba(255,255,255,.08);}
 .msg.enviada .msg-verse-goto:hover{background:rgba(255,255,255,.16);border-color:rgba(251,248,242,.65);}
 .msg-time{font-size:.66rem;opacity:.6;margin-top:5px;}
@@ -1873,22 +1885,32 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
   <!-- Fundo imersivo: vídeo do azeite escorrendo + degradê "amanhecer" + auroras + skyline -->
   <div class="auth-bg">
-    <video class="auth-bg-video" id="auth-bg-video" autoplay muted loop playsinline webkit-playsinline="true" preload="auto" poster="azeite-poster.jpg">
+    <video class="auth-bg-video" id="auth-bg-video" muted loop playsinline webkit-playsinline="true" preload="none" poster="azeite-poster.jpg">
       <source src="azeite-bg.mp4" type="video/mp4">
     </video>
     <script>
-      /* Em celulares com "Economizar dados" ligado ou conexão 2G, cancela o
-         carregamento do vídeo e mantém só o poster + degradê (mais leve). */
+      /* O vídeo de fundo (decodificação + filtro CSS a cada frame) é pesado
+         para GPUs de celular/tablet e travava a tela de login nesses aparelhos,
+         mesmo fluindo bem no PC. Por isso ele só é carregado/reproduzido em
+         telas "de desktop" (ponteiro fino e largura maior); em telas de toque,
+         em conexões lentas/"Economizar dados" ou com "reduzir movimento"
+         ativado, mantemos só o poster + degradê, que é leve e visualmente
+         equivalente parado. */
       (function(){
         try{
           var v = document.getElementById('auth-bg-video');
+          if(!v) return;
           var conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
-          if(v && conn && (conn.saveData || /(^|\b)(slow-2g|2g)($|\b)/.test(conn.effectiveType || ''))){
-            v.pause();
-            v.removeAttribute('autoplay');
+          var saveData = !!(conn && (conn.saveData || /(^|\b)(slow-2g|2g)($|\b)/.test(conn.effectiveType || '')));
+          var isTouch = window.matchMedia('(pointer:coarse)').matches || window.matchMedia('(max-width:900px)').matches;
+          var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+          if(saveData || isTouch || reducedMotion){
             v.querySelectorAll('source').forEach(function(s){ s.remove(); });
-            v.load();
             v.style.display = 'none';
+          }else{
+            v.preload = 'auto';
+            v.setAttribute('autoplay','');
+            v.play().catch(function(){});
           }
         }catch(e){}
       })();
@@ -8342,8 +8364,8 @@ function renderThreadDireto(mensagens){
     const versiculoHtml = m.texto_versiculo
       ? `<div class="msg-verse-share">
            <div class="msg-verse-ref">📖 ${escapeHtml(m.referencia_versiculo || '')}</div>
-           "${escapeHtml(m.texto_versiculo)}"
-           <button class="btn btn-ghost btn-sm msg-verse-goto" data-goto-verse="${escapeHtml(m.referencia_versiculo || '')}" style="margin-top:8px;">📖 Ir até o capítulo/versículo</button>
+           <div class="msg-verse-quote">"${escapeHtml(m.texto_versiculo)}"</div>
+           <button class="btn btn-ghost btn-sm msg-verse-goto" data-goto-verse="${escapeHtml(m.referencia_versiculo || '')}">📖 Ir até o capítulo/versículo</button>
          </div>`
       : '';
     return `<div class="msg-row ${minha ? 'enviada' : 'recebida'} msg-row-wrap" data-msg-id="${m.id}" data-msg-minha="${minha ? '1' : '0'}">
@@ -9079,8 +9101,8 @@ function renderMensagensCanal(mensagens){
     const versiculoHtml = m.texto_versiculo
       ? `<div class="msg-verse-share">
            <div class="msg-verse-ref">📖 ${escapeHtml(m.referencia_versiculo || '')}</div>
-           "${escapeHtml(m.texto_versiculo)}"
-           <button class="btn btn-ghost btn-sm msg-verse-goto" data-goto-verse="${escapeHtml(m.referencia_versiculo || '')}" style="margin-top:8px;">📖 Ir até o capítulo/versículo</button>
+           <div class="msg-verse-quote">"${escapeHtml(m.texto_versiculo)}"</div>
+           <button class="btn btn-ghost btn-sm msg-verse-goto" data-goto-verse="${escapeHtml(m.referencia_versiculo || '')}">📖 Ir até o capítulo/versículo</button>
          </div>`
       : '';
     return `<div class="msg-row ${minha ? 'enviada' : 'recebida'} msg-row-wrap comunidade-canal-msg-row" data-msg-id="${m.id}">
