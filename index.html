@@ -430,8 +430,8 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em;
 .comunidade-hero{
   position:relative;overflow:hidden;
   border-radius:28px;
-  min-height:260px;
-  padding:60px 40px;
+  min-height:280px;
+  padding:60px 40px 44px;
   display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
   text-align:center;
   background:
@@ -447,6 +447,31 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em;
   animation:glow 7s ease-in-out infinite;
   pointer-events:none;
 }
+/* Partículas de luz subindo lentamente — o motivo "Lâmpada" do app, reaplicado
+   como faíscas suaves sobre a foto da comunidade. */
+.comunidade-hero-mote{
+  position:absolute;bottom:-10px;
+  width:5px;height:5px;border-radius:50%;
+  background:radial-gradient(circle, rgba(232,201,138,.95) 0%, rgba(232,201,138,0) 70%);
+  opacity:0;
+  animation:moteRise 9s ease-in infinite;
+  pointer-events:none;
+}
+@keyframes moteRise{
+  0%{transform:translateY(0) scale(.6);opacity:0;}
+  12%{opacity:.85;}
+  80%{opacity:.3;}
+  100%{transform:translateY(-230px) scale(1.15);opacity:0;}
+}
+.comunidade-hero-eyebrow{
+  position:relative;
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+  color:var(--gold-soft);
+  text-shadow:0 1px 6px rgba(0,0,0,.4);
+}
+.comunidade-hero-eyebrow::before,.comunidade-hero-eyebrow::after{content:"";width:22px;height:1px;background:linear-gradient(90deg,transparent,rgba(232,201,138,.85));}
+.comunidade-hero-eyebrow::after{background:linear-gradient(90deg,rgba(232,201,138,.85),transparent);}
 .comunidade-hero-title{
   position:relative;
   font-family:var(--font-display);
@@ -455,7 +480,11 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em;
   letter-spacing:-.01em;
   color:#FBF8F2;
   text-shadow:0 2px 14px rgba(0,0,0,.35);
+  margin-top:10px;
 }
+.comunidade-hero-ornament{position:relative;width:64px;height:14px;margin:14px auto 0;display:flex;align-items:center;justify-content:center;gap:8px;}
+.comunidade-hero-ornament::before,.comunidade-hero-ornament::after{content:"";flex:1;height:1px;background:rgba(232,201,138,.55);}
+.comunidade-hero-ornament span{color:var(--gold-soft);font-size:.7rem;}
 .comunidade-hero-verse{
   position:relative;
   margin-top:14px;
@@ -466,7 +495,25 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em;
   max-width:620px;margin-left:auto;margin-right:auto;
   text-shadow:0 1px 8px rgba(0,0,0,.3);
 }
-@media(max-width:640px){.comunidade-hero{padding:30px 22px;min-height:220px;}}
+.comunidade-hero-stats{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px;}
+.comunidade-hero-stat{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 14px;border-radius:30px;
+  background:rgba(251,248,242,.12);
+  border:1px solid rgba(251,248,242,.22);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  color:#FBF8F2;font-size:.78rem;font-weight:600;
+}
+.comunidade-hero-stat-dot{width:7px;height:7px;border-radius:50%;background:var(--sage);flex-shrink:0;animation:pulseDot 2.4s ease-out infinite;}
+@keyframes pulseDot{
+  0%{box-shadow:0 0 0 0 rgba(110,143,114,.55);}
+  70%{box-shadow:0 0 0 7px rgba(110,143,114,0);}
+  100%{box-shadow:0 0 0 0 rgba(110,143,114,0);}
+}
+@media(max-width:640px){
+  .comunidade-hero{padding:34px 20px 30px;min-height:240px;}
+  .comunidade-hero-stats{margin-top:16px;}
+}
 .chip-btn{
   display:flex;align-items:center;gap:8px;
   padding:9px 16px;border-radius:30px;border:1px solid rgba(251,248,242,.28);
@@ -1807,7 +1854,16 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
    ========================================================= */
 .comunidade-grid{display:grid;grid-template-columns:250px 1fr 260px;gap:18px;align-items:start;}
 .comunidade-col{display:flex;flex-direction:column;gap:16px;min-width:0;}
-.comunidade-card{padding:16px;}
+.comunidade-card{padding:16px;transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;}
+.comunidade-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--gold-soft);}
+.comunidade-card-head-title{display:flex;align-items:center;gap:10px;min-width:0;}
+.comunidade-card-head-title h3{margin-bottom:0;}
+.comunidade-card-icon{
+  width:30px;height:30px;flex-shrink:0;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:.92rem;
+  background:var(--ci-tone, var(--gold-soft));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+}
 .comunidade-card h3{font-family:var(--font-display);font-size:.98rem;font-weight:600;color:var(--ink);}
 .comunidade-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;}
 .comunidade-card-head h3{margin-bottom:0;}
@@ -1833,7 +1889,22 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 .comunidade-feed-head h3{font-family:var(--font-display);font-size:1.08rem;font-weight:600;color:var(--ink);}
 #comunidade-feed{display:flex;flex-direction:column;gap:16px;}
 
-.comunidade-post-card{padding:18px 20px;}
+.comunidade-post-card{
+  padding:18px 20px;
+  border-left:3px solid var(--line);
+  transition:transform .2s ease, box-shadow .2s ease;
+  animation:cardRise .5s ease both;
+}
+.comunidade-post-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.comunidade-post-card.is-aviso{border-left-color:var(--gold);}
+.comunidade-post-card.is-testemunho{border-left-color:var(--sage);}
+.comunidade-post-author-row .conv-avatar{box-shadow:0 0 0 2px var(--paper), 0 0 0 3.5px var(--gold-soft);}
+@keyframes cardRise{ from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
+#comunidade-feed .comunidade-post-card:nth-child(1){animation-delay:.03s;}
+#comunidade-feed .comunidade-post-card:nth-child(2){animation-delay:.09s;}
+#comunidade-feed .comunidade-post-card:nth-child(3){animation-delay:.15s;}
+#comunidade-feed .comunidade-post-card:nth-child(4){animation-delay:.21s;}
+#comunidade-feed .comunidade-post-card:nth-child(n+5){animation-delay:.27s;}
 .comunidade-post-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
 .comunidade-post-eyebrow{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--gold);}
 .comunidade-post-admin-actions{display:flex;gap:4px;flex-shrink:0;}
@@ -1855,7 +1926,8 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   display:inline-flex;align-items:center;gap:5px;padding:4px 2px;
 }
 .comunidade-post-action:hover{color:var(--ink);}
-.comunidade-post-action.is-liked{color:var(--sage);}
+.comunidade-post-action.is-liked{color:var(--sage);animation:likePop .38s ease;}
+@keyframes likePop{ 0%{transform:scale(1);} 35%{transform:scale(1.28);} 100%{transform:scale(1);} }
 
 .comunidade-comentarios{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
 .comunidade-comentarios-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
@@ -1875,10 +1947,13 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   position:relative;width:38px;height:38px;border-radius:50%;
   background:linear-gradient(135deg,var(--sage),var(--gold));color:#fff;
   display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;
+  transition:transform .18s ease;cursor:default;
 }
+.comunidade-online-avatar:hover{transform:translateY(-3px) scale(1.06);}
 .comunidade-online-dot{
   position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;border-radius:50%;
   background:var(--sage);border:2px solid var(--paper);
+  animation:pulseDot 2.4s ease-out infinite;
 }
 
 #comunidade-cultos{display:flex;flex-direction:column;gap:10px;}
@@ -1886,15 +1961,22 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   position:relative;padding:14px 16px;border-radius:var(--radius-md);
   background:linear-gradient(135deg,var(--culto-card-start) 0%,var(--culto-card-end) 100%);
   box-shadow:var(--shadow-sm);
-  transition:background .35s ease;
+  transition:background .35s ease, transform .2s ease, box-shadow .2s ease;
+  overflow:hidden;
 }
-.comunidade-culto-titulo{font-weight:600;font-size:.87rem;color:var(--culto-card-text);}
-.comunidade-culto-horario{font-size:.78rem;color:var(--culto-card-text-dim);margin-top:4px;}
+.comunidade-culto-item:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.comunidade-culto-item::before{
+  content:"⛪";position:absolute;right:8px;bottom:2px;font-size:2rem;opacity:.14;
+  filter:grayscale(1) brightness(2.2);pointer-events:none;
+}
+.comunidade-culto-titulo{position:relative;font-weight:600;font-size:.87rem;color:var(--culto-card-text);}
+.comunidade-culto-horario{position:relative;font-size:.78rem;color:var(--culto-card-text-dim);margin-top:4px;}
 .comunidade-culto-admin{position:absolute;top:10px;right:10px;display:flex;gap:2px;}
 .comunidade-culto-admin .icon-btn-sm{color:rgba(255,255,255,.65);}
 .comunidade-culto-admin .icon-btn-sm:hover{color:var(--culto-card-text);background:rgba(255,255,255,.16);}
 
-.comunidade-aniversariante-item{display:flex;align-items:center;gap:10px;padding:8px 0;}
+.comunidade-aniversariante-item{display:flex;align-items:center;gap:10px;padding:9px 6px;margin:0 -6px;border-radius:var(--radius-sm);transition:background .18s ease;}
+.comunidade-aniversariante-item:hover{background:var(--parchment-dim);}
 .comunidade-aniversariante-info{flex:1;min-width:0;}
 .comunidade-aniversariante-nome{font-weight:600;font-size:.85rem;color:var(--ink);}
 .comunidade-aniversariante-data{font-size:.76rem;color:var(--text-dim);}
@@ -2193,7 +2275,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <div class="auth-panel" id="auth-campaign">
         <div class="auth-eyebrow">Campanha da Igreja</div>
         <h1 class="auth-title" style="font-size:1.45rem;">Campanhas Proféticas</h1>
-        <p class="auth-sub">Acompanhe as campanhas em andamento da IPDF, mesmo sem fazer login.</p>
+        <p class="auth-sub">Acompanhe a campanha em andamento da IPDF, mesmo sem fazer login.</p>
 
         <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px;">
           <button type="button" class="btn auth-submit" id="auth-view-campaign-btn">
@@ -2906,8 +2988,19 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <!-- ============ COMUNIDADE ============ -->
       <section class="view" id="view-comunidade">
         <div class="comunidade-hero">
+          <span class="comunidade-hero-mote" style="left:10%;animation-delay:0s;"></span>
+          <span class="comunidade-hero-mote" style="left:26%;width:4px;height:4px;animation-delay:1.8s;"></span>
+          <span class="comunidade-hero-mote" style="left:45%;animation-delay:3.6s;"></span>
+          <span class="comunidade-hero-mote" style="left:63%;width:6px;height:6px;animation-delay:5.4s;"></span>
+          <span class="comunidade-hero-mote" style="left:79%;animation-delay:2.4s;"></span>
+          <span class="comunidade-hero-mote" style="left:91%;width:4px;height:4px;animation-delay:7s;"></span>
+          <div class="comunidade-hero-eyebrow">🏛️ Comunidade IPDF</div>
           <h1 class="comunidade-hero-title">Mural da Comunidade IPDF</h1>
+          <div class="comunidade-hero-ornament"><span>✦</span></div>
           <p class="comunidade-hero-verse" id="comunidade-hero-verse">"Alegrai-vos com os que se alegram e chorai com os que choram." — Romanos 12:15</p>
+          <div class="comunidade-hero-stats">
+            <span class="comunidade-hero-stat"><span class="comunidade-hero-stat-dot"></span><span id="comunidade-hero-online-count">0</span>&nbsp;online agora</span>
+          </div>
         </div>
 
         <div id="comunidade-mural">
@@ -2917,7 +3010,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             <div class="comunidade-col">
               <div class="card comunidade-card cu-card-canais-conversa">
                 <div class="comunidade-card-head">
-                  <h3>Canais de Conversa</h3>
+                  <div class="comunidade-card-head-title"><span class="comunidade-card-icon" style="--ci-tone:var(--sage-soft);">💬</span><h3>Canais de Conversa</h3></div>
                   <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-canal-conversa-btn" hidden>＋</button>
                 </div>
                 <div id="comunidade-canais-conversa"><div class="comunidade-empty-mini">Carregando…</div></div>
@@ -2925,7 +3018,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
               <div class="card comunidade-card cu-card-topicos-forum">
                 <div class="comunidade-card-head">
-                  <h3>Tópicos do Fórum</h3>
+                  <div class="comunidade-card-head-title"><span class="comunidade-card-icon" style="--ci-tone:var(--gold-soft);">📋</span><h3>Tópicos do Fórum</h3></div>
                   <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-canal-forum-btn" hidden>＋</button>
                 </div>
                 <div id="comunidade-topicos-forum"><div class="comunidade-empty-mini">Carregando…</div></div>
@@ -2935,7 +3028,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             <!-- COLUNA CENTRAL -->
             <div class="comunidade-col">
               <div class="comunidade-feed-head">
-                <h3>Mais recente atividade</h3>
+                <div class="comunidade-card-head-title"><span class="comunidade-card-icon" style="--ci-tone:var(--gold-soft);">📰</span><h3>Mais recente atividade</h3></div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
                   <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-aviso-btn" hidden>📣 + Aviso</button>
                   <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-testemunho-btn" hidden>🙌 + Testemunho</button>
@@ -2947,13 +3040,13 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             <!-- COLUNA DIREITA -->
             <div class="comunidade-col">
               <div class="card comunidade-card cu-card-membros-online">
-                <h3>Membros Online</h3>
+                <div class="comunidade-card-head-title" style="margin-bottom:8px;"><span class="comunidade-card-icon" style="--ci-tone:var(--sage-soft);">👥</span><h3>Membros Online</h3></div>
                 <div id="comunidade-membros-online" class="comunidade-online-grid"><div class="comunidade-empty-mini">Carregando…</div></div>
               </div>
 
               <div class="card comunidade-card cu-card-proximos-cultos">
                 <div class="comunidade-card-head">
-                  <h3>Próximos Cultos</h3>
+                  <div class="comunidade-card-head-title"><span class="comunidade-card-icon" style="--ci-tone:var(--gold-soft);">⛪</span><h3>Próximos Cultos</h3></div>
                   <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-culto-btn" hidden>＋</button>
                 </div>
                 <div id="comunidade-cultos"><div class="comunidade-empty-mini">Carregando…</div></div>
@@ -2961,7 +3054,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
               <div class="card comunidade-card cu-card-aniversariantes">
                 <div class="comunidade-card-head">
-                  <h3>Aniversariantes do Mês</h3>
+                  <div class="comunidade-card-head-title"><span class="comunidade-card-icon" style="--ci-tone:color-mix(in srgb, var(--rose) 40%, var(--paper));">🎂</span><h3>Aniversariantes do Mês</h3></div>
                   <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-aniversariante-btn" hidden>＋</button>
                 </div>
                 <div id="comunidade-aniversariantes"><div class="comunidade-empty-mini">Carregando…</div></div>
@@ -9366,7 +9459,7 @@ function comunidadePostCardHtml(p){
   }
 
   return `
-    <div class="card comunidade-post-card" data-post-id="${p.id}">
+    <div class="card comunidade-post-card is-${p.tipo}" data-post-id="${p.id}">
       <div class="comunidade-post-head">
         <span class="comunidade-post-eyebrow">${tipoLabel}</span>
         ${adminBtns}
@@ -9623,6 +9716,8 @@ function renderComunidadeAniversariantes(){
 /* ---- Membros online ---- */
 function renderComunidadeMembrosOnline(membros){
   const el = document.getElementById('comunidade-membros-online');
+  const heroCount = document.getElementById('comunidade-hero-online-count');
+  if(heroCount) heroCount.textContent = membros.length;
   if(!el) return;
   if(!membros.length){
     el.innerHTML = '<div class="comunidade-empty-mini">Ninguém online agora.</div>';
