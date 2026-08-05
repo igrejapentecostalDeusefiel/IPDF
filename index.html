@@ -492,6 +492,7 @@ body.show-admin #admin-shell{display:block;}
 [data-theme="dark"] .admin-filter-btn.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
 .admin-msg-item{border:1px solid var(--line);border-radius:var(--radius-md);padding:16px 18px;margin-bottom:12px;background:var(--paper);}
 .admin-msg-item.is-pendente{border-left:3px solid var(--gold);}
+.admin-msg-item.is-visualizada{border-left:3px solid var(--sage);}
 .admin-msg-item.is-respondida{opacity:.72;}
 .admin-msg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
 .admin-msg-user{font-weight:700;color:var(--ink);font-size:.92rem;}
@@ -999,6 +1000,8 @@ body.show-public-campaign #app-shell{display:none;}
 .conv-support-form{padding:12px 18px 0;display:flex;flex-direction:column;gap:10px;flex-shrink:0;}
 #conv-msg-form{padding:14px 18px;flex-shrink:0;}
 .contact-search-results{max-height:280px;overflow-y:auto;margin-top:10px;}
+.verse-share-section-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);font-weight:700;margin:12px 2px 6px;}
+.verse-share-section-label:first-child{margin-top:0;}
 .contact-result-row{
   display:flex;align-items:center;gap:12px;padding:10px 6px;border-radius:var(--radius-sm);cursor:pointer;
 }
@@ -1613,29 +1616,40 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   display:grid;grid-template-columns:280px 1fr;
   border-radius:26px;margin-top:22px;
   background:
-    radial-gradient(560px 320px at 88% -10%, var(--gold-soft) 0%, transparent 60%),
-    linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%);
+    radial-gradient(560px 320px at 88% -10%, rgba(232,201,138,.4) 0%, transparent 60%),
+    linear-gradient(160deg, #100C06 0%, #241B0E 40%, #4A3216 76%, #6B4A22 100%);
+  border:1px solid rgba(232,201,138,.18);
   color:var(--parchment);
-  box-shadow:var(--shadow);
+  box-shadow:var(--shadow), 0 0 0 1px rgba(201,154,74,.08);
+}
+.campaign-hero::before{
+  content:"";position:absolute;inset:0;opacity:.32;z-index:0;
+  background-image:radial-gradient(rgba(232,201,138,.55) .7px, transparent .7px);
+  background-size:24px 24px;
+  mask-image:radial-gradient(circle at 82% 12%, black, transparent 62%);
+  -webkit-mask-image:radial-gradient(circle at 82% 12%, black, transparent 62%);
+  pointer-events:none;
 }
 .campaign-hero::after{
   content:"";position:absolute;inset:0;
-  background:radial-gradient(240px 240px at 6% 92%, rgba(232,201,138,.28), transparent 70%);
+  background:
+    radial-gradient(240px 240px at 6% 92%, rgba(232,201,138,.32), transparent 70%),
+    radial-gradient(220px 220px at 98% 100%, rgba(201,154,74,.26), transparent 72%);
   animation:glow 8s ease-in-out infinite;
   pointer-events:none;
 }
-.campaign-hero-media{position:relative;min-height:220px;background:linear-gradient(160deg, rgba(232,201,138,.22), rgba(0,0,0,.18));}
+.campaign-hero-media{position:relative;z-index:1;min-height:220px;background:linear-gradient(160deg, rgba(232,201,138,.26), rgba(16,12,6,.35));}
 .campaign-hero-media img{width:100%;height:100%;object-fit:cover;display:block;}
 .campaign-hero-media.media-empty{display:flex;align-items:center;justify-content:center;}
 .campaign-hero-media.media-empty::after{content:attr(data-emblem);font-size:4.2rem;filter:drop-shadow(0 6px 16px rgba(0,0,0,.3));}
-.campaign-hero-body{position:relative;padding:32px 34px;display:flex;flex-direction:column;gap:14px;}
+.campaign-hero-body{position:relative;z-index:1;padding:32px 34px;display:flex;flex-direction:column;gap:14px;}
 .campaign-status{
   display:inline-flex;align-items:center;gap:6px;width:fit-content;
   font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
   padding:5px 12px;border-radius:20px;
   background:rgba(232,201,138,.16);color:var(--gold-soft);border:1px solid rgba(232,201,138,.35);
 }
-.campaign-hero-title{font-family:var(--font-display);font-weight:600;font-size:clamp(1.4rem,2.6vw,1.9rem);}
+.campaign-hero-title{font-family:var(--font-display);font-weight:600;font-size:clamp(1.4rem,2.6vw,1.9rem);color:#F3DDA8;text-shadow:0 2px 14px rgba(0,0,0,.35);}
 .campaign-hero-ref{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;opacity:.7;}
 .campaign-hero-verse{font-family:var(--font-display);font-style:italic;font-size:1.05rem;line-height:1.6;opacity:.95;}
 .campaign-hero-purpose{font-size:.92rem;line-height:1.7;opacity:.85;max-width:62ch;}
@@ -1805,6 +1819,12 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
 .comunidade-canal-shell{margin-top:20px;height:70vh;min-height:460px;grid-template-columns:1fr;}
 .comunidade-canal-msg-autor{font-size:.7rem;color:var(--text-faint);margin:0 2px 3px;}
+.msg-row.comunidade-canal-msg-row{flex-direction:row;align-items:flex-end;gap:8px;}
+.msg-row.comunidade-canal-msg-row.enviada{flex-direction:row-reverse;}
+.comunidade-canal-msg-avatar{flex-shrink:0;}
+.comunidade-canal-msg-col{display:flex;flex-direction:column;min-width:0;}
+.msg-row.comunidade-canal-msg-row.enviada .comunidade-canal-msg-col{align-items:flex-end;}
+.msg-row.comunidade-canal-msg-row.recebida .comunidade-canal-msg-col{align-items:flex-start;}
 
 .cf-field{margin-bottom:14px;}
 .cf-row{display:flex;gap:12px;margin-bottom:14px;}
@@ -1838,7 +1858,6 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   .cu-card-proximos-cultos{order:3;}
   /* 2º Conversar: canais e fórum */
   .cu-card-canais-conversa{order:4;}
-  .cu-card-canais-ipdf{order:5;}
   .cu-card-topicos-forum{order:6;}
   /* 3º Membros online e aniversariantes */
   .cu-card-membros-online{order:7;}
@@ -2131,6 +2150,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
     <nav class="admin-nav">
       <button class="admin-nav-item active" data-admin-tab="visao-geral"><span>📊 Visão geral</span></button>
       <button class="admin-nav-item" data-admin-tab="mensagens"><span>✉️ Mensagens de suporte</span><span class="admin-nav-badge" id="admin-msg-badge" style="display:none;">0</span></button>
+      <button class="admin-nav-item" data-admin-tab="oracoes"><span>🙏 Pedidos de Oração</span><span class="admin-nav-badge" id="admin-oracao-badge" style="display:none;">0</span></button>
       <button class="admin-nav-item" data-admin-tab="membros"><span>👥 Membros</span></button>
     </nav>
 
@@ -2194,6 +2214,20 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
         <div id="admin-mensagens-list"><div class="admin-empty-state">Carregando…</div></div>
       </div>
 
+      <div class="admin-panel" id="admin-panel-oracoes">
+        <div class="admin-page-title">Pedidos de Oração</div>
+        <div class="admin-page-sub">Pedidos individuais dos membros. Só o administrador vê de quem é cada pedido — o membro só vê o status do seu próprio pedido.</div>
+
+        <div class="admin-filter-row">
+          <button class="admin-filter-btn active" data-admin-oracao-filter="todas">Todos</button>
+          <button class="admin-filter-btn" data-admin-oracao-filter="pendentes">Pendentes</button>
+          <button class="admin-filter-btn" data-admin-oracao-filter="visualizados">Visualizados</button>
+          <button class="admin-filter-btn" data-admin-oracao-filter="respondidos">Respondidos</button>
+        </div>
+
+        <div id="admin-oracoes-list"><div class="admin-empty-state">Carregando…</div></div>
+      </div>
+
       <div class="admin-panel" id="admin-panel-membros">
         <div class="admin-page-title">Membros</div>
         <div class="admin-page-sub">Todos os usuários cadastrados no app, do mais recente para o mais antigo.</div>
@@ -2221,7 +2255,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       </div>
     </div>
 
-    <div class="nav-group">
+    <div class="nav-group nav-group-comum">
       <button class="nav-item active" data-view="home"><span class="ic">🏠</span>Início</button>
       <button class="nav-item" data-view="dashboard"><span class="ic">📊</span>Painel espiritual</button>
     </div>
@@ -2229,20 +2263,20 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
     <div class="nav-group">
       <div class="nav-label">Escrituras</div>
       <button class="nav-item" data-view="bible"><span class="ic">📖</span>Bíblia</button>
-      <button class="nav-item" data-view="devotional"><span class="ic">🙏</span>Devocional diário</button>
-      <button class="nav-item" data-view="plans"><span class="ic">📅</span>Plano de leitura</button>
-      <button class="nav-item" data-view="studies"><span class="ic">🕊️</span>Estudos bíblicos</button>
-      <button class="nav-item" data-view="ai"><span class="ic">✨</span>Perguntar à IA</button>
+      <button class="nav-item nav-item-comum" data-view="devotional"><span class="ic">🙏</span>Devocional diário</button>
+      <button class="nav-item nav-item-comum" data-view="plans"><span class="ic">📅</span>Plano de leitura</button>
+      <button class="nav-item nav-item-comum" data-view="studies"><span class="ic">🕊️</span>Estudos bíblicos</button>
+      <button class="nav-item nav-item-comum" data-view="ai"><span class="ic">✨</span>Perguntar à IA</button>
     </div>
 
     <div class="nav-group">
       <div class="nav-label">Minha jornada</div>
-      <button class="nav-item" data-view="notes"><span class="ic">📝</span>Minhas anotações</button>
-      <button class="nav-item" data-view="favorites"><span class="ic">❤️</span>Favoritos</button>
-      <button class="nav-item" data-view="prayer"><span class="ic">🙌</span>Oração</button>
-      <button class="nav-item" data-view="quiz"><span class="ic">🏆</span>Quiz bíblico</button>
-      <button class="nav-item" data-view="media"><span class="ic">🎧</span>Biblioteca multimídia</button>
-      <button class="nav-item" data-view="campaigns"><span class="ic">🔥</span>Campanhas Proféticas</button>
+      <button class="nav-item nav-item-comum" data-view="notes"><span class="ic">📝</span>Minhas anotações</button>
+      <button class="nav-item nav-item-comum" data-view="favorites"><span class="ic">❤️</span>Favoritos</button>
+      <button class="nav-item nav-item-comum" data-view="prayer"><span class="ic">🙌</span>Oração</button>
+      <button class="nav-item nav-item-comum" data-view="quiz"><span class="ic">🏆</span>Quiz bíblico</button>
+      <button class="nav-item nav-item-comum" data-view="media"><span class="ic">🎧</span>Biblioteca multimídia</button>
+      <button class="nav-item nav-item-comum" data-view="campaigns"><span class="ic">🔥</span>Campanhas Proféticas</button>
       <button class="nav-item" data-view="conversas"><span class="ic">💬</span>Conversas<span class="badge" id="conv-nav-badge" style="display:none;background:var(--rose);color:#fff;">0</span></button>
       <button class="nav-item" data-view="comunidade"><span class="ic">🏛️</span>Comunidade</button>
     </div>
@@ -2717,14 +2751,6 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
                   <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-canal-conversa-btn" hidden>＋</button>
                 </div>
                 <div id="comunidade-canais-conversa"><div class="comunidade-empty-mini">Carregando…</div></div>
-              </div>
-
-              <div class="card comunidade-card cu-card-canais-ipdf">
-                <div class="comunidade-card-head">
-                  <h3>Canais de IPDF</h3>
-                  <button class="btn btn-ghost btn-sm cu-admin-only" id="comunidade-add-canal-ipdf-btn" hidden>＋</button>
-                </div>
-                <div id="comunidade-canais-ipdf"><div class="comunidade-empty-mini">Carregando…</div></div>
               </div>
 
               <div class="card comunidade-card cu-card-topicos-forum">
@@ -3269,7 +3295,6 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
         <label class="field-label">Onde aparece</label>
         <select class="field-input" id="cf-grupo">
           <option value="conversa">Canais de Conversa</option>
-          <option value="ipdf">Canais de IPDF</option>
           <option value="forum">Tópicos do Fórum</option>
         </select>
       </div>
@@ -4441,13 +4466,37 @@ const CAMPAIGNS = [
     id:"vale-ossos-secos",
     status:"ativa",
     period:"Julho 2026",
-    title:"TÍTULO",
+    title:"Portas abertas com água",
     verseRef:"BASE BÍBLICA",
     verseText:"\"BASE BIBLICA\"",
     purpose:"ESCREVA O PROPÓSITO AQUI",
     schedule:"Terça 19:30h",
     image:"foto03.jpeg",
     emblem:"🦴"
+  },
+  {
+    id:"campanha-ativa-2",
+    status:"ativa",
+    period:"Julho 2026",
+    title:"Portas abertas com água",
+    verseRef:"BASE BÍBLICA",
+    verseText:"\"BASE BIBLICA\"",
+    purpose:"ESCREVA O PROPÓSITO AQUI",
+    schedule:"Terça 19:30h",
+    image:"foto03.jpeg",
+    emblem:"🕊️"
+  },
+  {
+    id:"campanha-ativa-3",
+    status:"ativa",
+    period:"Julho 2026",
+    title:"Portas abertas com água",
+    verseRef:"BASE BÍBLICA",
+    verseText:"\"BASE BIBLICA\"",
+    purpose:"ESCREVA O PROPÓSITO AQUI",
+    schedule:"Terça 19:30h",
+    image:"foto03.jpeg",
+    emblem:"⚡"
   },
  
   {
@@ -4650,6 +4699,7 @@ function switchView(view){
   document.body.classList.remove('no-scroll');
   if(view==='dashboard') renderCharts();
   if(view==='studies') renderStudies(state.studyFilter || 'Todos');
+  if(view==='prayer' && typeof carregarOracoesUsuario === 'function') carregarOracoesUsuario();
   if(view==='conversas'){
     if(typeof carregarConversas === 'function') carregarConversas();
     if(typeof iniciarPollingConversas === 'function') iniciarPollingConversas();
@@ -6434,10 +6484,9 @@ function renderPrayers(){
     div.innerHTML = `
       <div>
         <div>${escapeHtml(p.text)}</div>
-        <div class="prayer-date">${p.date}</div>
+        <div class="prayer-date">${p.date}${p.viewed ? ' · <span class="pill pill-sage" style="vertical-align:middle;">👀 Visualizado pela liderança</span>' : ''}</div>
       </div>
       <div class="prayer-actions">
-        <button class="btn btn-ghost btn-sm" data-answer="${p.id}">Marcar respondida</button>
         <button class="prayer-del-btn" data-delprayer="${p.id}" title="Excluir pedido">🗑️</button>
       </div>`;
     active.appendChild(div);
@@ -6457,19 +6506,6 @@ function renderPrayers(){
     answered.appendChild(div);
   });
 
-  active.querySelectorAll('[data-answer]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const p = state.prayers.find(pr=>pr.id===btn.dataset.answer);
-      if(!p) return;
-      p.answered = true;
-      renderPrayers();
-      toast('Glória a Deus! Oração respondida 🎉', '🙌');
-      if(p.dbId && state.sessionToken){
-        db.rpc('marcar_oracao_respondida', { p_token: state.sessionToken, p_oracao_id: p.dbId, p_respondida: true })
-          .then(({error})=>{ if(error) console.error('Erro ao marcar oração respondida:', error); });
-      }
-    });
-  });
   [active, answered].forEach(container=>{
     container.querySelectorAll('[data-delprayer]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
@@ -6498,7 +6534,7 @@ function renderPrayers(){
 document.getElementById('add-prayer-btn').addEventListener('click', async ()=>{
   const val = document.getElementById('new-prayer-text').value;
   if(!val.trim()) return toast('Escreva um pedido antes de adicionar', '⚠️');
-  const prayer = {id:'pr-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), dbId:null, text:val, date:new Date().toLocaleDateString('pt-BR'), answered:false};
+  const prayer = {id:'pr-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), dbId:null, text:val, date:new Date().toLocaleDateString('pt-BR'), answered:false, viewed:false};
   state.prayers.unshift(prayer);
   document.getElementById('new-prayer-text').value = '';
   renderPrayers();
@@ -6644,30 +6680,19 @@ renderAchievements();
    CAMPANHAS PROFÉTICAS
    ========================================================= */
 function renderCampaigns(){
-  const featured = CAMPAIGNS.find(c => c.status === 'ativa') || CAMPAIGNS[0];
+  const activeCampaigns = CAMPAIGNS.filter(c => c.status === 'ativa');
+  const featuredList = activeCampaigns.length ? activeCampaigns : (CAMPAIGNS[0] ? [CAMPAIGNS[0]] : []);
   const featuredEl = document.getElementById('campaign-featured');
-  if(featured && featuredEl){
-    featuredEl.innerHTML = `
-      <article class="campaign-hero">
-        <div class="campaign-hero-media" data-emblem="${featured.emblem || '🔥'}">
-          <img src="${featured.image}" alt="${escapeHtml(featured.title)}" onerror="this.remove(); this.parentElement.classList.add('media-empty');">
-        </div>
-        <div class="campaign-hero-body">
-          <span class="campaign-status">🔥 Campanha em andamento</span>
-          <h2 class="campaign-hero-title">${escapeHtml(featured.title)}</h2>
-          <span class="campaign-hero-ref">${escapeHtml(featured.period)} · Base bíblica: ${escapeHtml(featured.verseRef)}</span>
-          <p class="campaign-hero-verse">${escapeHtml(featured.verseText)}</p>
-          <p class="campaign-hero-purpose"><strong>Propósito:</strong> ${escapeHtml(featured.purpose)}</p>
-          ${featured.schedule ? `<p class="campaign-hero-schedule">🗓️ <strong>Dias de culto:</strong> ${escapeHtml(featured.schedule)}</p>` : ''}
-          <div class="campaign-hero-actions">
-            <button class="chip-btn" id="campaign-share-btn"><span class="em">🔗</span>Compartilhar base bíblica</button>
-          </div>
-        </div>
-      </article>`;
-    const shareBtn = document.getElementById('campaign-share-btn');
-    if(shareBtn){
-      shareBtn.addEventListener('click', ()=>{
-        const text = featured.verseText + ' — ' + featured.verseRef;
+  if(featuredEl){
+    featuredEl.innerHTML = featuredList
+      .map((c, idx) => renderCampaignHero(c, { withActions:true, index:idx }))
+      .join('');
+    featuredEl.querySelectorAll('[data-campaign-share]').forEach(btn=>{
+      const idx = Number(btn.getAttribute('data-campaign-share'));
+      const campaign = featuredList[idx];
+      if(!campaign) return;
+      btn.addEventListener('click', ()=>{
+        const text = campaign.verseText + ' — ' + campaign.verseRef;
         if(navigator.clipboard && navigator.clipboard.writeText){
           navigator.clipboard.writeText(text).then(
             ()=> toast('Base bíblica copiada', '🔗'),
@@ -6677,12 +6702,12 @@ function renderCampaigns(){
           toast('Base bíblica: ' + text, '🔗');
         }
       });
-    }
+    });
   }
 
   const timeline = document.getElementById('campaign-timeline');
   if(!timeline) return;
-  const past = CAMPAIGNS.filter(c => c !== featured);
+  const past = CAMPAIGNS.filter(c => !featuredList.includes(c));
 
   const toggleBtn = document.getElementById('campaign-past-toggle');
   const toggleLabel = document.getElementById('campaign-past-toggle-label');
@@ -7437,8 +7462,14 @@ function syncDashSurpriseFavBtn(){
    senha só redirecionam de volta para a tela de login.
    ========================================================= */
 
-/* Retorna o HTML do hero de uma campanha (usado na tela pública) */
-function renderCampaignHero(campaign){
+/* Retorna o HTML do hero de uma campanha (usado na página de campanhas e na tela pública).
+   Passe { withActions:true, index:N } para incluir o botão de compartilhar (N identifica o painel). */
+function renderCampaignHero(campaign, opts){
+  opts = opts || {};
+  const actionsHtml = opts.withActions ? `
+          <div class="campaign-hero-actions">
+            <button class="chip-btn" data-campaign-share="${opts.index != null ? opts.index : 0}"><span class="em">🔗</span>Compartilhar base bíblica</button>
+          </div>` : '';
   return `
     <article class="campaign-hero">
       <div class="campaign-hero-media" data-emblem="${campaign.emblem || '🔥'}">
@@ -7450,7 +7481,7 @@ function renderCampaignHero(campaign){
         <span class="campaign-hero-ref">${escapeHtml(campaign.period)} · Base bíblica: ${escapeHtml(campaign.verseRef)}</span>
         <p class="campaign-hero-verse">${escapeHtml(campaign.verseText)}</p>
         <p class="campaign-hero-purpose"><strong>Propósito:</strong> ${escapeHtml(campaign.purpose)}</p>
-        ${campaign.schedule ? `<p class="campaign-hero-schedule">🗓️ <strong>Dias de culto:</strong> ${escapeHtml(campaign.schedule)}</p>` : ''}
+        ${campaign.schedule ? `<p class="campaign-hero-schedule">🗓️ <strong>Dias de culto:</strong> ${escapeHtml(campaign.schedule)}</p>` : ''}${actionsHtml}
       </div>
     </article>`;
 }
@@ -7575,7 +7606,9 @@ function renderSessions(lista){
    ========================================================= */
 let adminMensagens = [];
 let adminMembros = [];
+let adminOracoes = [];
 let adminFiltroMensagens = 'todas';
+let adminFiltroOracoes = 'todas';
 
 async function carregarPainelAdmin(){
   if(!state.sessionToken) return;
@@ -7583,6 +7616,7 @@ async function carregarPainelAdmin(){
   await Promise.all([
     carregarAdminEstatisticas(),
     carregarAdminMensagens(),
+    carregarAdminOracoes(),
     carregarAdminMembros()
   ]);
 }
@@ -7667,6 +7701,120 @@ function renderAdminMensagens(){
   });
 }
 
+async function carregarAdminOracoes(){
+  const { data, error } = await db.rpc('admin_listar_oracoes', { p_token: state.sessionToken });
+  if(error){ console.error('Erro ao carregar pedidos de oração:', error); return; }
+  adminOracoes = data || [];
+  renderAdminOracoes();
+
+  const pendentes = adminOracoes.filter(o => !o.visualizada).length;
+  const badge = document.getElementById('admin-oracao-badge');
+  if(badge){
+    badge.textContent = pendentes;
+    badge.style.display = pendentes > 0 ? 'inline-block' : 'none';
+  }
+}
+
+function statusOracao(o){
+  if(o.respondida) return 'respondida';
+  if(o.visualizada) return 'visualizada';
+  return 'pendente';
+}
+
+function renderAdminOracoes(){
+  const list = document.getElementById('admin-oracoes-list');
+  if(!list) return;
+
+  let itens = adminOracoes;
+  if(adminFiltroOracoes === 'pendentes') itens = itens.filter(o => statusOracao(o) === 'pendente');
+  if(adminFiltroOracoes === 'visualizados') itens = itens.filter(o => statusOracao(o) === 'visualizada');
+  if(adminFiltroOracoes === 'respondidos') itens = itens.filter(o => statusOracao(o) === 'respondida');
+
+  if(!itens.length){
+    list.innerHTML = '<div class="admin-empty-state">Nenhum pedido de oração por aqui ainda. 🕯️</div>';
+    return;
+  }
+
+  list.innerHTML = itens.map(o => {
+    const status = statusOracao(o);
+    const pill = status === 'respondida' ? '<span class="pill pill-sage">✓ Respondido</span>'
+      : status === 'visualizada' ? '<span class="pill pill-sage">👀 Visualizado</span>'
+      : '<span class="pill pill-gold">Pendente</span>';
+    const acoes = status === 'pendente'
+      ? `<button class="btn btn-primary btn-sm" data-oracao-ver="${o.id}">👁️ Marcar como visualizado</button>`
+      : status === 'visualizada'
+      ? `<button class="btn btn-primary btn-sm" data-oracao-responder="${o.id}">✅ Marcar como respondido</button>
+         <button class="btn btn-ghost btn-sm" data-oracao-desver="${o.id}">↺ Marcar como pendente</button>`
+      : `<button class="btn btn-ghost btn-sm" data-oracao-reabrir="${o.id}">↺ Reabrir pedido</button>`;
+    return `
+    <div class="admin-msg-item is-${status === 'respondida' ? 'respondida' : status === 'visualizada' ? 'visualizada' : 'pendente'}">
+      <div class="admin-msg-head">
+        <div>
+          <div class="admin-msg-user">${escapeHtml(o.nome_exibicao || o.nome_usuario)} <span class="muted" style="font-weight:400;">· ${escapeHtml(o.nome_usuario)}</span></div>
+          <div class="admin-msg-meta">${new Date(o.criado_em).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'})}</div>
+        </div>
+        ${pill}
+      </div>
+      <div class="admin-msg-text">${escapeHtml(o.texto)}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">${acoes}</div>
+    </div>`;
+  }).join('');
+
+  const atualizarLocal = (id, patch) => {
+    const o = adminOracoes.find(x => x.id === id);
+    if(o) Object.assign(o, patch);
+    renderAdminOracoes();
+    const pendentes = adminOracoes.filter(x => !x.visualizada).length;
+    const badge = document.getElementById('admin-oracao-badge');
+    if(badge){ badge.textContent = pendentes; badge.style.display = pendentes > 0 ? 'inline-block' : 'none'; }
+  };
+
+  list.querySelectorAll('[data-oracao-ver]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.oracaoVer;
+      btn.disabled = true;
+      const { error } = await db.rpc('admin_marcar_oracao_visualizada', { p_token: state.sessionToken, p_oracao_id: id, p_visualizada: true });
+      btn.disabled = false;
+      if(error){ console.error('Erro ao marcar pedido como visualizado:', error); toast('Não foi possível atualizar o pedido', '⚠️'); return; }
+      atualizarLocal(id, { visualizada: true });
+      toast('Pedido marcado como visualizado', '👁️');
+    });
+  });
+  list.querySelectorAll('[data-oracao-desver]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.oracaoDesver;
+      btn.disabled = true;
+      const { error } = await db.rpc('admin_marcar_oracao_visualizada', { p_token: state.sessionToken, p_oracao_id: id, p_visualizada: false });
+      btn.disabled = false;
+      if(error){ console.error('Erro ao atualizar pedido:', error); toast('Não foi possível atualizar o pedido', '⚠️'); return; }
+      atualizarLocal(id, { visualizada: false });
+      toast('Pedido marcado como pendente novamente', '↺');
+    });
+  });
+  list.querySelectorAll('[data-oracao-responder]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.oracaoResponder;
+      btn.disabled = true;
+      const { error } = await db.rpc('admin_marcar_oracao_respondida', { p_token: state.sessionToken, p_oracao_id: id, p_respondida: true });
+      btn.disabled = false;
+      if(error){ console.error('Erro ao marcar pedido como respondido:', error); toast('Não foi possível atualizar o pedido', '⚠️'); return; }
+      atualizarLocal(id, { respondida: true, visualizada: true });
+      toast('Glória a Deus! Pedido marcado como respondido 🙌', '✅');
+    });
+  });
+  list.querySelectorAll('[data-oracao-reabrir]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.oracaoReabrir;
+      btn.disabled = true;
+      const { error } = await db.rpc('admin_marcar_oracao_respondida', { p_token: state.sessionToken, p_oracao_id: id, p_respondida: false });
+      btn.disabled = false;
+      if(error){ console.error('Erro ao reabrir pedido:', error); toast('Não foi possível atualizar o pedido', '⚠️'); return; }
+      atualizarLocal(id, { respondida: false });
+      toast('Pedido reaberto', '↺');
+    });
+  });
+}
+
 async function carregarAdminMembros(){
   const { data, error } = await db.rpc('admin_listar_membros', { p_token: state.sessionToken });
   if(error){ console.error('Erro ao carregar membros:', error); return; }
@@ -7725,6 +7873,14 @@ function adminMemberRowHtml(m){
       adminFiltroMensagens = btn.dataset.adminFilter;
       document.querySelectorAll('[data-admin-filter]').forEach(b=>b.classList.toggle('active', b===btn));
       renderAdminMensagens();
+    });
+  });
+
+  document.querySelectorAll('[data-admin-oracao-filter]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      adminFiltroOracoes = btn.dataset.adminOracaoFilter;
+      document.querySelectorAll('[data-admin-oracao-filter]').forEach(b=>b.classList.toggle('active', b===btn));
+      renderAdminOracoes();
     });
   });
 
@@ -8189,18 +8345,58 @@ document.getElementById('contact-search-input')?.addEventListener('input', (e)=>
   }, 350);
 });
 
-/* ---- Compartilhar versículo com um contato ---- */
-function abrirCompartilharVersiculo(ref, texto){
+/* ---- Compartilhar versículo com um contato ou canal ---- */
+/* Regra de quem pode receber versículo por canal: membros comuns só no
+   canal Estudo Bíblico; o admin pode enviar para qualquer canal que
+   aparece no mural da Comunidade, exceto o Testemunhos (esse canal
+   não recebe compartilhamento de versículo). */
+function canalAbertoParaCompartilharVersiculo(canal){
+  const nome = (canal.nome || '').trim().toLowerCase();
+  return canal.emoji === '📖' || nome === 'estudo bíblico';
+}
+
+function canalEhTestemunhos(canal){
+  const nome = (canal.nome || '').trim().toLowerCase();
+  return canal.emoji === '🙌' || nome === 'testemunhos';
+}
+
+async function abrirCompartilharVersiculo(ref, texto){
   const overlay = document.getElementById('verse-share-overlay');
   document.getElementById('verse-share-preview').textContent = '"' + texto + '" — ' + ref;
   const resultsEl = document.getElementById('verse-share-results');
 
   if(!state.sessionToken){
     resultsEl.innerHTML = '<p class="muted" style="font-size:.85rem;">Entre na sua conta para compartilhar com alguém.</p>';
-  } else if(!convContatos.length){
-    resultsEl.innerHTML = '<p class="muted" style="font-size:.85rem;">Você ainda não adicionou nenhum contato. Vá em "Conversas" e adicione alguém primeiro.</p>';
-  } else {
-    resultsEl.innerHTML = convContatos.map(c => `
+    overlay.classList.add('show');
+    return;
+  }
+
+  resultsEl.innerHTML = '<p class="muted" style="font-size:.85rem;">Carregando…</p>';
+  overlay.classList.add('show');
+
+  if(!comunidadeCanais.length) await carregarComunidadeCanais();
+
+  const isAdmin = !!(state.perfil && state.perfil.admin);
+  const canaisAlvo = isAdmin
+    ? comunidadeCanais.filter(c => c.grupo !== 'ipdf' && !canalEhTestemunhos(c))
+    : comunidadeCanais.filter(canalAbertoParaCompartilharVersiculo);
+
+  let html = '';
+
+  if(canaisAlvo.length){
+    html += `<div class="verse-share-section-label">Canais</div>` + canaisAlvo.map(c => `
+      <div class="contact-result-row" data-share-canal="${c.id}">
+        <div class="conv-avatar" style="width:34px;height:34px;font-size:.95rem;">${escapeHtml(c.emoji || '💬')}</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:.88rem;color:var(--ink);">${escapeHtml(c.nome)}</div>
+        </div>
+        <span class="btn btn-primary btn-sm">Enviar</span>
+      </div>
+    `).join('');
+  }
+
+  if(convContatos.length){
+    html += `<div class="verse-share-section-label">Contatos</div>` + convContatos.map(c => `
       <div class="contact-result-row" data-share-to="${c.id}">
         <div class="conv-avatar" style="width:34px;height:34px;font-size:.8rem;${c.avatar_gradient ? 'background:'+c.avatar_gradient+';' : ''}">${escapeHtml(c.avatar_emoji || (c.nome_exibicao||c.nome_usuario).charAt(0).toUpperCase())}</div>
         <div style="flex:1;">
@@ -8209,20 +8405,39 @@ function abrirCompartilharVersiculo(ref, texto){
         <span class="btn btn-primary btn-sm">Enviar</span>
       </div>
     `).join('');
-    resultsEl.querySelectorAll('[data-share-to]').forEach(row=>{
-      row.addEventListener('click', async ()=>{
-        const id = row.dataset.shareTo;
-        const { error } = await db.rpc('enviar_mensagem_direta', {
-          p_token: state.sessionToken, p_destinatario_id: id, p_texto: null,
-          p_referencia_versiculo: ref, p_texto_versiculo: texto
-        });
-        if(error){ console.error('Erro ao compartilhar versículo:', error); toast('Não foi possível compartilhar', '⚠️'); return; }
-        toast('Versículo compartilhado! 📖', '🔗');
-        overlay.classList.remove('show');
-      });
-    });
   }
-  overlay.classList.add('show');
+
+  if(!html){
+    resultsEl.innerHTML = '<p class="muted" style="font-size:.85rem;">Você ainda não adicionou nenhum contato. Vá em "Conversas" e adicione alguém primeiro.</p>';
+  } else {
+    resultsEl.innerHTML = html;
+  }
+
+  resultsEl.querySelectorAll('[data-share-to]').forEach(row=>{
+    row.addEventListener('click', async ()=>{
+      const id = row.dataset.shareTo;
+      const { error } = await db.rpc('enviar_mensagem_direta', {
+        p_token: state.sessionToken, p_destinatario_id: id, p_texto: null,
+        p_referencia_versiculo: ref, p_texto_versiculo: texto
+      });
+      if(error){ console.error('Erro ao compartilhar versículo:', error); toast('Não foi possível compartilhar', '⚠️'); return; }
+      toast('Versículo compartilhado! 📖', '🔗');
+      overlay.classList.remove('show');
+    });
+  });
+
+  resultsEl.querySelectorAll('[data-share-canal]').forEach(row=>{
+    row.addEventListener('click', async ()=>{
+      const id = row.dataset.shareCanal;
+      const { error } = await db.rpc('enviar_mensagem_canal', {
+        p_token: state.sessionToken, p_canal_id: id, p_texto: null,
+        p_referencia_versiculo: ref, p_texto_versiculo: texto
+      });
+      if(error){ console.error('Erro ao compartilhar versículo no canal:', error); toast('Não foi possível compartilhar', '⚠️'); return; }
+      toast('Versículo compartilhado no canal! 📖', '🔗');
+      overlay.classList.remove('show');
+    });
+  });
 }
 document.getElementById('verse-share-close-btn')?.addEventListener('click', ()=>{
   document.getElementById('verse-share-overlay').classList.remove('show');
@@ -8434,6 +8649,11 @@ async function carregarDadosDoUsuario(){
     if(typeof renderNoteBlocks === 'function') renderNoteBlocks();
   }
 
+  await carregarOracoesUsuario();
+}
+
+async function carregarOracoesUsuario(){
+  if(!state.sessionToken) return;
   const { data: oracoes, error: errOracoes } = await db.rpc('listar_oracoes', { p_token: state.sessionToken });
   if(errOracoes){
     console.error('Não foi possível carregar as orações:', errOracoes);
@@ -8443,7 +8663,8 @@ async function carregarDadosDoUsuario(){
       dbId: o.id,
       text: o.texto,
       date: new Date(o.criado_em).toLocaleDateString('pt-BR'),
-      answered: o.respondida
+      answered: o.respondida,
+      viewed: o.visualizada
     }));
     if(typeof renderPrayers === 'function') renderPrayers();
     if(typeof renderDashboardStats === 'function') renderDashboardStats();
@@ -8470,11 +8691,21 @@ let presencaHeartbeatTimer = null;
 const MESES_PT = ['','janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
 /* ---- Controla quem vê os botões de administrador (Comunidade + Painel Admin) ---- */
+const VIEWS_PERMITIDAS_ADMIN = ['bible', 'conversas', 'comunidade'];
 function aplicarPermissoesAdmin(){
   const isAdmin = !!(state.perfil && state.perfil.admin);
   document.querySelectorAll('.cu-admin-only').forEach(el => { el.hidden = !isAdmin; });
   const navAdminGroup = document.getElementById('nav-admin-group');
   if(navAdminGroup) navAdminGroup.hidden = !isAdmin;
+
+  // Administrador só navega por Bíblia, Conversas e Comunidade — o resto do
+  // site (Início, Painel espiritual, Devocional, Planos, Estudos, IA, Notas,
+  // Favoritos, Oração, Quiz, Biblioteca e Campanhas) é exclusivo dos membros comuns.
+  document.querySelectorAll('.nav-item-comum').forEach(el => { el.hidden = isAdmin; });
+  document.querySelectorAll('.nav-group-comum').forEach(el => { el.hidden = isAdmin; });
+  if(isAdmin && state.view && !VIEWS_PERMITIDAS_ADMIN.includes(state.view) && typeof switchView === 'function'){
+    switchView('comunidade');
+  }
 }
 
 /* ---- Presença ("Membros Online") — avisa o banco a cada 60s que este usuário está ativo ---- */
@@ -8548,12 +8779,14 @@ async function carregarComunidadeMembrosOnline(){
   renderComunidadeMembrosOnline(data || []);
 }
 
-/* ---- Só o canal "Testemunhos" aceita mensagens de qualquer membro;
-   todos os demais canais de conversa são somente leitura para quem não é admin ---- */
+/* ---- Só os canais "Testemunhos" e "Estudo Bíblico" aceitam mensagens de
+   qualquer membro; todos os demais canais de conversa são somente leitura
+   para quem não é admin ---- */
 function canalComunidadeAbertoParaTodos(canal){
   if(!canal) return false;
   const nome = (canal.nome || '').trim().toLowerCase();
-  return canal.emoji === '🙌' || nome === 'testemunhos';
+  return canal.emoji === '🙌' || nome === 'testemunhos'
+      || canal.emoji === '📖' || nome === 'estudo bíblico';
 }
 
 /* ---- Canais de conversa (listas + abertura do chat em grupo) ---- */
@@ -8572,9 +8805,6 @@ function renderComunidadeCanais(){
 
   const conversaEl = document.getElementById('comunidade-canais-conversa');
   if(conversaEl) conversaEl.innerHTML = grupos.conversa.length ? grupos.conversa.map(itemHtml).join('') : '<div class="comunidade-empty-mini">Nenhum canal ainda.</div>';
-
-  const ipdfEl = document.getElementById('comunidade-canais-ipdf');
-  if(ipdfEl) ipdfEl.innerHTML = grupos.ipdf.length ? grupos.ipdf.map(itemHtml).join('') : '<div class="comunidade-empty-mini">Nenhum canal ainda.</div>';
 
   const forumEl = document.getElementById('comunidade-topicos-forum');
   if(forumEl){
@@ -8662,14 +8892,57 @@ function renderMensagensCanal(mensagens){
     return;
   }
   const meuId = state.perfil && state.perfil.id;
+  const isAdmin = !!(state.perfil && state.perfil.admin);
   body.innerHTML = mensagens.map(m => {
     const minha = m.usuario_id === meuId;
+    const podeApagar = minha || isAdmin;
     const hora = new Date(m.criado_em).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
-    return `<div class="msg-row ${minha ? 'enviada' : 'recebida'}">
-      ${!minha ? `<div class="comunidade-canal-msg-autor">${escapeHtml(m.nome_exibicao || 'Membro')}</div>` : ''}
-      <div class="msg ${minha ? 'enviada' : 'recebida'}">${escapeHtml(m.texto)}<div class="msg-time">${hora}</div></div>
+    const versiculoHtml = m.texto_versiculo
+      ? `<div class="msg-verse-share">
+           <div class="msg-verse-ref">📖 ${escapeHtml(m.referencia_versiculo || '')}</div>
+           "${escapeHtml(m.texto_versiculo)}"
+           <button class="btn btn-ghost btn-sm msg-verse-goto" data-goto-verse="${escapeHtml(m.referencia_versiculo || '')}" style="margin-top:8px;">📖 Ir até o capítulo/versículo</button>
+         </div>`
+      : '';
+    return `<div class="msg-row ${minha ? 'enviada' : 'recebida'} msg-row-wrap comunidade-canal-msg-row" data-msg-id="${m.id}">
+      <div class="conv-avatar comunidade-canal-msg-avatar" style="width:30px;height:30px;font-size:.78rem;${m.avatar_gradient ? 'background:'+m.avatar_gradient+';' : ''}">${escapeHtml(m.avatar_emoji || (m.nome_exibicao || '?').charAt(0).toUpperCase())}</div>
+      <div class="comunidade-canal-msg-col">
+        <div class="comunidade-canal-msg-autor">${escapeHtml(m.nome_exibicao || 'Membro')}</div>
+        <div class="msg ${minha ? 'enviada' : 'recebida'}">${versiculoHtml}${m.texto ? escapeHtml(m.texto) : ''}<div class="msg-time">${hora}</div></div>
+        ${podeApagar ? `<button class="msg-delete-btn" data-apagar-msg-canal="${m.id}">🗑 Apagar</button>` : ''}
+      </div>
     </div>`;
   }).join('');
+
+  body.querySelectorAll('[data-goto-verse]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      if(typeof goToFavoriteRef === 'function') goToFavoriteRef(btn.dataset.gotoVerse);
+    });
+  });
+
+  body.querySelectorAll('[data-apagar-msg-canal]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const id = btn.dataset.apagarMsgCanal;
+      openConfirm({
+        title: 'Apagar mensagem?',
+        text: 'Tem certeza que deseja apagar esta mensagem? Essa ação não pode ser desfeita.',
+        confirmLabel: 'Apagar', cancelLabel: 'Cancelar',
+        onConfirm: async ()=>{
+          const { error } = await db.rpc('excluir_mensagem_canal', { p_token: state.sessionToken, p_mensagem_id: id });
+          if(error){ console.error('Erro ao apagar mensagem do canal:', error); toast('Não foi possível apagar a mensagem', '⚠️'); return; }
+          const row = body.querySelector(`[data-msg-id="${id}"]`);
+          if(row) row.remove();
+          if(!body.querySelector('.msg-row-wrap')){
+            body.innerHTML = '<div class="admin-empty-state">Nenhuma mensagem ainda — comece a conversa! 👋</div>';
+          }
+          toast('Mensagem apagada', '🗑️');
+        }
+      });
+    });
+  });
+
   body.scrollTop = body.scrollHeight;
 }
 
@@ -9172,7 +9445,6 @@ document.getElementById('comunidade-add-testemunho-btn')?.addEventListener('clic
 document.getElementById('comunidade-add-culto-btn')?.addEventListener('click', ()=> abrirFormularioComunidade('culto'));
 document.getElementById('comunidade-add-aniversariante-btn')?.addEventListener('click', ()=> abrirFormularioComunidade('aniversariante'));
 document.getElementById('comunidade-add-canal-conversa-btn')?.addEventListener('click', ()=> abrirFormularioCanalComGrupo('conversa'));
-document.getElementById('comunidade-add-canal-ipdf-btn')?.addEventListener('click', ()=> abrirFormularioCanalComGrupo('ipdf'));
 document.getElementById('comunidade-add-canal-forum-btn')?.addEventListener('click', ()=> abrirFormularioCanalComGrupo('forum'));
 
 /* ---- Chat do canal: envio de mensagem e botão de voltar ---- */
@@ -9459,11 +9731,12 @@ document.getElementById('admin-back-to-site-btn')?.addEventListener('click', ()=
 
   /* ---- Tela pública de campanha (visitante sem login) ---- */
   function openPublicCampaign(){
-    // Renderiza a campanha ativa na tela pública
-    const featured = CAMPAIGNS.find(c => c.status === 'ativa') || CAMPAIGNS[0];
+    // Renderiza todas as campanhas ativas na tela pública
+    const activeCampaigns = CAMPAIGNS.filter(c => c.status === 'ativa');
+    const featuredList = activeCampaigns.length ? activeCampaigns : (CAMPAIGNS[0] ? [CAMPAIGNS[0]] : []);
     const container = document.getElementById('pub-campaign-featured');
-    if(!container || !featured) return;
-    container.innerHTML = renderCampaignHero(featured);
+    if(!container || !featuredList.length) return;
+    container.innerHTML = featuredList.map(c => renderCampaignHero(c)).join('');
     // Exibe a tela pública
     document.body.classList.add('show-public-campaign');
   }
