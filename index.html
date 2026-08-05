@@ -547,9 +547,12 @@ body.show-admin #admin-shell{display:block;}
   .auth-bg-video{display:none;}
 }
 
-/* Em telas de toque (celular/tablet), os orbes com blur animando continuamente
-   também pesam bastante para renderizar; deixamos parados e com blur mais leve. */
+/* Em telas de toque (celular/tablet), o vídeo continua tocando, mas tiramos o
+   filtro CSS (saturate/contrast) que o navegador recalcularia a cada frame —
+   isso sozinho já pesa bastante numa GPU de celular. Os orbes com blur
+   animando continuamente também custam caro; deixamos parados e mais leves. */
 @media(max-width:900px),(pointer:coarse){
+  .auth-bg-video{filter:none;}
   .auth-orb{animation:none;filter:blur(38px);}
   .auth-orb-3{display:none;}
 }
@@ -1889,29 +1892,39 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <source src="azeite-bg.mp4" type="video/mp4">
     </video>
     <script>
-      /* O vídeo de fundo (decodificação + filtro CSS a cada frame) é pesado
-         para GPUs de celular/tablet e travava a tela de login nesses aparelhos,
-         mesmo fluindo bem no PC. Por isso ele só é carregado/reproduzido em
-         telas "de desktop" (ponteiro fino e largura maior); em telas de toque,
-         em conexões lentas/"Economizar dados" ou com "reduzir movimento"
-         ativado, mantemos só o poster + degradê, que é leve e visualmente
-         equivalente parado. */
+      /* O vídeo continua tocando em qualquer aparelho, inclusive celular/tablet.
+         O que travava a abertura era o navegador tentar baixar/decodificar o
+         vídeo (preload="auto" + autoplay) ao mesmo tempo em que o app inteiro
+         está sendo interpretado — no celular isso disputa a mesma CPU e trava
+         a tela. Agora só damos o "start" do vídeo depois que a página termina
+         de carregar e a CPU fica ociosa, então a tela de login aparece rápido
+         e o vídeo entra em seguida, sem competir com o boot do app. */
       (function(){
         try{
           var v = document.getElementById('auth-bg-video');
           if(!v) return;
           var conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
           var saveData = !!(conn && (conn.saveData || /(^|\b)(slow-2g|2g)($|\b)/.test(conn.effectiveType || '')));
-          var isTouch = window.matchMedia('(pointer:coarse)').matches || window.matchMedia('(max-width:900px)').matches;
           var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-          if(saveData || isTouch || reducedMotion){
+          if(saveData || reducedMotion){
+            // Só nesses dois casos (dado limitado ou acessibilidade) o vídeo fica desligado.
             v.querySelectorAll('source').forEach(function(s){ s.remove(); });
             v.style.display = 'none';
-          }else{
-            v.preload = 'auto';
-            v.setAttribute('autoplay','');
-            v.play().catch(function(){});
+            return;
           }
+          var startVideo = function(){
+            try{
+              v.preload = 'auto';
+              v.setAttribute('autoplay','');
+              v.play().catch(function(){});
+            }catch(e){}
+          };
+          var scheduleStart = function(){
+            if(window.requestIdleCallback){ requestIdleCallback(startVideo, {timeout:1500}); }
+            else{ setTimeout(startVideo, 300); }
+          };
+          if(document.readyState === 'complete'){ scheduleStart(); }
+          else{ window.addEventListener('load', scheduleStart); }
         }catch(e){}
       })();
     </script>
