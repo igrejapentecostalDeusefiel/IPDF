@@ -305,6 +305,73 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em;
 .page-title{font-size:2rem;font-weight:600;margin-top:4px;}
 .page-sub{color:var(--text-dim);margin-top:6px;font-size:.98rem;max-width:60ch;overflow-wrap:anywhere;}
 
+/* ---------------- Page head ----------------
+   Signature header used at the top of every inner screen: an
+   illuminated icon medallion (echoing the "Lâmpada" glow motif),
+   a gold rule + eyebrow, a Fraunces display title and a soft
+   gradient hairline closing the section. */
+.page-head{
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  gap:20px;
+  padding-bottom:26px;
+  margin-bottom:28px;
+  isolation:isolate;
+}
+.page-head::before{
+  content:"";
+  position:absolute;
+  top:-36px;left:-28px;
+  width:240px;height:180px;
+  background:radial-gradient(170px 130px at 26% 34%, var(--ph-tone, var(--gold-soft)) 0%, transparent 72%);
+  opacity:.65;
+  filter:blur(1px);
+  z-index:-1;
+  pointer-events:none;
+}
+.page-head::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg, var(--gold) 0%, var(--line) 22%, var(--line) 78%, transparent 100%);
+  opacity:.6;
+}
+.page-head-icon{
+  flex-shrink:0;
+  width:58px;height:58px;
+  border-radius:17px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.55rem;
+  background:var(--ph-tone, var(--gold-soft));
+  box-shadow:var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.page-head.is-ink .page-head-icon{
+  background:linear-gradient(150deg, var(--culto-card-start) 0%, var(--culto-card-end) 100%);
+  color:var(--culto-card-text);
+  box-shadow:var(--shadow-sm);
+}
+.page-head-text{min-width:0;flex:1;padding-top:3px;}
+.page-head-eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;
+}
+.page-head-eyebrow::before{content:"";width:18px;height:1px;flex-shrink:0;background:linear-gradient(90deg,var(--gold),transparent);}
+.page-head-title{
+  font-size:clamp(1.6rem, 1.15rem + 1.9vw, 2.2rem);
+  font-weight:600;
+  margin-top:6px;
+  line-height:1.15;
+}
+.page-head-sub{color:var(--text-dim);margin-top:9px;font-size:.98rem;max-width:60ch;line-height:1.65;overflow-wrap:anywhere;}
+
+@media(max-width:640px){
+  .page-head{gap:13px;padding-bottom:20px;margin-bottom:22px;}
+  .page-head::before{display:none;}
+  .page-head-icon{width:46px;height:46px;border-radius:14px;font-size:1.2rem;}
+  .page-head-title{font-size:1.4rem;}
+  .page-head-sub{font-size:.88rem;}
+}
+
 /* Cards */
 .card{
   background:var(--paper);border:1px solid var(--line);
@@ -2126,7 +2193,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <div class="auth-panel" id="auth-campaign">
         <div class="auth-eyebrow">Campanha da Igreja</div>
         <h1 class="auth-title" style="font-size:1.45rem;">Campanhas Proféticas</h1>
-        <p class="auth-sub">Acompanhe a campanha em andamento da IPDF, mesmo sem fazer login.</p>
+        <p class="auth-sub">Acompanhe as campanhas em andamento da IPDF, mesmo sem fazer login.</p>
 
         <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px;">
           <button type="button" class="btn auth-submit" id="auth-view-campaign-btn">
@@ -2159,11 +2226,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   </header>
 
   <div class="pub-camp-content">
-    <div class="pub-camp-eyebrow">Direcionamento espiritual</div>
-    <h1 class="pub-camp-title">Campanhas Proféticas</h1>
-    <p class="pub-camp-sub">Acompanhe a campanha em andamento da nossa igreja.</p>
-
-    <div class="pub-camp-divider"></div>
+    <div class="page-head" style="--ph-tone:color-mix(in srgb, var(--rose) 40%, var(--paper));">
+      <div class="page-head-icon">🔥</div>
+      <div class="page-head-text">
+        <div class="page-head-eyebrow">Direcionamento espiritual</div>
+        <h1 class="page-head-title">Campanhas Proféticas</h1>
+        <p class="page-head-sub">Acompanhe a campanha em andamento da nossa igreja.</p>
+      </div>
+    </div>
 
     <div id="pub-campaign-featured"></div>
 
@@ -2405,9 +2475,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ DASHBOARD ============ -->
       <section class="view" id="view-dashboard">
-        <div class="eyebrow">Painel espiritual</div>
-        <h1 class="page-title">Sua caminhada com a Palavra</h1>
-        <p class="page-sub">Acompanhe seu ritmo devocional e veja como sua constância tem crescido.</p>
+        <div class="page-head" style="--ph-tone:var(--gold-soft);">
+          <div class="page-head-icon">📊</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Painel espiritual</div>
+            <h1 class="page-head-title">Sua caminhada com a Palavra</h1>
+            <p class="page-head-sub">Acompanhe seu ritmo devocional e veja como sua constância tem crescido.</p>
+          </div>
+        </div>
 
         <div class="grid grid-4" style="margin-top:26px;">
           <div class="card stat-card"><div class="stat-ic" style="background:var(--sage-soft)">🕊️</div><div class="stat-num" id="dash-stat-studies">0 de 0</div><div class="stat-label">estudos concluídos</div></div>
@@ -2440,9 +2515,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ BIBLE ============ -->
       <section class="view" id="view-bible">
-        <div class="eyebrow">Escrituras</div>
-        <h1 class="page-title">Bíblia Sagrada</h1>
-        <p class="page-sub">Navegue por livro e capítulo. Toque em um versículo para favoritar, anotar ou compartilhar.</p>
+        <div class="page-head" style="--ph-tone:var(--gold-soft);">
+          <div class="page-head-icon">📖</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Escrituras</div>
+            <h1 class="page-head-title">Bíblia Sagrada</h1>
+            <p class="page-head-sub">Navegue por livro e capítulo. Toque em um versículo para favoritar, anotar ou compartilhar.</p>
+          </div>
+        </div>
 
         <div class="bible-layout" style="margin-top:22px;">
           <div>
@@ -2479,9 +2559,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ AI ============ -->
       <section class="view" id="view-ai">
-        <div class="eyebrow">Assistente</div>
-        <h1 class="page-title">Perguntar à IA</h1>
-        <p class="page-sub">Tire dúvidas, peça explicações de versículos ou gere um devocional — tudo fundamentado nas Escrituras.</p>
+        <div class="page-head is-ink" style="--ph-tone:var(--gold-soft);">
+          <div class="page-head-icon">✨</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Assistente</div>
+            <h1 class="page-head-title">Perguntar à IA</h1>
+            <p class="page-head-sub">Tire dúvidas, peça explicações de versículos ou gere um devocional — tudo fundamentado nas Escrituras.</p>
+          </div>
+        </div>
 
         <div class="chat-wrap" style="margin-top:22px;">
           <div class="chat-head">
@@ -2506,9 +2591,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ DEVOTIONAL ============ -->
       <section class="view" id="view-devotional">
-        <div class="eyebrow">Vida devocional</div>
-        <h1 class="page-title">Devocional de hoje</h1>
-        <p class="page-sub" id="devo-date"></p>
+        <div class="page-head" style="--ph-tone:var(--sage-soft);">
+          <div class="page-head-icon">🙏</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Vida devocional</div>
+            <h1 class="page-head-title">Devocional de hoje</h1>
+            <p class="page-head-sub" id="devo-date"></p>
+          </div>
+        </div>
 
         <div class="grid grid-2" style="margin-top:22px;align-items:start;">
           <div class="card">
@@ -2552,9 +2642,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ PLANS ============ -->
       <section class="view" id="view-plans">
-        <div class="eyebrow">Constância</div>
-        <h1 class="page-title">Planos de leitura</h1>
-        <p class="page-sub">Escolha um plano guiado ou monte o seu próprio ritmo de leitura.</p>
+        <div class="page-head" style="--ph-tone:var(--gold-soft);">
+          <div class="page-head-icon">📅</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Constância</div>
+            <h1 class="page-head-title">Planos de leitura</h1>
+            <p class="page-head-sub">Escolha um plano guiado ou monte o seu próprio ritmo de leitura.</p>
+          </div>
+        </div>
         <div class="grid grid-3" id="plans-grid" style="margin-top:22px;"></div>
       </section>
 
@@ -2567,9 +2662,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <!-- ============ PLAN CUSTOM BUILDER ============ -->
       <section class="view" id="view-plan-custom">
         <button class="btn btn-ghost btn-sm plan-back-btn" id="plan-custom-back">← Voltar aos planos</button>
-        <div class="eyebrow">Sob medida</div>
-        <h1 class="page-title">Monte seu plano personalizado</h1>
-        <p class="page-sub">Escolha o que ler e o ritmo — organizamos o roteiro completo, dia a dia, para você.</p>
+        <div class="page-head" style="--ph-tone:var(--sage-soft);">
+          <div class="page-head-icon">📅</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Sob medida</div>
+            <h1 class="page-head-title">Monte seu plano personalizado</h1>
+            <p class="page-head-sub">Escolha o que ler e o ritmo — organizamos o roteiro completo, dia a dia, para você.</p>
+          </div>
+        </div>
 
         <div class="grid grid-2" style="margin-top:22px;align-items:start;">
           <div class="card" style="display:flex;flex-direction:column;gap:22px;">
@@ -2616,9 +2716,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ STUDIES ============ -->
       <section class="view" id="view-studies">
-        <div class="eyebrow">Aprofunde-se</div>
-        <h1 class="page-title">Estudos bíblicos</h1>
-        <p class="page-sub">Personagens, livros, parábolas, milagres, profecias e o contexto histórico das Escrituras.</p>
+        <div class="page-head" style="--ph-tone:var(--sage-soft);">
+          <div class="page-head-icon">🕊️</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Aprofunde-se</div>
+            <h1 class="page-head-title">Estudos bíblicos</h1>
+            <p class="page-head-sub">Personagens, livros, parábolas, milagres, profecias e o contexto histórico das Escrituras.</p>
+          </div>
+        </div>
         <div class="testament-tabs" id="study-filters" style="margin-top:18px;flex-wrap:wrap;"></div>
         <div class="grid grid-3" id="studies-grid" style="margin-top:16px;"></div>
       </section>
@@ -2631,9 +2736,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ NOTES ============ -->
       <section class="view" id="view-notes">
-        <div class="eyebrow">Minha jornada</div>
-        <h1 class="page-title">Minhas anotações</h1>
-        <p class="page-sub">Reflexões organizadas por livro, capítulo ou tema.</p>
+        <div class="page-head" style="--ph-tone:var(--sage-soft);">
+          <div class="page-head-icon">📝</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Minha jornada</div>
+            <h1 class="page-head-title">Minhas anotações</h1>
+            <p class="page-head-sub">Reflexões organizadas por livro, capítulo ou tema.</p>
+          </div>
+        </div>
 
         <div class="card" style="margin-top:22px;">
           <h3 style="font-size:1rem;margin-bottom:10px;">Criar novo bloco de notas</h3>
@@ -2648,17 +2758,27 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ FAVORITES ============ -->
       <section class="view" id="view-favorites">
-        <div class="eyebrow">Minha jornada</div>
-        <h1 class="page-title">Favoritos</h1>
-        <p class="page-sub">Versículos, capítulos, devocionais e estudos que você guardou no coração.</p>
+        <div class="page-head" style="--ph-tone:color-mix(in srgb, var(--rose) 40%, var(--paper));">
+          <div class="page-head-icon">❤️</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Minha jornada</div>
+            <h1 class="page-head-title">Favoritos</h1>
+            <p class="page-head-sub">Versículos, capítulos, devocionais e estudos que você guardou no coração.</p>
+          </div>
+        </div>
         <div class="grid grid-3" id="favorites-grid" style="margin-top:22px;"></div>
       </section>
 
       <!-- ============ PRAYER ============ -->
       <section class="view" id="view-prayer">
-        <div class="eyebrow">Vida de oração</div>
-        <h1 class="page-title">Oração</h1>
-        <p class="page-sub">Registre seu pedido de oração para a dirações da igreja, assim que for visualizado ou respondida, sua pedido aparecerá na aba de respondidas .</p>
+        <div class="page-head" style="--ph-tone:var(--gold-soft);">
+          <div class="page-head-icon">🙌</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Vida de oração</div>
+            <h1 class="page-head-title">Oração</h1>
+            <p class="page-head-sub">Registre seu pedido de oração para a dirações da igreja, assim que for visualizado ou respondida, sua pedido aparecerá na aba de respondidas .</p>
+          </div>
+        </div>
 
         <div class="card" style="margin-top:22px;">
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -2675,9 +2795,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ QUIZ ============ -->
       <section class="view" id="view-quiz">
-        <div class="eyebrow">Aprendizado</div>
-        <h1 class="page-title">Quiz bíblico</h1>
-        <p class="page-sub">Teste seu conhecimento das Escrituras. Sua pontuação é por sessão: ao sair desta tela, tudo reinicia.</p>
+        <div class="page-head" style="--ph-tone:var(--gold-soft);">
+          <div class="page-head-icon">🏆</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Aprendizado</div>
+            <h1 class="page-head-title">Quiz bíblico</h1>
+            <p class="page-head-sub">Teste seu conhecimento das Escrituras. Sua pontuação é por sessão: ao sair desta tela, tudo reinicia.</p>
+          </div>
+        </div>
 
         <div class="grid" style="grid-template-columns:repeat(2,minmax(160px,1fr));margin-top:22px;">
           <div class="card stat-card"><div class="stat-ic" style="background:var(--gold-soft)">⭐</div><div class="stat-num" id="quiz-xp">0</div><div class="stat-label">XP da sessão</div></div>
@@ -2700,9 +2825,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ CAMPAIGNS ============ -->
       <section class="view" id="view-campaigns">
-        <div class="eyebrow">Direcionamento espiritual</div>
-        <h1 class="page-title">Campanhas Proféticas</h1>
-        <p class="page-sub">Acompanhe a campanha atual da igreja e reviva as jornadas espirituais que já caminhamos juntos.</p>
+        <div class="page-head" style="--ph-tone:color-mix(in srgb, var(--rose) 40%, var(--paper));">
+          <div class="page-head-icon">🔥</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Direcionamento espiritual</div>
+            <h1 class="page-head-title">Campanhas Proféticas</h1>
+            <p class="page-head-sub">Acompanhe a campanha atual da igreja e reviva as jornadas espirituais que já caminhamos juntos.</p>
+          </div>
+        </div>
 
         <div id="campaign-featured"></div>
 
@@ -2717,9 +2847,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ CONVERSAS ============ -->
       <section class="view" id="view-conversas">
-        <div class="eyebrow">Comunidade</div>
-        <h1 class="page-title">Conversas</h1>
-        <p class="page-sub">Converse com outros membros e compartilhe versículos. Adicione alguém pelo nome de exibição para começar.</p>
+        <div class="page-head" style="--ph-tone:var(--sage-soft);">
+          <div class="page-head-icon">💬</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Comunidade</div>
+            <h1 class="page-head-title">Conversas</h1>
+            <p class="page-head-sub">Converse com outros membros e compartilhe versículos. Adicione alguém pelo nome de exibição para começar.</p>
+          </div>
+        </div>
 
         <div class="conv-shell" id="conv-shell">
           <div class="conv-list-pane" id="conv-list-pane">
@@ -2862,9 +2997,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ MEDIA ============ -->
       <section class="view" id="view-media">
-        <div class="eyebrow">Biblioteca</div>
-        <h1 class="page-title">Biblioteca multimídia</h1>
-        <p class="page-sub">Áudios da Bíblia, vídeos educativos, louvores e podcasts cristãos — assista e ouça direto aqui no site.</p>
+        <div class="page-head" style="--ph-tone:var(--sage-soft);">
+          <div class="page-head-icon">🎧</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Biblioteca</div>
+            <h1 class="page-head-title">Biblioteca multimídia</h1>
+            <p class="page-head-sub">Áudios da Bíblia, vídeos educativos, louvores e podcasts cristãos — assista e ouça direto aqui no site.</p>
+          </div>
+        </div>
         <div class="media-toolbar">
           <div class="testament-tabs" id="media-filters"></div>
           <div class="search-box media-search-box">
@@ -2877,9 +3017,14 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
       <!-- ============ SETTINGS (Configurações da conta) ============ -->
       <section class="view" id="view-settings">
-        <div class="eyebrow">Configurações</div>
-        <h1 class="page-title">Minha conta</h1>
-        <p class="page-sub">Gerencie seu perfil, segurança e preferências dentro do IPDF.</p>
+        <div class="page-head is-ink" style="--ph-tone:var(--gold-soft);">
+          <div class="page-head-icon">⚙️</div>
+          <div class="page-head-text">
+            <div class="page-head-eyebrow">Configurações</div>
+            <h1 class="page-head-title">Minha conta</h1>
+            <p class="page-head-sub">Gerencie seu perfil, segurança e preferências dentro do IPDF.</p>
+          </div>
+        </div>
 
         <div class="card settings-profile-card">
           <div class="settings-avatar-wrap">
