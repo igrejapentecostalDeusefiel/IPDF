@@ -5328,12 +5328,11 @@ document.getElementById('scrim').addEventListener('click', ()=>{
   document.body.classList.remove('no-scroll');
 });
 
-/* Gesto de arrastar da borda esquerda para a direita (celular/tablet)
-   para abrir a sidebar, como em apps nativos. Só funciona dentro do
-   app (não na tela de login/admin) e só na largura responsiva, onde
-   a sidebar vira o menu deslizante. */
+/* Gesto de arrastar para a direita em qualquer ponto da tela
+   (celular/tablet) para abrir a sidebar, como em apps nativos. Só
+   funciona dentro do app (não na tela de login/admin) e só na
+   largura responsiva, onde a sidebar vira o menu deslizante. */
 (function(){
-  const EDGE_ZONE = 28;     // começa o gesto só perto da borda esquerda
   const OPEN_THRESHOLD = 60; // arrasto mínimo para abrir
   const MAX_VERTICAL = 60;   // cancela se o dedo desviar muito na vertical
   let tracking = false;
@@ -5351,7 +5350,6 @@ document.getElementById('scrim').addEventListener('click', ()=>{
     const sidebar = document.getElementById('sidebar');
     if(sidebar.classList.contains('open')) { tracking = false; return; }
     const t = e.touches[0];
-    if(t.clientX > EDGE_ZONE) { tracking = false; return; }
     tracking = true;
     startX = t.clientX;
     startY = t.clientY;
