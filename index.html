@@ -462,7 +462,7 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em;
   background:
     radial-gradient(560px 320px at 14% -10%, rgba(232,201,138,.28) 0%, transparent 60%),
     linear-gradient(180deg, rgba(15,20,36,.15) 0%, rgba(15,20,36,.55) 62%, rgba(15,20,36,.92) 100%),
-    url('foto-banner.jpg') center 30%/cover no-repeat;
+    url('foto-banner.jpeg') center 30%/cover no-repeat;
   box-shadow:var(--shadow);
   margin-bottom:26px;
 }
@@ -3330,8 +3330,8 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
                   <div class="settings-card-sub">Selecione um símbolo do mundo bíblico para representar você no app.</div>
                 </div>
                 <div class="avatar-picker-grid" id="avatar-picker-grid">
-                  <button type="button" class="avatar-option selected" data-avatar-emoji="A" data-avatar-gradient="linear-gradient(135deg,var(--sage),var(--gold))" title="Inicial">
-                    <span class="avatar-swatch avatar-swatch-initial" style="background:linear-gradient(135deg,var(--sage),var(--gold));">C</span>
+                  <button type="button" class="avatar-option selected" data-avatar-emoji="" data-avatar-initial="true" data-avatar-gradient="linear-gradient(135deg,var(--sage),var(--gold))" title="Inicial">
+                    <span class="avatar-swatch avatar-swatch-initial" id="avatar-swatch-initial-preview" style="background:linear-gradient(135deg,var(--sage),var(--gold));">C</span>
                     <span class="avatar-label">Inicial</span>
                   </button>
                   <button type="button" class="avatar-option" data-avatar-emoji="🕊️" data-avatar-gradient="linear-gradient(135deg,#8FA6C9,#DCE6DD)" title="Pomba">
@@ -5581,12 +5581,18 @@ function atualizarNomeConta(){
   if(usuarioConfig && state.perfil) usuarioConfig.textContent = state.perfil.nome_usuario;
 
   // Só atualiza a letra-inicial se ainda não houver um avatar temático (emoji) escolhido —
-  // evita sobrescrever a escolha visual do usuário.
+  // evita sobrescrever a escolha visual do usuário. Um avatar_emoji vazio/ausente significa
+  // que o usuário está no modo "Inicial", então a letra deve sempre refletir o nome atual.
+  const semAvatarTematico = !(state.perfil && state.perfil.avatar_emoji);
   const avatarSidebar = document.getElementById('sidebar-account-avatar');
   const avatarConfig = document.getElementById('settings-avatar-preview');
   [avatarSidebar, avatarConfig].forEach(el=>{
-    if(el && el.textContent.trim().length <= 1) el.textContent = inicial;
+    if(el && semAvatarTematico) el.textContent = inicial;
   });
+
+  // Mantém a prévia do botão "Inicial" no seletor de avatares sempre com a letra certa
+  const swatchInicial = document.getElementById('avatar-swatch-initial-preview');
+  if(swatchInicial) swatchInicial.textContent = inicial;
 }
 
 /* =========================================================
@@ -7796,7 +7802,11 @@ function syncDashSurpriseFavBtn(){
 
     const salvarRestante = async ()=>{
       const avatarPreviewEl = document.getElementById('settings-avatar-preview');
-      const emoji = avatarPreviewEl ? avatarPreviewEl.textContent.trim() : (state.perfil && state.perfil.avatar_emoji) || 'A';
+      // Não reaproveita o texto atualmente exibido na tela (pode estar desatualizado se o
+      // nome acabou de ser trocado); decide pelo tipo de avatar selecionado no seletor.
+      const avatarSelecionado = document.querySelector('.avatar-option.selected');
+      const isInicial = avatarSelecionado ? avatarSelecionado.dataset.avatarInitial === 'true' : !(state.perfil && state.perfil.avatar_emoji);
+      const emoji = isInicial ? '' : (avatarSelecionado ? avatarSelecionado.dataset.avatarEmoji : ((state.perfil && state.perfil.avatar_emoji) || ''));
       const gradient = avatarPreviewEl ? avatarPreviewEl.style.background : ((state.perfil && state.perfil.avatar_gradient) || '');
 
       const { error } = await db.rpc('atualizar_perfil', {
@@ -7968,11 +7978,20 @@ function syncDashSurpriseFavBtn(){
       if(opt.classList.contains('selected')) return;
       avatarOptions.forEach(o=>o.classList.remove('selected'));
       opt.classList.add('selected');
-      const emoji = opt.dataset.avatarEmoji;
+
+      // O botão "Inicial" não representa uma letra fixa: a letra exibida é sempre
+      // calculada a partir do nome de exibição cadastrado do próprio usuário.
+      const isInicial = opt.dataset.avatarInitial === 'true';
+      const nomeAtual = (state.perfil && state.perfil.nome_exibicao) ? state.perfil.nome_exibicao.trim() : '';
+      const letraInicial = nomeAtual ? nomeAtual.charAt(0).toUpperCase() : '?';
+      const emojiExibido = isInicial ? letraInicial : opt.dataset.avatarEmoji;
+      // No banco, o modo "Inicial" é salvo como vazio — assim cada tela (membros online,
+      // conversas, canais etc.) calcula a letra certa a partir do nome de cada pessoa.
+      const emojiParaSalvar = isInicial ? '' : opt.dataset.avatarEmoji;
       const gradient = opt.dataset.avatarGradient;
       [avatarPreview, sidebarAvatar].forEach(el=>{
         if(!el) return;
-        el.textContent = emoji;
+        el.textContent = emojiExibido;
         el.style.background = gradient;
       });
 
@@ -7983,7 +8002,7 @@ function syncDashSurpriseFavBtn(){
         p_nome_exibicao: (state.perfil && state.perfil.nome_exibicao) || '',
         p_sobre_mim: (state.perfil && state.perfil.sobre_mim) || '',
         p_membro_desde: (state.perfil && state.perfil.membro_desde) || null,
-        p_avatar_emoji: emoji,
+        p_avatar_emoji: emojiParaSalvar,
         p_avatar_gradient: gradient
       });
       if(error){
@@ -7991,7 +8010,7 @@ function syncDashSurpriseFavBtn(){
         toast('Não foi possível salvar o avatar', '⚠️');
         return;
       }
-      if(state.perfil){ state.perfil.avatar_emoji = emoji; state.perfil.avatar_gradient = gradient; }
+      if(state.perfil){ state.perfil.avatar_emoji = emojiParaSalvar; state.perfil.avatar_gradient = gradient; }
       toast('Avatar salvo! ✨', '✨');
     });
   });
@@ -8177,20 +8196,28 @@ function renderCampaignHero(campaign, opts){
     </article>`;
 }
 
-/* Aplica o avatar salvo no banco (se houver) na sidebar e nas configurações */
+/* Aplica o avatar salvo no banco (se houver) na sidebar e nas configurações.
+   Quando não há avatar temático salvo (avatar_emoji vazio/nulo), o usuário está no
+   modo "Inicial" e a letra é calculada a partir do nome de exibição cadastrado. */
 function aplicarAvatarSalvo(){
-  if(!state.perfil || !state.perfil.avatar_emoji) return;
-  const emoji = state.perfil.avatar_emoji;
-  const gradient = state.perfil.avatar_gradient;
+  if(!state.perfil) return;
+  const emojiSalvo = state.perfil.avatar_emoji || '';
+  const nomeCompleto = state.perfil.nome_exibicao ? state.perfil.nome_exibicao.trim() : '';
+  const inicial = nomeCompleto ? nomeCompleto.charAt(0).toUpperCase() : '?';
+  const emoji = emojiSalvo || inicial;
+  const gradient = state.perfil.avatar_gradient || 'linear-gradient(135deg,var(--sage),var(--gold))';
   const avatarSidebar = document.getElementById('sidebar-account-avatar');
   const avatarConfig = document.getElementById('settings-avatar-preview');
   [avatarSidebar, avatarConfig].forEach(el=>{
     if(!el) return;
     el.textContent = emoji;
-    if(gradient) el.style.background = gradient;
+    el.style.background = gradient;
   });
+  const swatchInicial = document.getElementById('avatar-swatch-initial-preview');
+  if(swatchInicial) swatchInicial.textContent = inicial;
   document.querySelectorAll('.avatar-option').forEach(opt=>{
-    opt.classList.toggle('selected', opt.dataset.avatarEmoji === emoji);
+    const isInicial = opt.dataset.avatarInitial === 'true';
+    opt.classList.toggle('selected', isInicial ? !emojiSalvo : opt.dataset.avatarEmoji === emojiSalvo);
   });
 }
 
