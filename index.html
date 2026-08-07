@@ -1696,7 +1696,10 @@ textarea.notes-area:focus{border-color:var(--gold);}
   position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;
   background:rgba(20,16,10,.45);backdrop-filter:blur(2px);
   opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease;
-  padding:20px;
+  padding:20px;overflow-y:auto;
+}
+@media(max-width:640px){
+  .confirm-overlay{align-items:flex-start;padding-top:clamp(16px,8dvh,80px);}
 }
 .confirm-overlay.show{opacity:1;visibility:visible;pointer-events:auto;}
 .confirm-box{
@@ -3706,7 +3709,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   <div class="confirm-box contact-search-box">
     <div class="confirm-title">Adicionar contato</div>
     <div class="confirm-text">Busque pelo nome de exibição da pessoa.</div>
-    <input type="text" class="field-input" id="contact-search-input" placeholder="Nome de exibição…" style="margin-top:14px;">
+    <input type="text" class="field-input" id="contact-search-input" placeholder="Nome de exibição…" style="margin-top:14px;" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" inputmode="text">
     <div id="contact-search-results" class="contact-search-results"></div>
     <div class="confirm-actions">
       <button class="btn btn-ghost" id="contact-search-close-btn">Fechar</button>
@@ -9003,10 +9006,14 @@ document.getElementById('conv-support-input')?.addEventListener('keydown', (e)=>
 /* ---- Adicionar contato (busca por nome de exibição) ---- */
 let contactSearchTimeout = null;
 document.getElementById('conv-add-contact-btn')?.addEventListener('click', ()=>{
-  document.getElementById('contact-search-overlay').classList.add('show');
-  document.getElementById('contact-search-input').value = '';
+  const overlay = document.getElementById('contact-search-overlay');
+  const inp = document.getElementById('contact-search-input');
+  overlay.classList.add('show');
+  overlay.scrollTop = 0;
+  inp.value = '';
   document.getElementById('contact-search-results').innerHTML = '<p class="muted" style="font-size:.85rem;">Digite pelo menos 2 letras do nome.</p>';
-  document.getElementById('contact-search-input').focus();
+  // Pequeno delay garante que o overlay esteja visível antes do focus no mobile
+  setTimeout(() => inp.focus(), 80);
 });
 document.getElementById('contact-search-close-btn')?.addEventListener('click', ()=>{
   document.getElementById('contact-search-overlay').classList.remove('show');
