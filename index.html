@@ -5350,8 +5350,6 @@ document.getElementById('scrim').addEventListener('click', ()=>{
 
   document.addEventListener('touchstart', (e)=>{
     if(!appAtivoResponsivo()) { tracking = false; return; }
-    const sidebar = document.getElementById('sidebar');
-    if(sidebar.classList.contains('open')) { tracking = false; return; }
     const t = e.touches[0];
     tracking = true;
     startX = t.clientX;
@@ -5360,15 +5358,22 @@ document.getElementById('scrim').addEventListener('click', ()=>{
 
   document.addEventListener('touchmove', (e)=>{
     if(!tracking) return;
+    const sidebar = document.getElementById('sidebar');
     const t = e.touches[0];
     const dx = t.clientX - startX;
     const dy = Math.abs(t.clientY - startY);
     if(dy > MAX_VERTICAL){ tracking = false; return; }
-    if(dx > OPEN_THRESHOLD){
+    const isOpen = sidebar.classList.contains('open');
+    if(!isOpen && dx > OPEN_THRESHOLD){
       tracking = false;
-      document.getElementById('sidebar').classList.add('open');
+      sidebar.classList.add('open');
       document.getElementById('scrim').classList.add('show');
       document.body.classList.add('no-scroll');
+    } else if(isOpen && dx < -OPEN_THRESHOLD){
+      tracking = false;
+      sidebar.classList.remove('open');
+      document.getElementById('scrim').classList.remove('show');
+      document.body.classList.remove('no-scroll');
     }
   }, { passive:true });
 
