@@ -3731,6 +3731,18 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   </div>
 </div>
 
+<div class="confirm-overlay" id="oracao-msg-overlay">
+  <div class="confirm-box contact-search-box">
+    <div class="confirm-title">💬 Deixar uma mensagem</div>
+    <div class="confirm-text">Esse texto vai aparecer para a pessoa junto do pedido de oração dela.</div>
+    <textarea class="field-input" id="oracao-msg-textarea" rows="4" style="margin-top:14px;" placeholder="Escreva aqui uma palavra de apoio, orientação ou incentivo…"></textarea>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" id="oracao-msg-cancel-btn">Cancelar</button>
+      <button class="btn btn-primary" id="oracao-msg-save-btn">Salvar mensagem</button>
+    </div>
+  </div>
+</div>
+
 <div class="confirm-overlay" id="comunidade-form-overlay">
   <div class="confirm-box contact-search-box" id="comunidade-form-box">
     <div class="confirm-title" id="cf-title">Novo item</div>
@@ -7186,10 +7198,14 @@ function renderPrayers(){
   activeList.forEach((p)=>{
     const div = document.createElement('div');
     div.className = 'prayer-item';
+    const mensagemHtml = p.resposta
+      ? `<div class="prayer-date" style="background:var(--gold-soft);border-radius:var(--radius-md);padding:8px 12px;margin-top:8px;line-height:1.5;white-space:pre-wrap;">💬 <strong>Mensagem da liderança:</strong><br>${escapeHtml(p.resposta)}</div>`
+      : '';
     div.innerHTML = `
       <div>
         <div>${escapeHtml(p.text)}</div>
         <div class="prayer-date">${p.date}${p.viewed ? ' · <span class="pill pill-sage" style="vertical-align:middle;">👀 Visualizado pela liderança</span>' : ''}</div>
+        ${mensagemHtml}
       </div>
       <div class="prayer-actions">
         <button class="prayer-del-btn" data-delprayer="${p.id}" title="Excluir pedido">🗑️</button>
@@ -7199,10 +7215,14 @@ function renderPrayers(){
   answeredList.forEach(p=>{
     const div = document.createElement('div');
     div.className = 'prayer-item answered';
+    const mensagemHtml = p.resposta
+      ? `<div class="prayer-date" style="background:var(--gold-soft);border-radius:var(--radius-md);padding:8px 12px;margin-top:8px;line-height:1.5;white-space:pre-wrap;">💬 <strong>Mensagem da liderança:</strong><br>${escapeHtml(p.resposta)}</div>`
+      : '';
     div.innerHTML = `
       <div>
         <div>${escapeHtml(p.text)}</div>
         <div class="prayer-date">${p.date}</div>
+        ${mensagemHtml}
       </div>
       <div class="prayer-actions">
         <span class="pill pill-sage">Respondida ✓</span>
@@ -8466,12 +8486,18 @@ function renderAdminOracoes(){
     const pill = status === 'respondida' ? '<span class="pill pill-sage">✓ Respondido</span>'
       : status === 'visualizada' ? '<span class="pill pill-sage">👀 Visualizado</span>'
       : '<span class="pill pill-gold">Pendente</span>';
+    const btnMsg = `<button class="btn btn-ghost btn-sm" data-oracao-msg="${o.id}">${o.resposta ? '✏️ Editar mensagem' : '💬 Deixar mensagem'}</button>`;
     const acoes = status === 'pendente'
       ? `<button class="btn btn-primary btn-sm" data-oracao-ver="${o.id}">👁️ Marcar como visualizado</button>`
       : status === 'visualizada'
       ? `<button class="btn btn-primary btn-sm" data-oracao-responder="${o.id}">✅ Marcar como respondido</button>
+         ${btnMsg}
          <button class="btn btn-ghost btn-sm" data-oracao-desver="${o.id}">↺ Marcar como pendente</button>`
-      : `<button class="btn btn-ghost btn-sm" data-oracao-reabrir="${o.id}">↺ Reabrir pedido</button>`;
+      : `${btnMsg}
+         <button class="btn btn-ghost btn-sm" data-oracao-reabrir="${o.id}">↺ Reabrir pedido</button>`;
+    const mensagemHtml = o.resposta
+      ? `<div class="admin-msg-text" style="background:var(--gold-soft);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;font-size:.85rem;"><strong>💬 Sua mensagem para a pessoa:</strong><br>${escapeHtml(o.resposta)}</div>`
+      : '';
     return `
     <div class="admin-msg-item is-${status === 'respondida' ? 'respondida' : status === 'visualizada' ? 'visualizada' : 'pendente'}">
       <div class="admin-msg-head">
@@ -8482,6 +8508,7 @@ function renderAdminOracoes(){
         ${pill}
       </div>
       <div class="admin-msg-text">${escapeHtml(o.texto)}</div>
+      ${mensagemHtml}
       <div style="display:flex;gap:8px;flex-wrap:wrap;">${acoes}</div>
     </div>`;
   }).join('');
@@ -8539,6 +8566,51 @@ function renderAdminOracoes(){
       toast('Pedido reaberto', '↺');
     });
   });
+  list.querySelectorAll('[data-oracao-msg]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.oracaoMsg;
+      const o = adminOracoes.find(x => x.id === id);
+      if(!o) return;
+      abrirModalMensagemOracao(o, (novaResposta)=> atualizarLocal(id, { resposta: novaResposta }));
+    });
+  });
+}
+
+function abrirModalMensagemOracao(oracao, onSaved){
+  const overlay = document.getElementById('oracao-msg-overlay');
+  const textarea = document.getElementById('oracao-msg-textarea');
+  const saveBtn = document.getElementById('oracao-msg-save-btn');
+  const cancelBtn = document.getElementById('oracao-msg-cancel-btn');
+  textarea.value = oracao.resposta || '';
+
+  const close = ()=> overlay.classList.remove('show');
+  const onCancel = ()=>{ close(); cleanup(); };
+  const onOverlayClick = (e)=>{ if(e.target === overlay) onCancel(); };
+  const onSave = async ()=>{
+    const texto = textarea.value.trim();
+    saveBtn.disabled = true;
+    const textoOriginal = saveBtn.textContent;
+    saveBtn.textContent = 'Salvando…';
+    const { error } = await db.rpc('admin_responder_oracao', {
+      p_token: state.sessionToken, p_oracao_id: oracao.id, p_resposta: texto
+    });
+    saveBtn.disabled = false;
+    saveBtn.textContent = textoOriginal;
+    if(error){ console.error('Erro ao salvar mensagem do pedido de oração:', error); toast('Não foi possível salvar a mensagem', '⚠️'); return; }
+    close(); cleanup();
+    if(onSaved) onSaved(texto);
+    toast(texto ? 'Mensagem enviada para a pessoa 💬' : 'Mensagem removida', texto ? '💬' : '🗑️');
+  };
+  function cleanup(){
+    saveBtn.removeEventListener('click', onSave);
+    cancelBtn.removeEventListener('click', onCancel);
+    overlay.removeEventListener('click', onOverlayClick);
+  }
+  saveBtn.addEventListener('click', onSave);
+  cancelBtn.addEventListener('click', onCancel);
+  overlay.addEventListener('click', onOverlayClick);
+  overlay.classList.add('show');
+  textarea.focus();
 }
 
 async function carregarAdminMembros(){
@@ -9432,7 +9504,8 @@ async function carregarOracoesUsuario(){
       text: o.texto,
       date: new Date(o.criado_em).toLocaleDateString('pt-BR'),
       answered: o.respondida,
-      viewed: o.visualizada
+      viewed: o.visualizada,
+      resposta: o.resposta
     }));
     if(typeof renderPrayers === 'function') renderPrayers();
     if(typeof renderDashboardStats === 'function') renderDashboardStats();
