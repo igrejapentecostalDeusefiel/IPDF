@@ -2565,7 +2565,10 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       </div>
 
       <div class="admin-panel" id="admin-panel-oracoes">
-        <div class="admin-page-title">Pedidos de Oração</div>
+        <div class="admin-page-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <span>Pedidos de Oração</span>
+          <button class="btn btn-ghost btn-sm" id="admin-oracoes-refresh-btn">🔄 Atualizar pedidos de oração</button>
+        </div>
         <div class="admin-page-sub">Pedidos individuais dos membros. Só o administrador vê de quem é cada pedido — o membro só vê o status do seu próprio pedido.</div>
 
         <div class="admin-filter-row">
@@ -8426,7 +8429,7 @@ function renderAdminMensagens(){
 
 async function carregarAdminOracoes(){
   const { data, error } = await db.rpc('admin_listar_oracoes', { p_token: state.sessionToken });
-  if(error){ console.error('Erro ao carregar pedidos de oração:', error); return; }
+  if(error){ console.error('Erro ao carregar pedidos de oração:', error); throw error; }
   adminOracoes = data || [];
   renderAdminOracoes();
 
@@ -8606,6 +8609,25 @@ function adminMemberRowHtml(m){
       renderAdminOracoes();
     });
   });
+
+  const adminOracoesRefreshBtn = document.getElementById('admin-oracoes-refresh-btn');
+  if(adminOracoesRefreshBtn){
+    adminOracoesRefreshBtn.addEventListener('click', async ()=>{
+      adminOracoesRefreshBtn.disabled = true;
+      const textoOriginal = adminOracoesRefreshBtn.textContent;
+      adminOracoesRefreshBtn.textContent = '🔄 Atualizando…';
+      try{
+        await carregarAdminOracoes();
+        toast('Pedidos de oração atualizados.', '🔄');
+      }catch(e){
+        console.error('Erro ao atualizar pedidos de oração:', e);
+        toast('Não foi possível atualizar os pedidos de oração', '⚠️');
+      }finally{
+        adminOracoesRefreshBtn.disabled = false;
+        adminOracoesRefreshBtn.textContent = textoOriginal;
+      }
+    });
+  }
 
   const adminLogoutBtn = document.getElementById('admin-logout-btn');
   if(adminLogoutBtn){
