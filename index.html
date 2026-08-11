@@ -1241,6 +1241,14 @@ body.show-public-campaign #app-shell{display:none;}
 .msg.enviada .msg-verse-goto{color:var(--parchment);border-color:rgba(251,248,242,.4);background:rgba(255,255,255,.08);}
 .msg.enviada .msg-verse-goto:hover{background:rgba(255,255,255,.16);border-color:rgba(251,248,242,.65);}
 .msg-time{font-size:.66rem;opacity:.6;margin-top:5px;}
+.conv-duvida-context{
+  align-self:stretch;background:var(--gold-soft);border:1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius:var(--radius-md);padding:13px 16px;margin-bottom:4px;animation:msgRise .32s ease both;
+}
+.conv-duvida-context-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700;color:var(--ink);opacity:.7;margin-bottom:5px;}
+.conv-duvida-context-subject{font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.conv-duvida-context-text{font-size:.87rem;line-height:1.5;color:var(--ink);}
+.conv-duvida-context-date{font-size:.68rem;opacity:.55;margin-top:8px;}
 .msg-delete-btn{
   background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:.68rem;
   padding:3px 4px;opacity:.4;transition:opacity .15s ease, color .15s ease;
@@ -8494,11 +8502,22 @@ function renderAdminMensagens(){
       </div>
       <div class="admin-msg-subject">${escapeHtml(m.assunto || 'Sem assunto')}</div>
       <div class="admin-msg-text">${escapeHtml(m.mensagem)}</div>
-      <button class="btn ${m.respondida ? 'btn-ghost' : 'btn-primary'} btn-sm" data-admin-msg-toggle="${m.id}" data-admin-msg-atual="${m.respondida}">
-        ${m.respondida ? '↺ Marcar como pendente' : '✓ Marcar como tratada'}
-      </button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn ${m.respondida ? 'btn-ghost' : 'btn-primary'} btn-sm" data-admin-msg-toggle="${m.id}" data-admin-msg-atual="${m.respondida}">
+          ${m.respondida ? '↺ Marcar como pendente' : '✓ Marcar como tratada'}
+        </button>
+        <button class="btn btn-ghost btn-sm" data-admin-msg-responder="${m.id}">💬 Responder dúvida</button>
+      </div>
     </div>
   `).join('');
+
+  list.querySelectorAll('[data-admin-msg-responder]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.adminMsgResponder;
+      const msg = adminMensagens.find(m => m.id === id);
+      if(msg && typeof responderDuvidaSuporte === 'function') responderDuvidaSuporte(msg);
+    });
+  });
 
   list.querySelectorAll('[data-admin-msg-toggle]').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
@@ -8519,6 +8538,45 @@ function renderAdminMensagens(){
       toast(novoStatus ? 'Marcada como tratada' : 'Marcada como pendente novamente', '✅');
     });
   });
+}
+
+/* ---- Abre a Conversa direta com quem mandou uma dúvida de suporte ---- */
+async function responderDuvidaSuporte(msg){
+  // Descobre o id do usuário que enviou a dúvida (a lista de suporte não
+  // mostra o id, então usamos os membros já carregados como referência).
+  let userId = msg.usuario_id || msg.autor_id || msg.remetente_id || msg.usuario || null;
+  if(!userId){
+    if(!adminMembros.length){
+      try{ await carregarAdminMembros(); }catch(e){ console.error('Erro ao carregar membros:', e); }
+    }
+    const membro = adminMembros.find(m => m.nome_usuario === msg.nome_usuario);
+    userId = membro && membro.id;
+  }
+  if(!userId){
+    toast('Não consegui identificar essa pessoa para abrir a conversa', '⚠️');
+    return;
+  }
+
+  // Muda para a aba "Conversas" dentro do painel do admin
+  const convTabBtn = document.querySelector('[data-admin-tab="conversas"]');
+  if(convTabBtn) convTabBtn.click();
+
+  await carregarConversas();
+  if(!convContatos.some(c => c.id === userId)){
+    const { error } = await db.rpc('adicionar_contato', { p_token: state.sessionToken, p_contato_id: userId });
+    if(error) console.error('Erro ao adicionar contato:', error);
+    await carregarConversas();
+  }
+
+  convDuvidaContexto = {
+    userId,
+    nome: msg.nome_exibicao || msg.nome_usuario,
+    assunto: msg.assunto,
+    mensagem: msg.mensagem,
+    criadoEm: msg.criado_em
+  };
+
+  await abrirConversa(userId);
 }
 
 async function carregarAdminOracoes(){
@@ -8873,6 +8931,7 @@ function adminMemberRowHtml(m){
 let convContatos = [];
 let convAtivo = null; // id do contato ativo
 let convMinhasMensagensSuporte = [];
+let convDuvidaContexto = null; // { userId, nome, assunto, mensagem, criadoEm } — dúvida de suporte sendo respondida via Conversas
 
 let convSolicitacoes = [];
 
@@ -9023,6 +9082,7 @@ function renderConvList(){
 
 async function abrirConversa(contatoId){
   convAtivo = contatoId;
+  if(convDuvidaContexto && convDuvidaContexto.userId !== contatoId) convDuvidaContexto = null;
   document.getElementById('conv-thread-empty').hidden = true;
   document.getElementById('conv-thread-active').hidden = false;
   document.getElementById('conv-shell')?.classList?.add('show-thread');
@@ -9096,10 +9156,23 @@ function renderThreadAdmin(mensagens){
   body.scrollTop = body.scrollHeight;
 }
 
+function duvidaContextoHtml(){
+  if(!convDuvidaContexto || convDuvidaContexto.userId !== convAtivo) return '';
+  const d = convDuvidaContexto;
+  const dataFmt = d.criadoEm ? new Date(d.criadoEm).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+  return `
+    <div class="conv-duvida-context">
+      <div class="conv-duvida-context-label">📩 Dúvida enviada por ${escapeHtml(d.nome || 'essa pessoa')}</div>
+      ${d.assunto ? `<div class="conv-duvida-context-subject">${escapeHtml(d.assunto)}</div>` : ''}
+      <div class="conv-duvida-context-text">${escapeHtml(d.mensagem || '')}</div>
+      ${dataFmt ? `<div class="conv-duvida-context-date">${dataFmt}</div>` : ''}
+    </div>`;
+}
+
 function renderThreadDireto(mensagens){
   const body = document.getElementById('conv-thread-body');
   if(!mensagens.length){
-    body.innerHTML = '<div class="admin-empty-state">Nenhuma mensagem ainda — diga oi! 👋</div>';
+    body.innerHTML = duvidaContextoHtml() + '<div class="admin-empty-state">Nenhuma mensagem ainda — diga oi! 👋</div>';
     return;
   }
 
@@ -9107,7 +9180,7 @@ function renderThreadDireto(mensagens){
   const nomeContato = (contato && (contato.nome_exibicao || contato.nome_usuario)) || '?';
   const avatarHtml = `<div class="conv-avatar msg-avatar" style="width:30px;height:30px;font-size:.78rem;${contato && contato.avatar_gradient ? 'background:'+contato.avatar_gradient+';' : ''}">${escapeHtml((contato && contato.avatar_emoji) || nomeContato.charAt(0).toUpperCase())}</div>`;
 
-  body.innerHTML = mensagens.map(m => {
+  body.innerHTML = duvidaContextoHtml() + mensagens.map(m => {
     const minha = m.remetente_id === (state.perfil && state.perfil.id);
     const hora = new Date(m.criado_em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
     const versiculoHtml = m.texto_versiculo
