@@ -641,69 +641,107 @@ body.show-autologin #autologin-shell{display:flex;}
 }
 
 /* =========================================================
-   PAINEL DO ADMINISTRADOR
+   PAINEL DO ADMINISTRADOR - Redesign profissional
    ========================================================= */
 #admin-shell{display:none;min-height:100vh;background:var(--parchment);}
 body.show-admin #admin-shell{display:block;}
-.admin-topbar{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:16px 32px;background:var(--paper);border-bottom:1px solid var(--line);
-  position:sticky;top:0;z-index:30;
-}
-.admin-brand{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--ink);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.admin-badge{font-family:var(--font-body);font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);padding:4px 11px;border-radius:20px;}
-.admin-layout{display:grid;grid-template-columns:240px 1fr;align-items:start;}
-.admin-nav{
-  padding:24px 16px;display:flex;flex-direction:column;gap:6px;
-  border-right:1px solid var(--line);position:sticky;top:65px;
-}
-.admin-nav-item{
-  display:flex;align-items:center;gap:10px;justify-content:space-between;
-  padding:12px 14px;border-radius:var(--radius-md);border:none;background:transparent;
-  color:var(--text-dim);font-size:.88rem;font-weight:600;cursor:pointer;text-align:left;
-  transition:background .2s ease;font-family:inherit;
-}
-.admin-nav-item:hover{background:var(--parchment-dim);}
-.admin-nav-item.active{background:var(--ink);color:var(--parchment);}
-[data-theme="dark"] .admin-nav-item.active{background:var(--gold);color:var(--ink);}
-.admin-nav-badge{background:var(--rose);color:#fff;font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:20px;min-width:18px;text-align:center;}
-.admin-content{padding:28px 32px;max-width:1100px;}
+.admin-shell-inner{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.admin-sidebar{background:var(--ink);display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.06);position:sticky;top:0;height:100vh;overflow-y:auto;}
+.admin-brand-block{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.admin-brand-row{display:flex;align-items:center;gap:10px;}
+.admin-brand-symbol{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gold-soft));display:flex;align-items:center;justify-content:center;font-size:17px;}
+.admin-brand-name{font-family:var(--font-display);font-weight:700;font-size:1rem;color:#FAF7EE;letter-spacing:.01em;}
+.admin-badge{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-family:var(--font-body);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-soft);background:rgba(201,154,74,.15);border:1px solid rgba(201,154,74,.22);padding:3px 8px;border-radius:20px;}
+.admin-nav{padding:16px 12px;flex:1;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.admin-nav-section-label{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 10px;margin:14px 0 5px;font-weight:600;}
+.admin-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);border:none;background:transparent;color:rgba(255,255,255,.52);font-size:.83rem;font-weight:500;cursor:pointer;text-align:left;width:100%;transition:all .18s ease;font-family:inherit;position:relative;}
+.admin-nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.88);}
+.admin-nav-item.active{background:rgba(201,154,74,.18);color:#FAF7EE;}
+.admin-nav-item.active .admin-nav-ic{color:var(--gold-soft);}
+[data-theme="dark"] .admin-nav-item.active{background:rgba(201,154,74,.22);}
+.admin-nav-ic{font-size:16px;width:20px;text-align:center;transition:color .18s;}
+.admin-nav-badge{margin-left:auto;background:var(--rose);color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;}
+.admin-sidebar-footer{padding:12px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.admin-user-pill{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius-sm);}
+.admin-user-av{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,var(--sage),var(--gold));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;}
+.admin-user-info{flex:1;min-width:0;}
+.admin-user-name{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.admin-user-status{font-size:.65rem;color:rgba(255,255,255,.34);display:flex;align-items:center;gap:4px;}
+.admin-live-dot{width:5px;height:5px;border-radius:50%;background:var(--sage);display:inline-block;animation:adminBlink 2s ease-in-out infinite;}
+@keyframes adminBlink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.admin-content-wrap{display:flex;flex-direction:column;background:var(--parchment);min-width:0;}
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 28px;background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;flex-shrink:0;}
+.admin-topbar-left{display:flex;align-items:center;gap:11px;}
+.admin-topbar-icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:19px;border:1px solid rgba(201,154,74,.2);}
+.admin-page-title{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--ink);}
+.admin-page-sub{font-size:.72rem;color:var(--text-faint);margin-top:1px;}
+.admin-topbar-actions{display:flex;align-items:center;gap:6px;}
+.admin-topbar-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);font-size:.78rem;font-weight:600;font-family:inherit;cursor:pointer;transition:all .18s ease;border:1px solid var(--line);background:transparent;color:var(--text-dim);}
+.admin-topbar-btn:hover{border-color:var(--gold);color:var(--ink);}
+.admin-topbar-btn.primary{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
+[data-theme="dark"] .admin-topbar-btn.primary{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+.admin-topbar-btn.primary:hover{opacity:.9;}
+.admin-content{padding:22px 28px 60px;max-width:1100px;font-size:calc(1rem * var(--content-scale));}
 .admin-panel{display:none;}
 .admin-panel.active{display:block;animation:riseIn .35s ease both;}
-.admin-page-title{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
-.admin-page-sub{font-size:.88rem;color:var(--text-dim);margin-bottom:22px;}
-.admin-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
-.admin-stat-card{text-align:center;padding:22px 14px;}
-.admin-stat-num{font-family:var(--font-display);font-size:2.1rem;font-weight:700;color:var(--ink);line-height:1;}
+.admin-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px;}
+.admin-stat-card{position:relative;overflow:hidden;padding:18px 16px;text-align:left;cursor:default;transition:border-color .18s, box-shadow .18s;}
+.admin-stat-card:hover{border-color:var(--gold-soft);box-shadow:var(--shadow);}
+.admin-stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,var(--adm-accent,var(--gold)),var(--adm-accent2,var(--gold-soft)));}
+.admin-stat-card.ac-gold{--adm-accent:var(--gold);--adm-accent2:var(--gold-soft);}
+.admin-stat-card.ac-sage{--adm-accent:var(--sage);--adm-accent2:#8FB294;}
+.admin-stat-card.ac-rose{--adm-accent:var(--rose);--adm-accent2:#D08A7C;}
+.admin-stat-card.ac-ink{--adm-accent:var(--ink);--adm-accent2:var(--ink-soft);}
+.admin-stat-eyebrow{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:9px;}
+.admin-stat-num{font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--ink);line-height:1;}
 .admin-stat-label{font-size:.76rem;color:var(--text-dim);margin-top:8px;line-height:1.4;}
-.admin-filter-row{display:flex;gap:8px;margin:2px 0 18px;flex-wrap:wrap;}
-.admin-filter-btn{padding:8px 16px;border-radius:20px;border:1px solid var(--line);background:var(--paper);color:var(--text-dim);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;}
+.admin-stat-icon{position:absolute;top:14px;right:14px;font-size:22px;opacity:.15;}
+.admin-sec-row{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px;}
+.admin-sec-title{font-family:var(--font-display);font-weight:700;font-size:.98rem;color:var(--ink);}
+.admin-sec-link{font-size:.75rem;color:var(--gold);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;}
+.admin-sec-link:hover{text-decoration:underline;}
+.admin-members-table{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;}
+.admin-member-row{display:flex;align-items:center;gap:13px;padding:12px 16px;border-bottom:1px solid var(--line);transition:background .15s;}
+.admin-member-row:last-child{border-bottom:none;}
+.admin-member-row:hover{background:var(--parchment);}
+.admin-member-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--sage),var(--gold));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;}
+.admin-member-info{flex:1;min-width:0;}
+.admin-member-name{font-weight:600;color:var(--ink);font-size:.86rem;}
+.admin-member-meta{font-size:.72rem;color:var(--text-faint);margin-top:1px;}
+.admin-member-tag{font-size:.64rem;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.adm-tag-new{background:var(--sage-soft);color:var(--sage);}
+.adm-tag-active{background:var(--gold-soft);color:#7A5A0A;}
+[data-theme="dark"] .adm-tag-active{background:rgba(201,154,74,.18);color:var(--gold);}
+.admin-member-date{font-family:var(--font-mono);font-size:.66rem;color:var(--text-faint);white-space:nowrap;margin-left:8px;}
+.admin-msg-item{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:var(--radius-md);padding:15px 16px;margin-bottom:10px;background:var(--paper);transition:box-shadow .18s;}
+.admin-msg-item:hover{box-shadow:var(--shadow-sm);}
+.admin-msg-item.is-pendente{border-left-color:var(--gold);}
+.admin-msg-item.is-visualizada{border-left-color:var(--sage);}
+.admin-msg-item.is-respondida{opacity:.7;border-left-color:var(--line);}
+.admin-msg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:9px;}
+.admin-msg-user{font-weight:700;color:var(--ink);font-size:.88rem;}
+.admin-msg-meta{font-size:.72rem;color:var(--text-faint);margin-top:2px;}
+.admin-msg-subject{display:inline-flex;align-items:center;gap:4px;font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);border:1px solid rgba(201,154,74,.2);padding:2px 8px;border-radius:20px;margin-bottom:9px;}
+.admin-msg-text{font-size:.86rem;line-height:1.65;color:var(--text-dim);white-space:pre-wrap;margin-bottom:11px;}
+.admin-msg-actions{display:flex;gap:7px;flex-wrap:wrap;}
+.admin-msg-actions .btn{font-size:.78rem;}
+.admin-empty-state{text-align:center;padding:48px 20px;color:var(--text-dim);font-size:.9rem;}
+.admin-filter-row{display:flex;gap:6px;margin:0 0 18px;flex-wrap:wrap;}
+.admin-filter-btn{padding:7px 15px;border-radius:20px;border:1px solid var(--line);background:var(--paper);color:var(--text-dim);font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .18s;}
+.admin-filter-btn:hover{border-color:var(--gold-soft);}
 .admin-filter-btn.active{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
 [data-theme="dark"] .admin-filter-btn.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
-.admin-msg-item{border:1px solid var(--line);border-radius:var(--radius-md);padding:16px 18px;margin-bottom:12px;background:var(--paper);}
-.admin-msg-item.is-pendente{border-left:3px solid var(--gold);}
-.admin-msg-item.is-visualizada{border-left:3px solid var(--sage);}
-.admin-msg-item.is-respondida{opacity:.72;}
-.admin-msg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
-.admin-msg-user{font-weight:700;color:var(--ink);font-size:.92rem;}
-.admin-msg-meta{font-size:.75rem;color:var(--text-faint);margin-top:2px;}
-.admin-msg-subject{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);padding:3px 10px;border-radius:20px;margin-bottom:10px;}
-.admin-msg-text{font-size:.9rem;line-height:1.65;color:var(--text);white-space:pre-wrap;margin-bottom:12px;}
-.admin-empty-state{text-align:center;padding:40px 20px;color:var(--text-dim);font-size:.9rem;}
-.admin-member-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);}
-.admin-member-row:last-child{border-bottom:none;}
-.admin-member-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--sage),var(--gold));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:.9rem;}
-.admin-member-name{font-weight:600;color:var(--ink);font-size:.9rem;}
-.admin-member-meta{font-size:.78rem;color:var(--text-dim);}
-.admin-member-tag{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--sage);background:var(--sage-soft);padding:3px 10px;border-radius:20px;}
-
-@media(max-width:900px){
-  .admin-layout{grid-template-columns:1fr;}
-  .admin-nav{flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--line);padding:14px 16px;position:relative;top:0;}
-  .admin-nav-item{flex:1 1 auto;justify-content:center;min-width:120px;}
-  .admin-content{padding:20px 16px;}
+@media(max-width:920px){
+  .admin-shell-inner{grid-template-columns:1fr;}
+  .admin-sidebar{position:relative;height:auto;}
+  .admin-brand-block{padding:14px 16px;}
+  .admin-nav{flex-direction:row;flex-wrap:wrap;padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);}
+  .admin-nav-item{flex:1 1 auto;justify-content:center;min-width:110px;}
+  .admin-nav-section-label{display:none;}
+  .admin-sidebar-footer{padding:10px 12px;}
+  .admin-topbar{padding:12px 16px;}
+  .admin-content{padding:16px;}
   .admin-stats-grid{grid-template-columns:repeat(2,1fr);}
-  .admin-topbar{padding:14px 16px;}
 }
 
 .auth-bg{
@@ -2489,111 +2527,150 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 </div>
 
 <div id="admin-shell">
-  <div class="admin-topbar">
-    <div class="admin-brand">🏺 IPDF <span class="admin-badge">Painel do administrador</span></div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-ghost btn-sm" id="admin-back-to-site-btn">← Voltar ao site</button>
-      <button class="btn btn-ghost btn-sm" id="admin-logout-btn">Sair</button>
-    </div>
-  </div>
-  <div class="admin-layout">
-    <nav class="admin-nav">
-      <button class="admin-nav-item active" data-admin-tab="visao-geral"><span>📊 Visão geral</span></button>
-      <button class="admin-nav-item" data-admin-tab="mensagens"><span>✉️ Mensagens de suporte</span><span class="admin-nav-badge" id="admin-msg-badge" style="display:none;">0</span></button>
-      <button class="admin-nav-item" data-admin-tab="oracoes"><span>🙏 Pedidos de Oração</span><span class="admin-nav-badge" id="admin-oracao-badge" style="display:none;">0</span></button>
-      <button class="admin-nav-item" data-admin-tab="membros"><span>👥 Membros</span></button>
-    </nav>
-
-    <div class="admin-content">
-
-      <div class="admin-panel active" id="admin-panel-visao-geral">
-        <div class="admin-page-title">Visão geral</div>
-        <div class="admin-page-sub">Um retrato rápido de como a comunidade está usando o app.</div>
-
-        <div class="admin-stats-grid">
-          <div class="card admin-stat-card">
-            <div class="admin-stat-num" id="admin-stat-membros">—</div>
-            <div class="admin-stat-label">membros cadastrados</div>
-          </div>
-          <div class="card admin-stat-card">
-            <div class="admin-stat-num" id="admin-stat-novos">—</div>
-            <div class="admin-stat-label">novos membros nos últimos 7 dias</div>
-          </div>
-          <div class="card admin-stat-card">
-            <div class="admin-stat-num" id="admin-stat-pendentes">—</div>
-            <div class="admin-stat-label">mensagens de suporte pendentes</div>
-          </div>
-          <div class="card admin-stat-card">
-            <div class="admin-stat-num" id="admin-stat-oracoes">—</div>
-            <div class="admin-stat-label">pedidos de oração registrados</div>
-          </div>
-          <div class="card admin-stat-card">
-            <div class="admin-stat-num" id="admin-stat-devocionais">—</div>
-            <div class="admin-stat-label">anotações de devocional feitas</div>
-          </div>
-          <div class="card admin-stat-card">
-            <div class="admin-stat-num" id="admin-stat-favoritos">—</div>
-            <div class="admin-stat-label">versículos favoritados</div>
-          </div>
-          <div class="card admin-stat-card">
-            <div class="admin-stat-num" id="admin-stat-planos">—</div>
-            <div class="admin-stat-label">dias de leitura marcados</div>
-          </div>
-          <div class="card admin-stat-card">
-            <div class="admin-stat-num" id="admin-stat-estudos">—</div>
-            <div class="admin-stat-label">estudos bíblicos concluídos</div>
+  <div class="admin-shell-inner">
+    <aside class="admin-sidebar">
+      <div class="admin-brand-block">
+        <div class="admin-brand-row">
+          <div class="admin-brand-symbol">&#10013;</div>
+          <div><div class="admin-brand-name">IPDF</div></div>
+        </div>
+        <div class="admin-badge">&#9881; Painel do administrador</div>
+      </div>
+      <nav class="admin-nav">
+        <div class="admin-nav-section-label">Navegação</div>
+        <button class="admin-nav-item active" data-admin-tab="visao-geral">
+          <span class="admin-nav-ic">&#128202;</span> Visão geral
+        </button>
+        <button class="admin-nav-item" data-admin-tab="mensagens">
+          <span class="admin-nav-ic">&#9993;&#65039;</span> Mensagens de suporte
+          <span class="admin-nav-badge" id="admin-msg-badge" style="display:none;">0</span>
+        </button>
+        <button class="admin-nav-item" data-admin-tab="oracoes">
+          <span class="admin-nav-ic">&#128591;</span> Pedidos de oração
+          <span class="admin-nav-badge" id="admin-oracao-badge" style="display:none;">0</span>
+        </button>
+        <button class="admin-nav-item" data-admin-tab="membros">
+          <span class="admin-nav-ic">&#128101;</span> Membros
+        </button>
+        <div class="admin-nav-section-label">Aplicativo</div>
+        <button class="admin-nav-item" data-admin-tab="bible">
+          <span class="admin-nav-ic">&#128214;</span> Bíblia
+        </button>
+        <button class="admin-nav-item" data-admin-tab="conversas">
+          <span class="admin-nav-ic">&#128172;</span> Conversas
+        </button>
+        <button class="admin-nav-item" data-admin-tab="comunidade">
+          <span class="admin-nav-ic">&#127963;&#65039;</span> Comunidade
+        </button>
+        <button class="admin-nav-item" data-admin-tab="perfil">
+          <span class="admin-nav-ic">&#128100;</span> Perfil
+        </button>
+      </nav>
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-pill">
+          <div class="admin-user-av" id="admin-sidebar-av">AD</div>
+          <div class="admin-user-info">
+            <div class="admin-user-name" id="admin-sidebar-name">Administrador</div>
+            <div class="admin-user-status"><span class="admin-live-dot"></span>Online</div>
           </div>
         </div>
-
-        <div class="card">
-          <div class="settings-card-title">Membros mais recentes</div>
-          <div id="admin-recentes-list"><div class="admin-empty-state">Carregando…</div></div>
+        <div style="display:flex;gap:6px;padding:6px 10px 0;">
+          <button class="admin-topbar-btn" id="admin-logout-btn" style="flex:1;justify-content:center;font-size:.75rem;">Sair</button>
         </div>
       </div>
-
-      <div class="admin-panel" id="admin-panel-mensagens">
-        <div class="admin-page-title">Mensagens de suporte</div>
-        <div class="admin-page-sub">Dúvidas, sugestões, problemas relatados e pedidos para falar com a liderança.</div>
-
-        <div class="admin-filter-row">
-          <button class="admin-filter-btn active" data-admin-filter="todas">Todas</button>
-          <button class="admin-filter-btn" data-admin-filter="pendentes">Pendentes</button>
-          <button class="admin-filter-btn" data-admin-filter="respondidas">Já tratadas</button>
+    </aside>
+    <div class="admin-content-wrap">
+      <div class="admin-topbar" id="admin-topbar-bar">
+        <div class="admin-topbar-left">
+          <div class="admin-topbar-icon" id="admin-topbar-icon">&#128202;</div>
+          <div>
+            <div class="admin-page-title" id="admin-topbar-title">Visão geral</div>
+            <div class="admin-page-sub" id="admin-topbar-sub">Retrato rápido de como a comunidade usa o app</div>
+          </div>
         </div>
-
-        <div id="admin-mensagens-list"><div class="admin-empty-state">Carregando…</div></div>
-      </div>
-
-      <div class="admin-panel" id="admin-panel-oracoes">
-        <div class="admin-page-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-          <span>Pedidos de Oração</span>
-          <button class="btn btn-ghost btn-sm" id="admin-oracoes-refresh-btn">🔄 Atualizar pedidos de oração</button>
-        </div>
-        <div class="admin-page-sub">Pedidos individuais dos membros. Só o administrador vê de quem é cada pedido — o membro só vê o status do seu próprio pedido.</div>
-
-        <div class="admin-filter-row">
-          <button class="admin-filter-btn active" data-admin-oracao-filter="todas">Todos</button>
-          <button class="admin-filter-btn" data-admin-oracao-filter="pendentes">Pendentes</button>
-          <button class="admin-filter-btn" data-admin-oracao-filter="visualizados">Visualizados</button>
-          <button class="admin-filter-btn" data-admin-oracao-filter="respondidos">Respondidos</button>
-        </div>
-
-        <div id="admin-oracoes-list"><div class="admin-empty-state">Carregando…</div></div>
-      </div>
-
-      <div class="admin-panel" id="admin-panel-membros">
-        <div class="admin-page-title">Membros</div>
-        <div class="admin-page-sub">Todos os usuários cadastrados no app, do mais recente para o mais antigo.</div>
-
-        <div class="card">
-          <div id="admin-membros-list"><div class="admin-empty-state">Carregando…</div></div>
+        <div class="admin-topbar-actions">
+          <button class="admin-topbar-btn primary" id="admin-refresh-btn">&#128260; Atualizar</button>
         </div>
       </div>
-
+      <div class="admin-content">
+        <div class="admin-panel active" id="admin-panel-visao-geral">
+          <div class="admin-stats-grid">
+            <div class="card admin-stat-card ac-gold">
+              <div class="admin-stat-icon">&#128101;</div>
+              <div class="admin-stat-eyebrow">Membros cadastrados</div>
+              <div class="admin-stat-num" id="admin-stat-membros">&#8212;</div>
+            </div>
+            <div class="card admin-stat-card ac-sage">
+              <div class="admin-stat-icon">&#10024;</div>
+              <div class="admin-stat-eyebrow">Novos nos últimos 7 dias</div>
+              <div class="admin-stat-num" id="admin-stat-novos">&#8212;</div>
+            </div>
+            <div class="card admin-stat-card ac-rose">
+              <div class="admin-stat-icon">&#9993;&#65039;</div>
+              <div class="admin-stat-eyebrow">Mensagens pendentes</div>
+              <div class="admin-stat-num" id="admin-stat-pendentes">&#8212;</div>
+            </div>
+            <div class="card admin-stat-card ac-ink">
+              <div class="admin-stat-icon">&#128591;</div>
+              <div class="admin-stat-eyebrow">Pedidos de oração</div>
+              <div class="admin-stat-num" id="admin-stat-oracoes">&#8212;</div>
+            </div>
+          </div>
+          <div class="admin-stats-grid">
+            <div class="card admin-stat-card ac-sage">
+              <div class="admin-stat-icon">&#128220;</div>
+              <div class="admin-stat-eyebrow">Devocionais feitos</div>
+              <div class="admin-stat-num" id="admin-stat-devocionais">&#8212;</div>
+            </div>
+            <div class="card admin-stat-card ac-gold">
+              <div class="admin-stat-icon">&#10084;&#65039;</div>
+              <div class="admin-stat-eyebrow">Versículos favoritados</div>
+              <div class="admin-stat-num" id="admin-stat-favoritos">&#8212;</div>
+            </div>
+            <div class="card admin-stat-card ac-ink">
+              <div class="admin-stat-icon">&#128197;</div>
+              <div class="admin-stat-eyebrow">Dias de leitura marcados</div>
+              <div class="admin-stat-num" id="admin-stat-planos">&#8212;</div>
+            </div>
+            <div class="card admin-stat-card ac-rose">
+              <div class="admin-stat-icon">&#128218;</div>
+              <div class="admin-stat-eyebrow">Estudos concluídos</div>
+              <div class="admin-stat-num" id="admin-stat-estudos">&#8212;</div>
+            </div>
+          </div>
+          <div class="admin-sec-row">
+            <div class="admin-sec-title">Membros mais recentes</div>
+          </div>
+          <div class="admin-members-table">
+            <div id="admin-recentes-list"><div class="admin-empty-state">Carregando…</div></div>
+          </div>
+        </div>
+        <div class="admin-panel" id="admin-panel-mensagens">
+          <div class="admin-filter-row">
+            <button class="admin-filter-btn active" data-admin-filter="todas">Todas</button>
+            <button class="admin-filter-btn" data-admin-filter="pendentes">Pendentes</button>
+            <button class="admin-filter-btn" data-admin-filter="respondidas">Já tratadas</button>
+          </div>
+          <div id="admin-mensagens-list"><div class="admin-empty-state">Carregando…</div></div>
+        </div>
+        <div class="admin-panel" id="admin-panel-oracoes">
+          <div class="admin-filter-row">
+            <button class="admin-filter-btn active" data-admin-oracao-filter="todas">Todos</button>
+            <button class="admin-filter-btn" data-admin-oracao-filter="pendentes">Pendentes</button>
+            <button class="admin-filter-btn" data-admin-oracao-filter="visualizados">Visualizados</button>
+            <button class="admin-filter-btn" data-admin-oracao-filter="respondidos">Respondidos</button>
+          </div>
+          <div id="admin-oracoes-list"><div class="admin-empty-state">Carregando…</div></div>
+        </div>
+        <div class="admin-panel" id="admin-panel-membros">
+          <div class="admin-members-table">
+            <div id="admin-membros-list"><div class="admin-empty-state">Carregando…</div></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
 <div id="app-shell">
 
   <!-- ===================== SIDEBAR ===================== -->
@@ -2632,11 +2709,6 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <button class="nav-item nav-item-comum" data-view="campaigns"><span class="ic">🔥</span>Campanhas Proféticas</button>
       <button class="nav-item" data-view="conversas"><span class="ic">💬</span>Conversas<span class="badge" id="conv-nav-badge" style="display:none;background:var(--rose);color:#fff;">0</span></button>
       <button class="nav-item" data-view="comunidade"><span class="ic">🏛️</span>Comunidade</button>
-    </div>
-
-    <div class="nav-group" id="nav-admin-group" hidden>
-      <div class="nav-label">Administração</div>
-      <button class="nav-item" id="nav-open-admin-panel" type="button"><span class="ic">🛠️</span>Painel Admin</button>
     </div>
 
     <div class="sidebar-footer">
@@ -8092,6 +8164,7 @@ function syncDashSurpriseFavBtn(){
           if(typeof renderFavorites === 'function') renderFavorites();
           if(typeof renderDashFavorites === 'function') renderDashFavorites();
           if(typeof renderDevoNoteBlocks === 'function') renderDevoNoteBlocks();
+          document.body.classList.remove('show-admin');
           document.body.classList.add('show-auth');
           window.resetAuthScroll && window.resetAuthScroll();
           toast('Você saiu da sua conta.', '👋');
@@ -8184,6 +8257,7 @@ function syncDashSurpriseFavBtn(){
           deleteBox.style.display = 'none';
           deleteBtn.style.display = '';
           if(deletePassEl) deletePassEl.value = '';
+          document.body.classList.remove('show-admin');
           document.body.classList.add('show-auth');
           window.resetAuthScroll && window.resetAuthScroll();
           toast('Sua conta foi excluída.', '👋');
@@ -8644,24 +8718,91 @@ function renderAdminRecentes(){
 
 function adminMemberRowHtml(m){
   const inicial = (m.nome_exibicao || m.nome_usuario || '?').charAt(0).toUpperCase();
-  const desde = new Date(m.criado_em).toLocaleDateString('pt-BR', {day:'2-digit', month:'short', year:'numeric'});
+  const criado  = new Date(m.criado_em);
+  const agora   = new Date();
+  const diffDias = Math.floor((agora - criado) / 86400000);
+  const dataLabel = diffDias === 0 ? 'hoje'
+    : diffDias === 1 ? 'ontem'
+    : diffDias < 7  ? 'há ' + diffDias + ' dias'
+    : criado.toLocaleDateString('pt-BR', {day:'2-digit', month:'short', year:'numeric'});
+  const isNovo = diffDias <= 7;
+  const tagClass = isNovo ? 'adm-tag-new' : 'adm-tag-active';
+  const tagLabel = isNovo ? 'Novo' : 'Ativo';
+  const seqStr = m.sequencia_atual ? ' · 🔥 ' + m.sequencia_atual + ' dias' : '';
   return `
     <div class="admin-member-row">
       <div class="admin-member-avatar">${escapeHtml(inicial)}</div>
-      <div>
+      <div class="admin-member-info">
         <div class="admin-member-name">${escapeHtml(m.nome_exibicao || m.nome_usuario)}</div>
-        <div class="admin-member-meta">${escapeHtml(m.nome_usuario)} · cadastrado em ${desde}</div>
+        <div class="admin-member-meta">@${escapeHtml(m.nome_usuario)}${seqStr}</div>
       </div>
-      ${m.membro_desde ? `<span class="admin-member-tag">membro desde ${new Date(m.membro_desde+'T00:00:00').toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}</span>` : ''}
+      <span class="admin-member-tag ${tagClass}">${tagLabel}</span>
+      <div class="admin-member-date">${dataLabel}</div>
     </div>`;
 }
 
 (function initAdmin(){
+  const adminTabMeta = {
+    'visao-geral': { icon:'\ud83d\udcca', title:'Visão geral',          sub:'Retrato rápido de como a comunidade usa o app' },
+    'mensagens':   { icon:'\u2709\ufe0f',  title:'Mensagens de suporte', sub:'Dúvidas, sugestões e pedidos recebidos' },
+    'oracoes':     { icon:'\ud83d\ude4f', title:'Pedidos de oração',sub:'Só o administrador vê quem enviou cada pedido' },
+    'membros':     { icon:'\ud83d\udc65', title:'Membros',               sub:'Todos os usuários cadastrados, do mais recente ao mais antigo' },
+    'bible':       { icon:'\ud83d\udcd6', title:'Bíblia',                sub:'Leitura da Palavra' },
+    'conversas':   { icon:'\ud83d\udcac', title:'Conversas',             sub:'Converse diretamente com os membros' },
+    'comunidade':  { icon:'\ud83c\udfdb\ufe0f', title:'Comunidade',      sub:'Mural, canais, cultos e aniversariantes' },
+    'perfil':      { icon:'\ud83d\udc64', title:'Perfil',                sub:'Suas informações e preferências' },
+  };
+  // Abas que reaproveitam telas já existentes do app (em vez de um painel de estatísticas)
+  const ADMIN_TAB_PARA_VIEW = { bible:'bible', conversas:'conversas', comunidade:'comunidade', perfil:'settings' };
+  const topbarIcon  = document.getElementById('admin-topbar-icon');
+  const topbarTitle = document.getElementById('admin-topbar-title');
+  const topbarSub   = document.getElementById('admin-topbar-sub');
+  function updateAdminTopbar(tab){
+    const meta = adminTabMeta[tab] || adminTabMeta['visao-geral'];
+    if(topbarIcon)  topbarIcon.textContent  = meta.icon;
+    if(topbarTitle) topbarTitle.textContent = meta.title;
+    if(topbarSub)   topbarSub.textContent   = meta.sub;
+  }
+  const adminRefreshBtn = document.getElementById('admin-refresh-btn');
+  if(adminRefreshBtn){
+    adminRefreshBtn.addEventListener('click', async ()=>{
+      adminRefreshBtn.disabled = true;
+      const orig = adminRefreshBtn.textContent;
+      adminRefreshBtn.textContent = '\ud83d\udd04 Atualizando\u2026';
+      try{
+        const tabAtiva = document.querySelector('[data-admin-tab].active')?.dataset.adminTab || 'visao-geral';
+        if(tabAtiva === 'oracoes')       await carregarAdminOracoes();
+        else if(tabAtiva === 'membros')  await carregarAdminMembros();
+        else if(tabAtiva === 'mensagens') await carregarAdminMensagens();
+        else await carregarAdminStats();
+        toast('Painel atualizado.', '\ud83d\udd04');
+      }catch(e){ toast('Não foi possível atualizar.', '\u26a0\ufe0f'); }
+      finally{ adminRefreshBtn.disabled = false; adminRefreshBtn.textContent = orig; }
+    });
+  }
   document.querySelectorAll('[data-admin-tab]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const tab = btn.dataset.adminTab;
       document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('active', b===btn));
-      document.querySelectorAll('.admin-panel').forEach(p=>p.classList.toggle('active', p.id === 'admin-panel-'+tab));
+      const viewAlvo = ADMIN_TAB_PARA_VIEW[tab];
+      if(viewAlvo){
+        // Aba que mostra uma tela do app (Bíblia, Conversas, Comunidade, Perfil)
+        document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+        if(typeof switchView === 'function') switchView(viewAlvo);
+      } else {
+        // Aba de estatísticas do painel (Visão geral, Mensagens, Orações, Membros).
+        // Se o admin estava em Conversas/Comunidade, encerra o "polling" dessas
+        // telas antes de sair, do mesmo jeito que switchView() já faz.
+        if(state.view === 'conversas' && typeof pararPollingConversas === 'function') pararPollingConversas();
+        if(state.view === 'comunidade'){
+          if(typeof pararPollingComunidade === 'function') pararPollingComunidade();
+          if(typeof fecharCanalComunidade === 'function') fecharCanalComunidade();
+        }
+        state.view = null;
+        document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+        document.querySelectorAll('.admin-panel').forEach(p=>p.classList.toggle('active', p.id === 'admin-panel-'+tab));
+      }
+      updateAdminTopbar(tab);
       window.scrollTo({top:0, behavior:'smooth'});
     });
   });
@@ -9532,21 +9673,29 @@ let presencaHeartbeatTimer = null;
 const MESES_PT = ['','janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
 /* ---- Controla quem vê os botões de administrador (Comunidade + Painel Admin) ---- */
-const VIEWS_PERMITIDAS_ADMIN = ['bible', 'conversas', 'comunidade'];
 function aplicarPermissoesAdmin(){
   const isAdmin = !!(state.perfil && state.perfil.admin);
   document.querySelectorAll('.cu-admin-only').forEach(el => { el.hidden = !isAdmin; });
-  const navAdminGroup = document.getElementById('nav-admin-group');
-  if(navAdminGroup) navAdminGroup.hidden = !isAdmin;
 
-  // Administrador só navega por Bíblia, Conversas e Comunidade — o resto do
-  // site (Início, Painel espiritual, Devocional, Planos, Estudos, IA, Notas,
-  // Favoritos, Oração, Quiz, Biblioteca e Campanhas) é exclusivo dos membros comuns.
+  if(isAdmin){
+    // Move as telas de Bíblia, Conversas, Comunidade e Perfil para dentro do
+    // Painel do Administrador, para que fiquem reunidas no mesmo painel
+    // (em vez de ficarem no site "normal", que o admin não usa mais).
+    const adminContent = document.querySelector('#admin-shell .admin-content');
+    if(adminContent){
+      ['view-bible', 'view-conversas', 'view-comunidade', 'view-settings'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el && el.parentElement !== adminContent) adminContent.appendChild(el);
+      });
+    }
+  }
+
+  // Administrador só navega por Bíblia, Conversas, Comunidade e Perfil — o
+  // resto do site (Início, Painel espiritual, Devocional, Planos, Estudos,
+  // IA, Notas, Favoritos, Oração, Quiz, Biblioteca e Campanhas) é exclusivo
+  // dos membros comuns.
   document.querySelectorAll('.nav-item-comum').forEach(el => { el.hidden = isAdmin; });
   document.querySelectorAll('.nav-group-comum').forEach(el => { el.hidden = isAdmin; });
-  if(isAdmin && state.view && !VIEWS_PERMITIDAS_ADMIN.includes(state.view) && typeof switchView === 'function'){
-    switchView('comunidade');
-  }
 }
 
 /* ---- Presença ("Membros Online") — avisa o banco a cada 60s que este usuário está ativo ---- */
@@ -10321,16 +10470,6 @@ document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', (
   });
 });
 
-/* ---- Acesso ao Painel Admin (mensagens de suporte e membros) a partir da Comunidade ---- */
-document.getElementById('nav-open-admin-panel')?.addEventListener('click', ()=>{
-  document.body.classList.add('show-admin');
-  if(typeof carregarPainelAdmin === 'function') carregarPainelAdmin();
-});
-document.getElementById('admin-back-to-site-btn')?.addEventListener('click', ()=>{
-  document.body.classList.remove('show-admin');
-  switchView('comunidade');
-});
-
 (function initAuth(){
   const tabs = document.getElementById('auth-tabs');
   const glass = document.getElementById('auth-glass');
@@ -10426,18 +10565,24 @@ document.getElementById('admin-back-to-site-btn')?.addEventListener('click', ()=
       localStorage.removeItem('ipge_token');
     }
 
-    // Contas de administrador também entram no app normal (para poder usar a
-    // Comunidade como qualquer membro, com os controles extras de admin). O
-    // Painel Admin (mensagens de suporte e membros) continua disponível à
-    // parte, pelo botão "Painel Admin" que aparece na barra lateral.
+    // Contas de administrador entram direto no Painel do Administrador, que
+    // reúne visão geral, mensagens, orações, membros e também Bíblia,
+    // Conversas, Comunidade e Perfil, tudo em um só lugar.
     if(typeof carregarDadosDoUsuario === 'function'){
       await carregarDadosDoUsuario();
     }
     document.body.classList.remove('show-auth');
-    document.body.classList.remove('show-admin');
     document.body.classList.remove('show-autologin');
     if(typeof iniciarHeartbeatPresenca === 'function') iniciarHeartbeatPresenca();
-    switchView(state.perfil && state.perfil.admin ? 'comunidade' : 'home');
+
+    const isAdmin = !!(state.perfil && state.perfil.admin);
+    if(isAdmin){
+      document.body.classList.add('show-admin');
+      if(typeof carregarPainelAdmin === 'function') carregarPainelAdmin();
+    } else {
+      document.body.classList.remove('show-admin');
+      switchView('home');
+    }
   }
 
   const loginBtn = document.getElementById('auth-login-btn');
