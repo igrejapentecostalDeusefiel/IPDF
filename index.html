@@ -8871,9 +8871,8 @@ function adminMemberRowHtml(m){
    CONVERSAS
    ========================================================= */
 let convContatos = [];
-let convAtivo = null; // id do contato ativo, ou 'admin'
+let convAtivo = null; // id do contato ativo
 let convMinhasMensagensSuporte = [];
-let convAdminAdicionado = false; // true se algum admin te adicionou como contato (libera o canal "Administração")
 
 let convSolicitacoes = [];
 
@@ -8936,10 +8935,11 @@ async function carregarConversas(){
   if(errSuporte){ console.error('Erro ao carregar mensagens de suporte:', errSuporte); }
   if(errSolic){ console.error('Erro ao carregar solicitações de contato:', errSolic); }
   const todosContatos = contatosData || [];
-  // O canal fixo "Administração" só aparece pra quem um admin adicionou como contato
-  // (contas com admin=true não entram na lista normal de contatos, viram só essa flag)
-  convAdminAdicionado = todosContatos.some(c => c.admin === true);
-  convContatos = todosContatos.filter(c => c.admin !== true);
+  // Contatos que são administradores aparecem como uma conversa individual normal,
+  // igual a qualquer outro contato — assim a mensagem que o admin manda chega de
+  // verdade para a pessoa (antes ficava presa no canal genérico "Administração",
+  // que a pessoa nunca via).
+  convContatos = todosContatos;
   if(!errSuporte) convMinhasMensagensSuporte = suporteData || [];
   if(!errSolic) convSolicitacoes = solicData || [];
   renderConvList();
@@ -8977,21 +8977,6 @@ function renderConvList(){
         </div>
       `).join('')}
     </div>`;
-  }
-
-  // Só mostra o canal fixo "Administração" pra quem foi adicionado por um admin
-  // (mesmo quem já tem mensagens antigas de suporte só volta a ver se for adicionado)
-  if(convAdminAdicionado){
-    const adminPendente = convMinhasMensagensSuporte.some(m => !m.respondida);
-    html += `
-      <div class="conv-item pinned ${convAtivo==='admin' ? 'active' : ''}" data-conv-open="admin">
-        <div class="conv-avatar">🕊️</div>
-        <div class="conv-item-info">
-          <div class="conv-item-name">Administração</div>
-          <div class="conv-item-preview">Dúvidas, sugestões e suporte</div>
-        </div>
-        ${adminPendente ? '<span class="conv-item-unread">•</span>' : ''}
-      </div>`;
   }
 
   if(!convContatos.length){
