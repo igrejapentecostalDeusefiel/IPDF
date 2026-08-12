@@ -9479,10 +9479,17 @@ async function enviarPushViaEdgeFunction(payload, subscriptions) {
   try {
     const resp = await fetch(EDGE_FUNCTION_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey':        SUPABASE_ANON_KEY,
+      },
       body: JSON.stringify({ ...payload, subscriptions }),
     });
-    if (!resp.ok) throw new Error('Edge Function retornou ' + resp.status);
+    if (!resp.ok) {
+      const txt = await resp.text().catch(() => '');
+      throw new Error(`Edge Function retornou ${resp.status}: ${txt}`);
+    }
     return await resp.json();
   } catch(e) {
     console.error('[Push] Erro na Edge Function:', e);
