@@ -9087,23 +9087,51 @@ self.addEventListener('pushsubscriptionchange', (event) => {
 
 async function registrarServiceWorker() {
   if (!('serviceWorker' in navigator)) return null;
+
+  // 1. Tenta sw.js real na raiz (GitHub Pages / Netlify com arquivo separado)
   try {
-    // Tenta primeiro um sw.js real na raiz (se existir)
-    const swUrl = '/sw.js';
-    const swCheck = await fetch(swUrl, { method: 'HEAD' }).catch(() => null);
-    if (swCheck && swCheck.ok) {
-      const reg = await navigator.serviceWorker.register(swUrl, { scope: '/' });
-      return reg;
+    const res = await fetch('sw.js', { method: 'HEAD' });
+    if (res.ok) {
+      return await navigator.serviceWorker.register('/sw.js', { scope: '/' });
     }
   } catch(e) {}
-  // Fallback: Blob URL com o código embutido
+
+  // 2. Fallback: injeta o SW via Cache API + ServiceWorker virtual
+  //    Funciona porque o cache é da mesma origem (https://seu-site.com)
+  //    e o SW pode ser servido a partir dele via fetch handler.
+  //    Técnica: registra um SW mínimo que usa importScripts do cache.
   try {
-    const blob = new Blob([SW_CODE], { type: 'application/javascript' });
-    const swUrl = URL.createObjectURL(blob);
-    const reg   = await navigator.serviceWorker.register(swUrl, { scope: './' });
+    // SW mínimo que carrega o código real do Cache
+    const LOADER_CODE = `
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open('sw-code-v1').then(c => c.match('sw-code')).then(r => {
+      if (!r) { self.skipWaiting(); return; }
+      return r.text().then(code => eval(code)).then(() => self.skipWaiting());
+    })
+  );
+});
+self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+`;
+    // Salva o código real do SW no Cache
+    const cache = await caches.open('sw-code-v1');
+    await cache.put('sw-code', new Response(SW_CODE, { headers: { 'Content-Type': 'application/javascript' } }));
+
+    const blob   = new Blob([LOADER_CODE], { type: 'application/javascript' });
+    const blobUrl = URL.createObjectURL(blob);
+    const reg    = await navigator.serviceWorker.register(blobUrl);
+    return reg;
+  } catch(e) {}
+
+  // 3. Último recurso: Blob direto com o código completo (sem escopo /,
+  //    mas ainda registra o pushManager corretamente em Chromium)
+  try {
+    const blob   = new Blob([SW_CODE], { type: 'application/javascript' });
+    const blobUrl = URL.createObjectURL(blob);
+    const reg    = await navigator.serviceWorker.register(blobUrl);
     return reg;
   } catch(e) {
-    console.warn('[Push] Falha ao registrar Service Worker:', e);
+    console.warn('[Push] Todos os métodos de registro de SW falharam:', e);
     return null;
   }
 }
@@ -9150,7 +9178,14 @@ async function ativarPushNotifications() {
 
   const reg = await registrarServiceWorker();
   if (!reg) {
-    toast('Falha ao inicializar o Service Worker.', '❌');
+    // SW não registrou — usa Notification API direta (funciona com app aberto)
+    // Push com app fechado não estará disponível, mas o restante funciona
+    console.warn('[Push] SW não disponível — usando Notification API direta.');
+    if (Notification.permission === 'granted') {
+      localStorage.setItem('ipdf_push_active', '1');
+      atualizarUIPushSettings(true);
+      toast('Notificações ativadas (modo básico) 🔔', '✅');
+    }
     return false;
   }
 
