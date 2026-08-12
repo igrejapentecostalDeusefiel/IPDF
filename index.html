@@ -9118,11 +9118,12 @@ self.addEventListener('pushsubscriptionchange', event => {
 async function registrarServiceWorker() {
   if (!('serviceWorker' in navigator)) return null;
 
-  // --- Estratégia 1: sw.js separado na raiz (melhor opção) ---
+  // --- Estratégia 1: sw.js no mesmo diretório (funciona no GitHub Pages) ---
   try {
-    const res = await fetch('sw.js', { method: 'HEAD' });
+    const swPath = 'sw.js';
+    const res = await fetch(swPath, { method: 'HEAD' });
     if (res.ok) {
-      const reg = await navigator.serviceWorker.register('sw.js', { scope: '/' });
+      const reg = await navigator.serviceWorker.register(swPath);
       return reg;
     }
   } catch(e) {}
