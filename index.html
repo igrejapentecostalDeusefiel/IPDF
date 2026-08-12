@@ -771,10 +771,6 @@ body.show-admin #admin-shell{display:block;}
 .auth-orb-3{width:300px;height:300px;top:30%;right:8%;background:radial-gradient(circle,rgba(201,154,74,.55),transparent 70%);opacity:.55;animation-delay:-9s;}
 @keyframes authFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(24px,-26px) scale(1.08);}}
 
-@media(prefers-reduced-motion:reduce){
-  .auth-bg-video{display:none;}
-}
-
 /* Em telas de toque (celular/tablet), o vídeo continua tocando, mas tiramos o
    filtro CSS (saturate/contrast) que o navegador recalcularia a cada frame —
    isso sozinho já pesa bastante numa GPU de celular. Os orbes com blur
@@ -2263,9 +2259,8 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
           if(!v) return;
           var conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
           var saveData = !!(conn && (conn.saveData || /(^|\b)(slow-2g|2g)($|\b)/.test(conn.effectiveType || '')));
-          var reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-          if(saveData || reducedMotion){
-            // Só nesses dois casos (dado limitado ou acessibilidade) o vídeo fica desligado.
+          if(saveData){
+            // Só quando o navegador avisa que o dado é limitado o vídeo fica desligado.
             v.querySelectorAll('source').forEach(function(s){ s.remove(); });
             v.style.display = 'none';
             return;
@@ -8568,13 +8563,28 @@ async function responderDuvidaSuporte(msg){
     await carregarConversas();
   }
 
-  convDuvidaContexto = {
-    userId,
-    nome: msg.nome_exibicao || msg.nome_usuario,
-    assunto: msg.assunto,
-    mensagem: msg.mensagem,
-    criadoEm: msg.criado_em
-  };
+  // Encaminha a dúvida como uma mensagem de verdade na conversa, pra ela
+  // aparecer tanto pro admin quanto pra pessoa que perguntou — mas só uma
+  // vez (se o botão for clicado de novo, não duplica).
+  const { data: existentes, error: errExistentes } = await db.rpc('listar_mensagens_diretas', { p_token: state.sessionToken, p_contato_id: userId });
+  if(errExistentes) console.error('Erro ao verificar mensagens existentes:', errExistentes);
+  const jaEncaminhada = (existentes || []).some(m2 => {
+    const d = decodificarDuvidaSuporte(m2.texto);
+    return d && d.origemId === msg.id;
+  });
+  if(!jaEncaminhada){
+    const { error: errEnvio } = await db.rpc('enviar_mensagem_direta', {
+      p_token: state.sessionToken, p_destinatario_id: userId,
+      p_texto: codificarDuvidaSuporte({
+        origemId: msg.id,
+        nome: msg.nome_exibicao || msg.nome_usuario,
+        assunto: msg.assunto,
+        mensagem: msg.mensagem,
+        criadoEm: msg.criado_em
+      })
+    });
+    if(errEnvio) console.error('Erro ao encaminhar dúvida para a conversa:', errEnvio);
+  }
 
   await abrirConversa(userId);
 }
@@ -8931,7 +8941,6 @@ function adminMemberRowHtml(m){
 let convContatos = [];
 let convAtivo = null; // id do contato ativo
 let convMinhasMensagensSuporte = [];
-let convDuvidaContexto = null; // { userId, nome, assunto, mensagem, criadoEm } — dúvida de suporte sendo respondida via Conversas
 
 let convSolicitacoes = [];
 
@@ -9041,16 +9050,20 @@ function renderConvList(){
   if(!convContatos.length){
     html += '<div class="admin-empty-state" style="padding:24px 18px;">Nenhum contato ainda. Toque em "Adicionar contato" para começar a conversar com alguém.</div>';
   } else {
-    html += convContatos.map(c => `
+    html += convContatos.map(c => {
+      const duvidaPreview = typeof decodificarDuvidaSuporte === 'function' ? decodificarDuvidaSuporte(c.ultima_mensagem) : null;
+      const preview = duvidaPreview ? '📩 Dúvida enviada para responder' : (c.ultima_mensagem ? escapeHtml(c.ultima_mensagem) : 'Nenhuma mensagem ainda');
+      return `
       <div class="conv-item ${convAtivo===c.id ? 'active' : ''}" data-conv-open="${c.id}">
         <div class="conv-avatar" style="${c.avatar_gradient ? 'background:'+c.avatar_gradient+';' : ''}">${escapeHtml(c.avatar_emoji || (c.nome_exibicao||c.nome_usuario||'?').charAt(0).toUpperCase())}</div>
         <div class="conv-item-info">
           <div class="conv-item-name">${escapeHtml(c.nome_exibicao || c.nome_usuario)}</div>
-          <div class="conv-item-preview">${c.ultima_mensagem ? escapeHtml(c.ultima_mensagem) : 'Nenhuma mensagem ainda'}</div>
+          <div class="conv-item-preview">${preview}</div>
         </div>
         ${c.nao_lidas > 0 ? `<span class="conv-item-unread">${c.nao_lidas}</span>` : ''}
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   list.innerHTML = html;
@@ -9082,7 +9095,6 @@ function renderConvList(){
 
 async function abrirConversa(contatoId){
   convAtivo = contatoId;
-  if(convDuvidaContexto && convDuvidaContexto.userId !== contatoId) convDuvidaContexto = null;
   document.getElementById('conv-thread-empty').hidden = true;
   document.getElementById('conv-thread-active').hidden = false;
   document.getElementById('conv-shell')?.classList?.add('show-thread');
@@ -9156,9 +9168,19 @@ function renderThreadAdmin(mensagens){
   body.scrollTop = body.scrollHeight;
 }
 
-function duvidaContextoHtml(){
-  if(!convDuvidaContexto || convDuvidaContexto.userId !== convAtivo) return '';
-  const d = convDuvidaContexto;
+const DUVIDA_SUPORTE_MARCADOR = '§§DUVIDA_SUPORTE§§';
+
+function codificarDuvidaSuporte(dados){
+  return DUVIDA_SUPORTE_MARCADOR + JSON.stringify(dados);
+}
+
+function decodificarDuvidaSuporte(texto){
+  if(!texto || typeof texto !== 'string' || !texto.startsWith(DUVIDA_SUPORTE_MARCADOR)) return null;
+  try{ return JSON.parse(texto.slice(DUVIDA_SUPORTE_MARCADOR.length)); }
+  catch(e){ return null; }
+}
+
+function duvidaContextoCardHtml(d){
   const dataFmt = d.criadoEm ? new Date(d.criadoEm).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
   return `
     <div class="conv-duvida-context">
@@ -9172,7 +9194,7 @@ function duvidaContextoHtml(){
 function renderThreadDireto(mensagens){
   const body = document.getElementById('conv-thread-body');
   if(!mensagens.length){
-    body.innerHTML = duvidaContextoHtml() + '<div class="admin-empty-state">Nenhuma mensagem ainda — diga oi! 👋</div>';
+    body.innerHTML = '<div class="admin-empty-state">Nenhuma mensagem ainda — diga oi! 👋</div>';
     return;
   }
 
@@ -9180,9 +9202,20 @@ function renderThreadDireto(mensagens){
   const nomeContato = (contato && (contato.nome_exibicao || contato.nome_usuario)) || '?';
   const avatarHtml = `<div class="conv-avatar msg-avatar" style="width:30px;height:30px;font-size:.78rem;${contato && contato.avatar_gradient ? 'background:'+contato.avatar_gradient+';' : ''}">${escapeHtml((contato && contato.avatar_emoji) || nomeContato.charAt(0).toUpperCase())}</div>`;
 
-  body.innerHTML = duvidaContextoHtml() + mensagens.map(m => {
+  body.innerHTML = mensagens.map(m => {
     const minha = m.remetente_id === (state.perfil && state.perfil.id);
     const hora = new Date(m.criado_em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const deleteBtnHtml = `<button class="msg-delete-btn" data-delete-btn="${m.id}">🗑 Apagar</button>`;
+
+    // Card especial: dúvida de suporte encaminhada para a conversa (visível pros dois lados)
+    const duvida = decodificarDuvidaSuporte(m.texto);
+    if(duvida){
+      return `<div class="msg-row msg-row-wrap" data-msg-id="${m.id}" data-msg-minha="${minha ? '1' : '0'}" style="align-self:${minha ? 'flex-end' : 'flex-start'};align-items:${minha ? 'flex-end' : 'flex-start'};max-width:88%;">
+        ${duvidaContextoCardHtml(duvida)}
+        ${deleteBtnHtml}
+      </div>`;
+    }
+
     const versiculoHtml = m.texto_versiculo
       ? `<div class="msg-verse-share">
            <div class="msg-verse-ref">📖 ${escapeHtml(m.referencia_versiculo || '')}</div>
@@ -9191,7 +9224,6 @@ function renderThreadDireto(mensagens){
          </div>`
       : '';
     const bubbleHtml = `<div class="msg ${minha ? 'enviada' : 'recebida'}">${versiculoHtml}${m.texto ? escapeHtml(m.texto) : ''}<div class="msg-time">${hora}</div></div>`;
-    const deleteBtnHtml = `<button class="msg-delete-btn" data-delete-btn="${m.id}">🗑 Apagar</button>`;
 
     if(minha){
       return `<div class="msg-row enviada msg-row-wrap" data-msg-id="${m.id}" data-msg-minha="1">
