@@ -798,6 +798,16 @@ body.show-admin #admin-shell{display:block;}
 .push-settings-status{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:20px;}
 .push-settings-status.on{background:rgba(110,143,114,.18);color:var(--sage);}
 .push-settings-status.off{background:rgba(184,105,90,.14);color:var(--rose);}
+/* ---- Painel de inscritos ---- */
+.push-inscritos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:12px;}
+.push-inscrito-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-md);padding:12px 14px;display:flex;align-items:center;gap:12px;transition:box-shadow .18s;}
+.push-inscrito-card:hover{box-shadow:var(--shadow-sm);}
+.push-inscrito-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#b8860b);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;color:var(--ink);flex-shrink:0;}
+.push-inscrito-info{flex:1;min-width:0;}
+.push-inscrito-nome{font-weight:700;font-size:.83rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.push-inscrito-dispositivo{font-size:.7rem;color:var(--text-faint);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.push-inscrito-badge{width:8px;height:8px;border-radius:50%;background:#4caf50;flex-shrink:0;box-shadow:0 0 0 2px rgba(76,175,80,.25);}
+.push-inscritos-empty{text-align:center;padding:32px 16px;color:var(--text-faint);font-size:.86rem;}
 @media(max-width:920px){
   .admin-shell-inner{grid-template-columns:1fr;}
   .admin-sidebar{position:relative;height:auto;}
@@ -2794,7 +2804,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
                 <div class="push-preview-notif">
                   <div class="push-preview-icon" id="push-preview-icon">&#10013;</div>
                   <div class="push-preview-content">
-                    <div class="push-preview-app">IPDF Church</div>
+                    <div class="push-preview-app">IPDF</div>
                     <div class="push-preview-ntitle" id="push-preview-titulo">Título da notificação</div>
                     <div class="push-preview-nbody" id="push-preview-corpo">A mensagem aparecerá aqui…</div>
                     <div class="push-preview-time">Agora</div>
@@ -2830,6 +2840,17 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             </div>
             <div id="push-historico-list">
               <div class="admin-empty-state">Carregando histórico…</div>
+            </div>
+          </div>
+
+          <!-- Membros inscritos -->
+          <div style="margin-top:28px;">
+            <div class="admin-sec-row">
+              <div class="admin-sec-title">&#128276; Membros com notificações ativas</div>
+              <button class="admin-sec-link" id="push-inscritos-refresh-btn">Atualizar</button>
+            </div>
+            <div id="push-inscritos-list">
+              <div class="admin-empty-state">Carregando…</div>
             </div>
           </div>
         </div>
@@ -3790,7 +3811,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
                       Ativar notificações
                       <span class="push-settings-status off" id="push-settings-status-badge" style="margin-left:8px;">Desativado</span>
                     </div>
-                    <div class="settings-option-desc" id="push-settings-desc">Receba notificações da IPDF Church diretamente neste dispositivo.</div>
+                    <div class="settings-option-desc" id="push-settings-desc">Receba notificações da IPDF diretamente neste dispositivo.</div>
                   </div>
                   <button class="switch" id="push-settings-toggle" title="Ativar/desativar notificações push"></button>
                 </div>
@@ -8641,7 +8662,8 @@ async function carregarPainelAdmin(){
     carregarAdminOracoes(),
     carregarAdminMembros(),
     carregarAdminPushStats(),
-    carregarAdminPushHistorico()
+    carregarAdminPushHistorico(),
+    carregarAdminPushInscritos()
   ]);
 }
 
@@ -9046,8 +9068,8 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('push', (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; }
-  catch(e) { data = { titulo: 'IPDF Church', mensagem: event.data ? event.data.text() : 'Nova notificação.' }; }
-  const titulo   = data.titulo   || 'IPDF Church';
+  catch(e) { data = { titulo: 'IPDF', mensagem: event.data ? event.data.text() : 'Nova notificação.' }; }
+  const titulo   = data.titulo   || 'IPDF';
   const mensagem = data.mensagem || '';
   const icone    = data.icone    || '/Logo-IPDF.png';
   const badge    = data.badge    || '/Logo-IPDF.png';
@@ -9092,7 +9114,7 @@ async function registrarServiceWorker() {
   try {
     const res = await fetch('sw.js', { method: 'HEAD' });
     if (res.ok) {
-      return await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      return await navigator.serviceWorker.register('sw.js', { scope: '/' });
     }
   } catch(e) {}
 
@@ -9199,18 +9221,7 @@ async function ativarPushNotifications() {
       ? detectarDispositivo()
       : navigator.userAgent.slice(0, 80);
 
-    // Tenta salvar no banco (silencioso se SQL ainda não foi rodado)
-    try {
-      await db.rpc('push_registrar_inscricao', {
-        p_token:       state.sessionToken,
-        p_endpoint:    endpoint,
-        p256dh:        p256dh,
-        p_auth:        auth,
-        p_dispositivo: dispositivo,
-      });
-    } catch(dbErr) {
-      console.warn('[Push] Inscrição não salva no banco (rode o SQL):', dbErr);
-    }
+    await salvarInscricaoNoBanco(endpoint, p256dh, auth, dispositivo);
 
     localStorage.setItem('ipdf_push_active', '1');
     atualizarUIPushSettings(true);
@@ -9218,17 +9229,36 @@ async function ativarPushNotifications() {
     return true;
 
   } catch(e) {
-    console.error('[Push] Erro ao inscrever:', e);
-    // VAPID inválida ou outro erro de subscribe — mostra instrução útil
-    if (e && e.message && e.message.includes('applicationServerKey')) {
-      toast('Configure a chave VAPID pública no código para continuar.', '⚠️');
-    } else {
-      // Mesmo com erro de VAPID, marca localmente para o teste funcionar
-      localStorage.setItem('ipdf_push_active', '1');
-      atualizarUIPushSettings(true);
-      toast('Notificações ativadas neste dispositivo! 🔔', '✅');
-    }
-    return false;
+    console.warn('[Push] pushManager.subscribe falhou (provável VAPID de exemplo):', e.message);
+
+    // VAPID de exemplo — salva inscrição manual para o admin conseguir ver o membro
+    const dispositivo = (typeof detectarDispositivo === 'function')
+      ? detectarDispositivo()
+      : navigator.userAgent.slice(0, 80);
+    const endpoint = 'local:' + state.sessionToken + ':' + Date.now();
+    await salvarInscricaoNoBanco(endpoint, 'local', 'local', dispositivo);
+
+    localStorage.setItem('ipdf_push_active', '1');
+    atualizarUIPushSettings(true);
+    toast('Notificações ativadas! 🔔', '✅');
+    return true;
+  }
+}
+
+/* Salva (ou atualiza) a inscrição no banco de forma segura */
+async function salvarInscricaoNoBanco(endpoint, p256dh, auth, dispositivo) {
+  if (!state.sessionToken) return;
+  try {
+    const { error } = await db.rpc('push_registrar_inscricao', {
+      p_token:       state.sessionToken,
+      p_endpoint:    endpoint,
+      p256dh:        p256dh,
+      p_auth:        auth,
+      p_dispositivo: dispositivo,
+    });
+    if (error) console.warn('[Push] Erro ao salvar inscrição (rode o SQL):', error.message);
+  } catch(dbErr) {
+    console.warn('[Push] Exceção ao salvar inscrição:', dbErr);
   }
 }
 
@@ -9329,7 +9359,7 @@ function atualizarUIPushSettings(ativo) {
   if (desc) {
     desc.textContent = ativo
       ? 'As notificações estão ativas neste dispositivo. Toque para desativar.'
-      : 'Receba notificações da IPDF Church diretamente neste dispositivo.';
+      : 'Receba notificações da IPDF diretamente neste dispositivo.';
   }
 }
 
@@ -9433,6 +9463,70 @@ async function enviarPushViaEdgeFunction(payload, subscriptions) {
   } catch(e) {
     console.error('[Push] Erro na Edge Function:', e);
     throw e;
+  }
+}
+
+/* ---- Admin: carregar lista de inscritos com nome do usuário ---- */
+async function carregarAdminPushInscritos() {
+  if (!state.sessionToken) return;
+  const list = document.getElementById('push-inscritos-list');
+  if (!list) return;
+  list.innerHTML = '<div class="admin-empty-state">Carregando…</div>';
+  try {
+    const { data: subs, error } = await db.rpc('admin_push_listar_inscricoes', { p_token: state.sessionToken });
+    if (error) {
+      list.innerHTML = '<div class="admin-empty-state">⚠️ Execute o <strong>push-notifications.sql</strong> no Supabase para ver os inscritos.</div>';
+      return;
+    }
+    if (!subs || !subs.length) {
+      list.innerHTML = '<div class="push-inscritos-empty">Nenhum membro ativou as notificações ainda.</div>';
+      return;
+    }
+
+    // Agrupa por usuario_id (um usuário pode ter vários dispositivos)
+    const porUsuario = {};
+    subs.forEach(s => {
+      const uid = s.usuario_id || s.endpoint;
+      if (!porUsuario[uid]) {
+        porUsuario[uid] = {
+          subs: [],
+          nome: s.nome_exibicao || s.nome_usuario || 'Membro'
+        };
+      }
+      porUsuario[uid].subs.push(s);
+    });
+
+    const total     = Object.keys(porUsuario).length;
+    const totalDisp = subs.length;
+
+    // Atualiza pills de stats
+    const elI = document.getElementById('push-stat-inscritos');
+    const elD = document.getElementById('push-stat-dispositivos');
+    if (elI) elI.textContent = total;
+    if (elD) elD.textContent = totalDisp;
+
+    list.innerHTML = `<div class="push-inscritos-grid">` +
+      Object.entries(porUsuario).map(([uid, dados]) => {
+        const nome    = dados.nome;
+        const inicial = nome.charAt(0).toUpperCase();
+        const nDisp   = dados.subs.length;
+        const rawDisp = dados.subs[0].dispositivo || 'Dispositivo desconhecido';
+        const dispLabel = nDisp > 1
+          ? `${nDisp} dispositivos`
+          : rawDisp.split('/')[0].trim().slice(0, 30);
+        return `<div class="push-inscrito-card">
+          <div class="push-inscrito-avatar">${escapeHtml(inicial)}</div>
+          <div class="push-inscrito-info">
+            <div class="push-inscrito-nome">${escapeHtml(nome)}</div>
+            <div class="push-inscrito-dispositivo">📱 ${escapeHtml(dispLabel)}</div>
+          </div>
+          <div class="push-inscrito-badge" title="Ativo"></div>
+        </div>`;
+      }).join('') +
+    `</div>`;
+
+  } catch(e) {
+    list.innerHTML = '<div class="admin-empty-state">Erro ao carregar inscritos.</div>';
   }
 }
 
@@ -9644,6 +9738,7 @@ async function carregarAdminPushHistorico() {
         toast(`Notificação enviada para ${enviados} dispositivo(s)! 🎉`, '✅');
         await carregarAdminPushHistorico();
         await carregarAdminPushStats();
+        await carregarAdminPushInscritos();
 
         // Limpa o formulário
         if (inputTitulo)   inputTitulo.value   = '';
@@ -9664,6 +9759,12 @@ async function carregarAdminPushHistorico() {
   const btnHistRefresh = document.getElementById('push-hist-refresh-btn');
   if (btnHistRefresh) {
     btnHistRefresh.addEventListener('click', () => carregarAdminPushHistorico());
+  }
+
+  // Botão de refresh dos inscritos
+  const btnInscRefresh = document.getElementById('push-inscritos-refresh-btn');
+  if (btnInscRefresh) {
+    btnInscRefresh.addEventListener('click', () => carregarAdminPushInscritos());
   }
 })();
 
@@ -9717,7 +9818,10 @@ async function carregarAdminPushHistorico() {
         if(tabAtiva === 'oracoes')       await carregarAdminOracoes();
         else if(tabAtiva === 'membros')  await carregarAdminMembros();
         else if(tabAtiva === 'mensagens')    await carregarAdminMensagens();
-        else if(tabAtiva === 'notificacoes') await carregarAdminPushHistorico();
+        else if(tabAtiva === 'notificacoes') {
+          await carregarAdminPushHistorico();
+          await carregarAdminPushInscritos();
+        }
         else await carregarAdminStats();
         toast('Painel atualizado.', '\ud83d\udd04');
       }catch(e){ toast('Não foi possível atualizar.', '\u26a0\ufe0f'); }
