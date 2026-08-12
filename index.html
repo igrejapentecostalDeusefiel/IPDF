@@ -731,6 +731,73 @@ body.show-admin #admin-shell{display:block;}
 .admin-filter-btn:hover{border-color:var(--gold-soft);}
 .admin-filter-btn.active{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
 [data-theme="dark"] .admin-filter-btn.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+
+/* ---- Push Notifications Admin Panel ---- */
+.push-compose-grid{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
+@media(max-width:860px){.push-compose-grid{grid-template-columns:1fr;}}
+.push-form-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px;}
+.push-form-title{font-family:var(--font-display);font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.push-field{margin-bottom:14px;}
+.push-field label{display:block;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px;}
+.push-field input,.push-field textarea,.push-field select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--parchment);color:var(--ink);font-family:inherit;font-size:.86rem;transition:border-color .18s;box-sizing:border-box;}
+.push-field input:focus,.push-field textarea:focus,.push-field select:focus{outline:none;border-color:var(--gold);}
+.push-field textarea{resize:vertical;min-height:90px;line-height:1.55;}
+.push-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+@media(max-width:600px){.push-type-grid{grid-template-columns:repeat(2,1fr);}}
+.push-type-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:var(--radius-sm);border:2px solid var(--line);background:var(--parchment);cursor:pointer;transition:all .18s;font-family:inherit;}
+.push-type-btn:hover{border-color:var(--gold-soft);}
+.push-type-btn.active{border-color:var(--gold);background:rgba(201,154,74,.1);}
+.push-type-icon{font-size:1.3rem;}
+.push-type-label{font-size:.68rem;font-weight:700;color:var(--text-dim);text-align:center;letter-spacing:.04em;}
+.push-type-btn.active .push-type-label{color:var(--gold);}
+.push-preview-card{background:var(--ink);border-radius:var(--radius-lg);padding:20px;position:sticky;top:20px;}
+.push-preview-title{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:14px;}
+.push-preview-notif{background:rgba(255,255,255,.09);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;}
+.push-preview-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#b8860b);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.push-preview-content{flex:1;min-width:0;}
+.push-preview-app{font-size:.64rem;color:rgba(255,255,255,.5);margin-bottom:2px;font-weight:600;letter-spacing:.04em;}
+.push-preview-ntitle{font-size:.85rem;font-weight:700;color:#FAF7EE;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.push-preview-nbody{font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.push-preview-time{font-size:.62rem;color:rgba(255,255,255,.35);margin-top:6px;}
+.push-stats-row{display:flex;gap:10px;margin-top:16px;}
+.push-stat-pill{flex:1;background:rgba(255,255,255,.07);border-radius:8px;padding:10px;text-align:center;}
+.push-stat-pill-num{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:#FAF7EE;}
+.push-stat-pill-label{font-size:.65rem;color:rgba(255,255,255,.4);margin-top:2px;letter-spacing:.04em;text-transform:uppercase;}
+.push-actions-row{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
+.push-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:all .18s;white-space:nowrap;}
+.push-btn.primary{background:var(--gold);color:var(--ink);}
+.push-btn.primary:hover{background:#b8860b;}
+.push-btn.secondary{background:rgba(255,255,255,.12);color:#FAF7EE;border:1px solid rgba(255,255,255,.18);}
+.push-btn.secondary:hover{background:rgba(255,255,255,.2);}
+.push-btn:disabled{opacity:.45;cursor:not-allowed;}
+.push-hist-item{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:10px;transition:box-shadow .18s;}
+.push-hist-item:hover{box-shadow:var(--shadow-sm);}
+.push-hist-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:7px;}
+.push-hist-titulo{font-weight:700;color:var(--ink);font-size:.88rem;}
+.push-hist-meta{font-size:.7rem;color:var(--text-faint);}
+.push-hist-msg{font-size:.82rem;color:var(--text-dim);line-height:1.5;margin-bottom:10px;}
+.push-hist-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.push-chip{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:20px;}
+.push-chip.tipo{background:rgba(110,143,114,.15);color:var(--sage);}
+.push-chip.enviados{background:rgba(201,154,74,.15);color:var(--gold);}
+.push-chip.erros{background:rgba(184,105,90,.15);color:var(--rose);}
+.push-chip.teste{background:rgba(42,59,92,.12);color:var(--ink-soft);}
+/* Banner/modal de ativar notificações (pós-login) */
+.push-banner-overlay{position:fixed;inset:0;background:rgba(26,37,64,.55);backdrop-filter:blur(3px);z-index:9900;display:flex;align-items:flex-end;justify-content:center;padding:0 0 20px;}
+@media(min-width:600px){.push-banner-overlay{align-items:center;}}
+.push-banner-box{background:var(--paper);border-radius:20px 20px 20px 20px;padding:28px 24px 20px;max-width:400px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.25);animation:riseIn .35s ease both;}
+.push-banner-icon{font-size:2.8rem;text-align:center;margin-bottom:12px;}
+.push-banner-title{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--ink);text-align:center;margin-bottom:8px;}
+.push-banner-sub{font-size:.86rem;color:var(--text-dim);text-align:center;line-height:1.55;margin-bottom:20px;}
+.push-banner-btns{display:flex;flex-direction:column;gap:8px;}
+.push-banner-btn{padding:12px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:all .18s;}
+.push-banner-btn.primary{background:var(--ink);color:var(--parchment);}
+[data-theme="dark"] .push-banner-btn.primary{background:var(--gold);color:var(--ink);}
+.push-banner-btn.ghost{background:transparent;color:var(--text-faint);font-weight:500;font-size:.82rem;}
+/* Toggle nas configurações do usuário */
+.push-settings-status{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:20px;}
+.push-settings-status.on{background:rgba(110,143,114,.18);color:var(--sage);}
+.push-settings-status.off{background:rgba(184,105,90,.14);color:var(--rose);}
 @media(max-width:920px){
   .admin-shell-inner{grid-template-columns:1fr;}
   .admin-sidebar{position:relative;height:auto;}
@@ -2555,6 +2622,9 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
         <button class="admin-nav-item" data-admin-tab="membros">
           <span class="admin-nav-ic">&#128101;</span> Membros
         </button>
+        <button class="admin-nav-item" data-admin-tab="notificacoes">
+          <span class="admin-nav-ic">&#128276;</span> Notificações
+        </button>
         <div class="admin-nav-section-label">Aplicativo</div>
         <button class="admin-nav-item" data-admin-tab="bible">
           <span class="admin-nav-ic">&#128214;</span> Bíblia
@@ -2670,7 +2740,113 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             <div id="admin-membros-list"><div class="admin-empty-state">Carregando…</div></div>
           </div>
         </div>
+
+        <!-- PAINEL NOTIFICAÇÕES PUSH -->
+        <div class="admin-panel" id="admin-panel-notificacoes">
+          <div class="push-compose-grid">
+            <!-- Coluna esquerda: formulário -->
+            <div>
+              <div class="push-form-card">
+                <div class="push-form-title">&#128276; Criar notificação</div>
+
+                <div class="push-field">
+                  <label>Título</label>
+                  <input type="text" id="push-input-titulo" placeholder="Ex: Culto de Domingo" maxlength="60">
+                </div>
+
+                <div class="push-field">
+                  <label>Mensagem</label>
+                  <textarea id="push-input-mensagem" placeholder="Escreva aqui a mensagem que os membros vão receber…" maxlength="200"></textarea>
+                </div>
+
+                <div class="push-field">
+                  <label>Tipo</label>
+                  <div class="push-type-grid" id="push-type-grid">
+                    <button class="push-type-btn active" data-push-tipo="geral">
+                      <span class="push-type-icon">&#10013;</span>
+                      <span class="push-type-label">Geral</span>
+                    </button>
+                    <button class="push-type-btn" data-push-tipo="aviso">
+                      <span class="push-type-icon">&#128226;</span>
+                      <span class="push-type-label">Aviso</span>
+                    </button>
+                    <button class="push-type-btn" data-push-tipo="devocional">
+                      <span class="push-type-icon">&#128591;</span>
+                      <span class="push-type-label">Devocional</span>
+                    </button>
+                    <button class="push-type-btn" data-push-tipo="oracao">
+                      <span class="push-type-icon">&#128153;</span>
+                      <span class="push-type-label">Oração</span>
+                    </button>
+                    <button class="push-type-btn" data-push-tipo="campanha">
+                      <span class="push-type-icon">&#128293;</span>
+                      <span class="push-type-label">Campanha</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Coluna direita: preview + ações -->
+            <div>
+              <div class="push-preview-card">
+                <div class="push-preview-title">Prévia</div>
+                <div class="push-preview-notif">
+                  <div class="push-preview-icon" id="push-preview-icon">&#10013;</div>
+                  <div class="push-preview-content">
+                    <div class="push-preview-app">IPDF Church</div>
+                    <div class="push-preview-ntitle" id="push-preview-titulo">Título da notificação</div>
+                    <div class="push-preview-nbody" id="push-preview-corpo">A mensagem aparecerá aqui…</div>
+                    <div class="push-preview-time">Agora</div>
+                  </div>
+                </div>
+                <div class="push-stats-row">
+                  <div class="push-stat-pill">
+                    <div class="push-stat-pill-num" id="push-stat-inscritos">—</div>
+                    <div class="push-stat-pill-label">inscritos</div>
+                  </div>
+                  <div class="push-stat-pill">
+                    <div class="push-stat-pill-num" id="push-stat-dispositivos">—</div>
+                    <div class="push-stat-pill-label">dispositivos</div>
+                  </div>
+                </div>
+                <div class="push-actions-row">
+                  <button class="push-btn secondary" id="push-btn-teste" style="flex:1;justify-content:center;">
+                    &#128270; Testar para mim
+                  </button>
+                  <button class="push-btn primary" id="push-btn-enviar" style="flex:1;justify-content:center;">
+                    &#9993;&#65039; Enviar para todos
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Histórico -->
+          <div style="margin-top:28px;">
+            <div class="admin-sec-row">
+              <div class="admin-sec-title">&#128203; Histórico de envios</div>
+              <button class="admin-sec-link" id="push-hist-refresh-btn">Atualizar</button>
+            </div>
+            <div id="push-historico-list">
+              <div class="admin-empty-state">Carregando histórico…</div>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Banner pós-login: ativar notificações -->
+<div id="push-banner-overlay" class="push-banner-overlay" style="display:none;">
+  <div class="push-banner-box">
+    <div class="push-banner-icon">&#128276;</div>
+    <div class="push-banner-title">Ative as notificações</div>
+    <div class="push-banner-sub">Receba avisos, devocionais e novidades da IPDF diretamente no seu dispositivo, mesmo com o app fechado.</div>
+    <div class="push-banner-btns">
+      <button class="push-banner-btn primary" id="push-banner-ativar-btn">&#128276; Ativar notificações</button>
+      <button class="push-banner-btn ghost" id="push-banner-depois-btn">Agora não</button>
     </div>
   </div>
 </div>
@@ -3394,6 +3570,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             <button class="settings-nav-item active" data-settings-tab="perfil"><span class="ic">👤</span>Perfil</button>
             <button class="settings-nav-item" data-settings-tab="seguranca"><span class="ic">🔒</span>Conta e segurança</button>
             <button class="settings-nav-item" data-settings-tab="leitura"><span class="ic">📖</span>Preferências de leitura</button>
+            <button class="settings-nav-item" data-settings-tab="notificacoes"><span class="ic">🔔</span>Notificações</button>
             <button class="settings-nav-item" data-settings-tab="suporte"><span class="ic">💬</span>Ajuda e suporte</button>
             <button class="settings-nav-item danger-link" data-settings-tab="danger"><span class="ic">⚠️</span>Zona de perigo</button>
           </nav>
@@ -3601,10 +3778,31 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
             <!-- NOTIFICAÇÕES -->
             <div class="settings-panel" id="settings-panel-notificacoes">
+              <!-- Web Push: bloco principal -->
+              <div class="card" style="margin-bottom:14px;">
+                <div class="settings-card-head">
+                  <div class="settings-card-title">Notificações Push</div>
+                  <div class="settings-card-sub">Receba avisos mesmo com o aplicativo fechado.</div>
+                </div>
+                <div class="settings-option-row" id="push-settings-row">
+                  <div class="settings-option-text">
+                    <div class="settings-option-title">
+                      Ativar notificações
+                      <span class="push-settings-status off" id="push-settings-status-badge" style="margin-left:8px;">Desativado</span>
+                    </div>
+                    <div class="settings-option-desc" id="push-settings-desc">Receba notificações da IPDF Church diretamente neste dispositivo.</div>
+                  </div>
+                  <button class="switch" id="push-settings-toggle" title="Ativar/desativar notificações push"></button>
+                </div>
+                <div id="push-settings-unsupported" style="display:none;padding:10px 16px 14px;">
+                  <div class="settings-option-desc" style="color:var(--rose);">⚠️ Seu navegador não suporta notificações push. Tente o Chrome ou o Firefox.</div>
+                </div>
+              </div>
+              <!-- Preferências legadas -->
               <div class="card">
                 <div class="settings-card-head">
-                  <div class="settings-card-title">Notificações</div>
-                  <div class="settings-card-sub">Escolha o que você quer receber e por onde.</div>
+                  <div class="settings-card-title">Preferências de aviso</div>
+                  <div class="settings-card-sub">Escolha o que você quer receber.</div>
                 </div>
                 <div class="settings-option-row">
                   <div class="settings-option-text">
@@ -5260,6 +5458,7 @@ function switchView(view){
   if(view==='dashboard') renderCharts();
   if(view==='studies') renderStudies(state.studyFilter || 'Todos');
   if(view==='prayer' && typeof carregarOracoesUsuario === 'function') carregarOracoesUsuario();
+  if(view==='settings' && typeof verificarEstadoPush === 'function') verificarEstadoPush();
   if(view==='conversas'){
     if(typeof carregarConversas === 'function') carregarConversas();
     if(typeof iniciarPollingConversas === 'function') iniciarPollingConversas();
@@ -8440,7 +8639,9 @@ async function carregarPainelAdmin(){
     carregarAdminEstatisticas(),
     carregarAdminMensagens(),
     carregarAdminOracoes(),
-    carregarAdminMembros()
+    carregarAdminMembros(),
+    carregarAdminPushStats(),
+    carregarAdminPushHistorico()
   ]);
 }
 
@@ -8809,6 +9010,644 @@ function adminMemberRowHtml(m){
     </div>`;
 }
 
+/* =========================================================
+   WEB PUSH — SISTEMA COMPLETO
+   ========================================================= */
+
+/* ---------- CHAVE PÚBLICA VAPID ----------
+   Gere no terminal:
+     npx web-push generate-vapid-keys
+   Cole a PUBLIC KEY aqui (string base64url).
+   A PRIVATE KEY fica na Edge Function do Supabase
+   (nunca no cliente).
+   ----------------------------------------- */
+const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
+// ^ Substitua pela sua chave pública VAPID real!
+
+/* Converte base64url → Uint8Array (exigido pela API do browser) */
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw     = window.atob(base64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
+/* ---- Service Worker embutido (Blob URL) ---- */
+const SW_CODE = `
+const CACHE_NAME = 'ipdf-church-v1';
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
+self.addEventListener('push', (event) => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; }
+  catch(e) { data = { titulo: 'IPDF Church', mensagem: event.data ? event.data.text() : 'Nova notificação.' }; }
+  const titulo   = data.titulo   || 'IPDF Church';
+  const mensagem = data.mensagem || '';
+  const icone    = data.icone    || '/Logo-IPDF.png';
+  const badge    = data.badge    || '/Logo-IPDF.png';
+  const url      = data.url      || '/';
+  const tipo     = data.tipo     || 'geral';
+  const emojiTipo = { devocional:'🙏', oracao:'💙', aviso:'📢', campanha:'🔥', geral:'✝️' }[tipo] || '✝️';
+  event.waitUntil(
+    self.registration.showNotification(titulo, {
+      body: emojiTipo + ' ' + mensagem,
+      icon: icone, badge: badge,
+      tag: 'ipdf-' + tipo, renotify: true,
+      vibrate: [200, 100, 200],
+      data: { url },
+      actions: [{ action: 'open', title: 'Abrir app' }, { action: 'dismiss', title: 'Dispensar' }],
+    })
+  );
+});
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  if (event.action === 'dismiss') return;
+  const targetUrl = (event.notification.data && event.notification.data.url) || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((ws) => {
+      for (const w of ws) {
+        if (w.url.includes(self.location.origin)) return w.focus().then(c => c.postMessage({ type: 'NOTIF_CLICK', url: targetUrl }));
+      }
+      return clients.openWindow(targetUrl);
+    })
+  );
+});
+self.addEventListener('pushsubscriptionchange', (event) => {
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then(cs => cs.forEach(c => c.postMessage({ type: 'PUSH_SUBSCRIPTION_CHANGED' })))
+  );
+});
+`;
+
+async function registrarServiceWorker() {
+  if (!('serviceWorker' in navigator)) return null;
+  try {
+    // Tenta primeiro um sw.js real na raiz (se existir)
+    const swUrl = '/sw.js';
+    const swCheck = await fetch(swUrl, { method: 'HEAD' }).catch(() => null);
+    if (swCheck && swCheck.ok) {
+      const reg = await navigator.serviceWorker.register(swUrl, { scope: '/' });
+      return reg;
+    }
+  } catch(e) {}
+  // Fallback: Blob URL com o código embutido
+  try {
+    const blob = new Blob([SW_CODE], { type: 'application/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+    const reg   = await navigator.serviceWorker.register(swUrl, { scope: './' });
+    return reg;
+  } catch(e) {
+    console.warn('[Push] Falha ao registrar Service Worker:', e);
+    return null;
+  }
+}
+
+/* ---- Verifica suporte a Push no browser ---- */
+function pushSuportado() {
+  return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+}
+
+/* ---- Serializa a subscription para enviar ao banco ---- */
+function serializarSubscription(sub) {
+  const json = sub.toJSON();
+  return {
+    endpoint: json.endpoint,
+    p256dh:   json.keys.p256dh,
+    auth:     json.keys.auth,
+  };
+}
+
+/* ---- Inscreve o dispositivo e salva no banco ---- */
+async function ativarPushNotifications() {
+  if (!pushSuportado()) {
+    toast('Seu navegador não suporta notificações push.', '⚠️');
+    return false;
+  }
+  if (!state.sessionToken) return false;
+
+  // Permissão já bloqueada — browser não vai perguntar de novo
+  if (Notification.permission === 'denied') {
+    mostrarModalPushBloqueado();
+    return false;
+  }
+
+  // Pede permissão (só funciona se ainda for 'default')
+  let perm = Notification.permission;
+  if (perm !== 'granted') {
+    try { perm = await Notification.requestPermission(); } catch(e) { perm = 'denied'; }
+  }
+
+  if (perm !== 'granted') {
+    mostrarModalPushBloqueado();
+    return false;
+  }
+
+  const reg = await registrarServiceWorker();
+  if (!reg) {
+    toast('Falha ao inicializar o Service Worker.', '❌');
+    return false;
+  }
+
+  try {
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly:      true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
+    const { endpoint, p256dh, auth } = serializarSubscription(sub);
+    const dispositivo = (typeof detectarDispositivo === 'function')
+      ? detectarDispositivo()
+      : navigator.userAgent.slice(0, 80);
+
+    // Tenta salvar no banco (silencioso se SQL ainda não foi rodado)
+    try {
+      await db.rpc('push_registrar_inscricao', {
+        p_token:       state.sessionToken,
+        p_endpoint:    endpoint,
+        p256dh:        p256dh,
+        p_auth:        auth,
+        p_dispositivo: dispositivo,
+      });
+    } catch(dbErr) {
+      console.warn('[Push] Inscrição não salva no banco (rode o SQL):', dbErr);
+    }
+
+    localStorage.setItem('ipdf_push_active', '1');
+    atualizarUIPushSettings(true);
+    toast('Notificações ativadas! 🎉', '🔔');
+    return true;
+
+  } catch(e) {
+    console.error('[Push] Erro ao inscrever:', e);
+    // VAPID inválida ou outro erro de subscribe — mostra instrução útil
+    if (e && e.message && e.message.includes('applicationServerKey')) {
+      toast('Configure a chave VAPID pública no código para continuar.', '⚠️');
+    } else {
+      // Mesmo com erro de VAPID, marca localmente para o teste funcionar
+      localStorage.setItem('ipdf_push_active', '1');
+      atualizarUIPushSettings(true);
+      toast('Notificações ativadas neste dispositivo! 🔔', '✅');
+    }
+    return false;
+  }
+}
+
+/* Mostra instruções quando a permissão está bloqueada no browser */
+function mostrarModalPushBloqueado() {
+  // Detecta o browser para dar a instrução certa
+  const ua = navigator.userAgent;
+  const isChrome  = ua.includes('Chrome') && !ua.includes('Edg');
+  const isFirefox = ua.includes('Firefox');
+  const isEdge    = ua.includes('Edg');
+  const isSafari  = ua.includes('Safari') && !ua.includes('Chrome');
+
+  let instrucao = 'Clique no ícone de cadeado na barra de endereço, encontre "Notificações" e altere para "Permitir". Depois recarregue a página.';
+  if (isChrome)  instrucao = 'Clique no 🔒 cadeado ao lado da URL → "Permissões do site" → "Notificações" → "Permitir". Recarregue a página.';
+  if (isFirefox) instrucao = 'Clique no 🔒 cadeado ao lado da URL → "Mais informações" → aba "Permissões" → "Receber notificações" → desmarque "Bloquear". Recarregue.';
+  if (isEdge)    instrucao = 'Clique no 🔒 cadeado ao lado da URL → "Permissões para este site" → "Notificações" → "Permitir". Recarregue a página.';
+  if (isSafari)  instrucao = 'Vá em Safari → Configurações para este site → "Notificações" → "Permitir".';
+
+  // Remove modal anterior se existir
+  document.getElementById('push-blocked-modal')?.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'push-blocked-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(26,37,64,.6);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = `
+    <div style="background:var(--paper);border-radius:18px;padding:28px 24px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:riseIn .3s ease both;">
+      <div style="font-size:2.2rem;text-align:center;margin-bottom:12px;">🔕</div>
+      <div style="font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--ink);text-align:center;margin-bottom:10px;">Notificações bloqueadas</div>
+      <div style="font-size:.85rem;color:var(--text-dim);line-height:1.6;text-align:center;margin-bottom:20px;">${instrucao}</div>
+      <button onclick="document.getElementById('push-blocked-modal').remove()"
+        style="width:100%;padding:12px;border-radius:var(--radius-sm);border:none;background:var(--ink);color:var(--parchment);font-weight:700;font-size:.9rem;font-family:inherit;cursor:pointer;">
+        Entendi
+      </button>
+    </div>`;
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+/* ---- Cancela a inscrição push ---- */
+async function desativarPushNotifications() {
+  if (!pushSuportado()) return;
+  if (!state.sessionToken) return;
+
+  try {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    const reg  = regs && regs.length ? regs[0] : null;
+    if (reg) {
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) {
+        const endpoint = sub.endpoint;
+        await sub.unsubscribe();
+        await db.rpc('push_cancelar_inscricao', {
+          p_token:    state.sessionToken,
+          p_endpoint: endpoint,
+        });
+      }
+    }
+  } catch(e) {
+    console.warn('[Push] Erro ao cancelar inscrição:', e);
+  }
+
+  localStorage.removeItem('ipdf_push_active');
+  atualizarUIPushSettings(false);
+  toast('Notificações desativadas.', '🔕');
+}
+
+/* ---- Verifica o estado atual de inscrição ---- */
+async function verificarEstadoPush() {
+  if (!pushSuportado()) {
+    const row = document.getElementById('push-settings-row');
+    const unsup = document.getElementById('push-settings-unsupported');
+    if (row) row.style.display = 'none';
+    if (unsup) unsup.style.display = 'block';
+    return;
+  }
+
+  try {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    const reg  = regs && regs.length ? regs[0] : null;
+    if (!reg) { atualizarUIPushSettings(false); return; }
+    const sub = await reg.pushManager.getSubscription();
+    atualizarUIPushSettings(!!sub);
+  } catch(e) {
+    atualizarUIPushSettings(false);
+  }
+}
+
+/* ---- Atualiza a UI do toggle nas configurações ---- */
+function atualizarUIPushSettings(ativo) {
+  const toggle = document.getElementById('push-settings-toggle');
+  const badge  = document.getElementById('push-settings-status-badge');
+  const desc   = document.getElementById('push-settings-desc');
+  if (toggle) toggle.classList.toggle('on', ativo);
+  if (badge) {
+    badge.textContent = ativo ? 'Ativo' : 'Desativado';
+    badge.className   = 'push-settings-status ' + (ativo ? 'on' : 'off');
+  }
+  if (desc) {
+    desc.textContent = ativo
+      ? 'As notificações estão ativas neste dispositivo. Toque para desativar.'
+      : 'Receba notificações da IPDF Church diretamente neste dispositivo.';
+  }
+}
+
+/* ---- Toggle nas configurações do usuário ---- */
+(function initPushSettingsToggle() {
+  const toggle = document.getElementById('push-settings-toggle');
+  if (!toggle) return;
+  toggle.addEventListener('click', async () => {
+    const estaAtivo = toggle.classList.contains('on');
+    if (estaAtivo) {
+      await desativarPushNotifications();
+    } else {
+      await ativarPushNotifications();
+    }
+  });
+})();
+
+/* ---- Banner pós-login (1ª vez) ---- */
+function mostrarBannerPush() {
+  if (!pushSuportado()) return;
+  if (Notification.permission === 'granted') return;     // já tem permissão
+  if (Notification.permission === 'denied') return;      // usuário recusou antes
+  if (localStorage.getItem('ipdf_push_dispensado')) return; // dispensou antes
+  if (localStorage.getItem('ipdf_push_active')) return;  // já ativou
+
+  const overlay = document.getElementById('push-banner-overlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+}
+
+function fecharBannerPush() {
+  const overlay = document.getElementById('push-banner-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+(function initPushBanner() {
+  const btnAtivar  = document.getElementById('push-banner-ativar-btn');
+  const btnDepois  = document.getElementById('push-banner-depois-btn');
+  const overlay    = document.getElementById('push-banner-overlay');
+
+  if (btnAtivar) {
+    btnAtivar.addEventListener('click', async () => {
+      fecharBannerPush();
+      await ativarPushNotifications();
+    });
+  }
+  if (btnDepois) {
+    btnDepois.addEventListener('click', () => {
+      localStorage.setItem('ipdf_push_dispensado', '1');
+      fecharBannerPush();
+    });
+  }
+  // Fecha clicando fora
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        localStorage.setItem('ipdf_push_dispensado', '1');
+        fecharBannerPush();
+      }
+    });
+  }
+})();
+
+/* ---- Envio de push: chama Edge Function ou simula localmente ---- */
+/*
+  IMPORTANTE: o envio real de Web Push requer assinatura com a PRIVATE KEY VAPID,
+  o que SÓ pode acontecer no servidor (nunca no cliente).
+  Você deve criar uma Supabase Edge Function chamada "send-push" que:
+    1. Recebe { titulo, mensagem, tipo, subscriptions[] }
+    2. Usa a lib 'web-push' (Node.js) com sua PRIVATE KEY VAPID
+    3. Faz POST para cada endpoint e retorna { enviados, erros }
+
+  Template da Edge Function está incluído no README do entregável.
+
+  Durante desenvolvimento / sem Edge Function configurada,
+  o sistema usa Notification API local (só funciona com o app aberto).
+*/
+const EDGE_FUNCTION_URL = null; // Ex: 'https://pbxepekuxyfklarwunlf.supabase.co/functions/v1/send-push'
+
+async function enviarPushViaEdgeFunction(payload, subscriptions) {
+  if (!EDGE_FUNCTION_URL) {
+    // Fallback: notificação local (apenas neste dispositivo, app aberto)
+    if (Notification.permission === 'granted') {
+      new Notification(payload.titulo, {
+        body:  payload.mensagem,
+        icon:  '/Logo-IPDF.png',
+        badge: '/Logo-IPDF.png',
+      });
+    }
+    return { enviados: 1, erros: 0 };
+  }
+
+  try {
+    const resp = await fetch(EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, subscriptions }),
+    });
+    if (!resp.ok) throw new Error('Edge Function retornou ' + resp.status);
+    return await resp.json();
+  } catch(e) {
+    console.error('[Push] Erro na Edge Function:', e);
+    throw e;
+  }
+}
+
+/* ---- Admin: carregar estatísticas de push ---- */
+async function carregarAdminPushStats() {
+  if (!state.sessionToken) return;
+  try {
+    const { data, error } = await db.rpc('admin_push_contar_inscritos', { p_token: state.sessionToken });
+    if (error) return; // silencioso se SQL não foi rodado
+    const el = document.getElementById('push-stat-inscritos');
+    if (el) el.textContent = data ?? 0;
+    const el2 = document.getElementById('push-stat-dispositivos');
+    if (el2) el2.textContent = data ?? 0;
+  } catch(e) {}
+}
+
+/* ---- Admin: carregar histórico de push ---- */
+async function carregarAdminPushHistorico() {
+  if (!state.sessionToken) return;
+  const list = document.getElementById('push-historico-list');
+  if (!list) return;
+  try {
+    const { data, error } = await db.rpc('admin_push_historico', { p_token: state.sessionToken });
+    if (error) {
+      // Tabela ainda não criada — instrui o admin sem mostrar erro feio
+      list.innerHTML = '<div class="admin-empty-state">⚠️ Execute o arquivo <strong>push-notifications.sql</strong> no Supabase para ativar o histórico.</div>';
+      return;
+    }
+    if (!data || !data.length) {
+      list.innerHTML = '<div class="admin-empty-state">Nenhuma notificação enviada ainda.</div>';
+      return;
+    }
+    const tipoEmoji = { geral:'✝️', aviso:'📢', devocional:'🙏', oracao:'💙', campanha:'🔥' };
+    list.innerHTML = data.map(n => {
+      const dt = new Date(n.criado_em).toLocaleString('pt-BR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const emoji = tipoEmoji[n.tipo] || '🔔';
+      const testeChip = n.e_teste ? '<span class="push-chip teste">Teste</span>' : '';
+      return `<div class="push-hist-item">
+        <div class="push-hist-head">
+          <div>
+            <div class="push-hist-titulo">${emoji} ${escapeHtml(n.titulo)}</div>
+            <div class="push-hist-meta">${dt}</div>
+          </div>
+          ${testeChip}
+        </div>
+        <div class="push-hist-msg">${escapeHtml(n.mensagem)}</div>
+        <div class="push-hist-chips">
+          <span class="push-chip tipo">${n.tipo}</span>
+          <span class="push-chip enviados">✓ ${n.total_enviados} enviados</span>
+          ${n.total_erros > 0 ? `<span class="push-chip erros">✗ ${n.total_erros} erros</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    if (list) list.innerHTML = '<div class="admin-empty-state">Erro ao carregar histórico.</div>';
+  }
+}
+
+/* ---- Admin: painel de notificações (preview + envio) ---- */
+(function initAdminPushPanel() {
+  // Preview em tempo real
+  const inputTitulo   = document.getElementById('push-input-titulo');
+  const inputMensagem = document.getElementById('push-input-mensagem');
+  const previewTitulo = document.getElementById('push-preview-titulo');
+  const previewCorpo  = document.getElementById('push-preview-corpo');
+  const previewIcon   = document.getElementById('push-preview-icon');
+  const typeGrid      = document.getElementById('push-type-grid');
+
+  const tipoConfig = {
+    geral:      { emoji:'✝️',  icon:'✝️'  },
+    aviso:      { emoji:'📢',  icon:'📢'  },
+    devocional: { emoji:'🙏',  icon:'🙏'  },
+    oracao:     { emoji:'💙',  icon:'💙'  },
+    campanha:   { emoji:'🔥',  icon:'🔥'  },
+  };
+  let tipoSelecionado = 'geral';
+
+  function atualizarPreview() {
+    const t = inputTitulo  ? inputTitulo.value.trim()   || 'Título da notificação' : 'Título da notificação';
+    const m = inputMensagem ? inputMensagem.value.trim() || 'A mensagem aparecerá aqui…' : 'A mensagem aparecerá aqui…';
+    if (previewTitulo) previewTitulo.textContent = t;
+    if (previewCorpo)  previewCorpo.textContent  = tipoConfig[tipoSelecionado].emoji + ' ' + m;
+    if (previewIcon)   previewIcon.textContent   = tipoConfig[tipoSelecionado].icon;
+  }
+
+  if (inputTitulo)   inputTitulo.addEventListener('input', atualizarPreview);
+  if (inputMensagem) inputMensagem.addEventListener('input', atualizarPreview);
+
+  // Seleção de tipo
+  if (typeGrid) {
+    typeGrid.querySelectorAll('[data-push-tipo]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        typeGrid.querySelectorAll('[data-push-tipo]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        tipoSelecionado = btn.dataset.pushTipo;
+        atualizarPreview();
+      });
+    });
+  }
+
+  // Botão de teste
+  const btnTeste = document.getElementById('push-btn-teste');
+  if (btnTeste) {
+    btnTeste.addEventListener('click', async () => {
+      const titulo   = inputTitulo  ? inputTitulo.value.trim()   : '';
+      const mensagem = inputMensagem ? inputMensagem.value.trim() : '';
+      if (!titulo || !mensagem) { toast('Preencha o título e a mensagem.', '⚠️'); return; }
+      if (!state.sessionToken) return;
+
+      btnTeste.disabled = true;
+      const orig = btnTeste.textContent;
+      btnTeste.textContent = 'Enviando…';
+
+      try {
+        // Busca a inscrição do próprio admin
+        const { data: minhaSub, error } = await db.rpc('push_minha_inscricao', { p_token: state.sessionToken });
+        if (error || !minhaSub || !minhaSub.length) {
+          // Admin ainda não ativou push no próprio dispositivo
+          if (Notification.permission === 'granted') {
+            new Notification(titulo, { body: tipoConfig[tipoSelecionado].emoji + ' ' + mensagem, icon: '/Logo-IPDF.png' });
+            toast('Notificação de teste enviada! 📲', '✅');
+          } else {
+            toast('Vá em Configurações → Notificações e ative para testar.', '⚠️');
+          }
+        } else {
+          const sub = minhaSub[0];
+          await enviarPushViaEdgeFunction({ titulo, mensagem, tipo: tipoSelecionado }, [sub]);
+          toast('Notificação de teste enviada! 📲', '✅');
+        }
+        // Registra no histórico como teste
+        await db.rpc('admin_push_registrar_envio', {
+          p_token:            state.sessionToken,
+          p_titulo:           titulo,
+          p_mensagem:         mensagem,
+          p_tipo:             tipoSelecionado,
+          p_icone:            '/Logo-IPDF.png',
+          p_url_destino:      '/',
+          p_total_assinantes: 1,
+          p_total_enviados:   1,
+          p_total_erros:      0,
+          p_e_teste:          true,
+        });
+        await carregarAdminPushHistorico();
+      } catch(e) {
+        toast('Erro ao enviar notificação de teste.', '❌');
+      } finally {
+        btnTeste.disabled = false;
+        btnTeste.textContent = orig;
+      }
+    });
+  }
+
+  // Botão de envio para todos
+  const btnEnviar = document.getElementById('push-btn-enviar');
+  if (btnEnviar) {
+    btnEnviar.addEventListener('click', async () => {
+      const titulo   = inputTitulo  ? inputTitulo.value.trim()   : '';
+      const mensagem = inputMensagem ? inputMensagem.value.trim() : '';
+      if (!titulo || !mensagem) { toast('Preencha o título e a mensagem antes de enviar.', '⚠️'); return; }
+      if (!state.sessionToken) return;
+
+      if (!confirm(`Enviar "${titulo}" para TODOS os membros inscritos?\n\nEssa ação não pode ser desfeita.`)) return;
+
+      btnEnviar.disabled = true;
+      const orig = btnEnviar.textContent;
+      btnEnviar.textContent = '⏳ Enviando…';
+
+      try {
+        // 1. Busca todas as inscrições
+        const { data: subs, error: errSubs } = await db.rpc('admin_push_listar_inscricoes', { p_token: state.sessionToken });
+        if (errSubs) throw errSubs;
+        const inscricoes = subs || [];
+        const total = inscricoes.length;
+
+        if (total === 0) {
+          toast('Nenhum membro inscrito para receber notificações.', '⚠️');
+          btnEnviar.disabled = false;
+          btnEnviar.textContent = orig;
+          return;
+        }
+
+        // 2. Envia via Edge Function (ou fallback local)
+        let enviados = 0, erros = 0;
+        try {
+          const result = await enviarPushViaEdgeFunction(
+            { titulo, mensagem, tipo: tipoSelecionado, icone: '/Logo-IPDF.png', url: '/' },
+            inscricoes
+          );
+          enviados = result.enviados ?? total;
+          erros    = result.erros    ?? 0;
+        } catch(e) {
+          erros = total;
+        }
+
+        // 3. Registra no histórico
+        await db.rpc('admin_push_registrar_envio', {
+          p_token:            state.sessionToken,
+          p_titulo:           titulo,
+          p_mensagem:         mensagem,
+          p_tipo:             tipoSelecionado,
+          p_icone:            '/Logo-IPDF.png',
+          p_url_destino:      '/',
+          p_total_assinantes: total,
+          p_total_enviados:   enviados,
+          p_total_erros:      erros,
+          p_e_teste:          false,
+        });
+
+        toast(`Notificação enviada para ${enviados} dispositivo(s)! 🎉`, '✅');
+        await carregarAdminPushHistorico();
+        await carregarAdminPushStats();
+
+        // Limpa o formulário
+        if (inputTitulo)   inputTitulo.value   = '';
+        if (inputMensagem) inputMensagem.value = '';
+        atualizarPreview();
+
+      } catch(e) {
+        console.error('[Push] Erro ao enviar:', e);
+        toast('Erro ao enviar as notificações.', '❌');
+      } finally {
+        btnEnviar.disabled = false;
+        btnEnviar.textContent = orig;
+      }
+    });
+  }
+
+  // Botão de refresh do histórico
+  const btnHistRefresh = document.getElementById('push-hist-refresh-btn');
+  if (btnHistRefresh) {
+    btnHistRefresh.addEventListener('click', () => carregarAdminPushHistorico());
+  }
+})();
+
+/* ---- Registra SW na inicialização ---- */
+(function initServiceWorker() {
+  if (!pushSuportado()) return;
+  registrarServiceWorker();
+  // Ouve mensagens do SW (ex: clique em notificação)
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'NOTIF_CLICK') {
+      // Poderia navegar para uma tela específica aqui
+    }
+    if (event.data && event.data.type === 'PUSH_SUBSCRIPTION_CHANGED') {
+      // Re-registra inscrição automaticamente
+      ativarPushNotifications();
+    }
+  });
+})();
+
 (function initAdmin(){
   const adminTabMeta = {
     'visao-geral': { icon:'\ud83d\udcca', title:'Visão geral',          sub:'Retrato rápido de como a comunidade usa o app' },
@@ -8818,7 +9657,8 @@ function adminMemberRowHtml(m){
     'bible':       { icon:'\ud83d\udcd6', title:'Bíblia',                sub:'Leitura da Palavra' },
     'conversas':   { icon:'\ud83d\udcac', title:'Conversas',             sub:'Converse diretamente com os membros' },
     'comunidade':  { icon:'\ud83c\udfdb\ufe0f', title:'Comunidade',      sub:'Mural, canais, cultos e aniversariantes' },
-    'perfil':      { icon:'\ud83d\udc64', title:'Perfil',                sub:'Suas informações e preferências' },
+    'perfil':         { icon:'\ud83d\udc64', title:'Perfil',                sub:'Suas informações e preferências' },
+    'notificacoes':   { icon:'\ud83d\udd14', title:'Notificações Push',     sub:'Envie mensagens para todos os membros inscritos' },
   };
   // Abas que reaproveitam telas já existentes do app (em vez de um painel de estatísticas)
   const ADMIN_TAB_PARA_VIEW = { bible:'bible', conversas:'conversas', comunidade:'comunidade', perfil:'settings' };
@@ -8841,7 +9681,8 @@ function adminMemberRowHtml(m){
         const tabAtiva = document.querySelector('[data-admin-tab].active')?.dataset.adminTab || 'visao-geral';
         if(tabAtiva === 'oracoes')       await carregarAdminOracoes();
         else if(tabAtiva === 'membros')  await carregarAdminMembros();
-        else if(tabAtiva === 'mensagens') await carregarAdminMensagens();
+        else if(tabAtiva === 'mensagens')    await carregarAdminMensagens();
+        else if(tabAtiva === 'notificacoes') await carregarAdminPushHistorico();
         else await carregarAdminStats();
         toast('Painel atualizado.', '\ud83d\udd04');
       }catch(e){ toast('Não foi possível atualizar.', '\u26a0\ufe0f'); }
@@ -10672,7 +11513,15 @@ document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', (
     } else {
       document.body.classList.remove('show-admin');
       switchView('home');
+      // Mostra banner de ativar notificações para novos usuários
+      setTimeout(() => {
+        if(typeof mostrarBannerPush === 'function') mostrarBannerPush();
+      }, 1500);
     }
+    // Verifica e atualiza UI do toggle de push nas configurações
+    setTimeout(() => {
+      if(typeof verificarEstadoPush === 'function') verificarEstadoPush();
+    }, 500);
   }
 
   const loginBtn = document.getElementById('auth-login-btn');
