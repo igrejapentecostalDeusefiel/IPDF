@@ -9043,7 +9043,7 @@ function adminMemberRowHtml(m){
    A PRIVATE KEY fica na Edge Function do Supabase
    (nunca no cliente).
    ----------------------------------------- */
-const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
+const VAPID_PUBLIC_KEY = 'BEK2luLPeo_evRbHeBHI-BSU8aC8vAZmuzfJyv4hPKViBHNhN5W7l6oOGDczUpbX53Ve-WEqG9WLnyLyVoxMaAw';
 // ^ Substitua pela sua chave pública VAPID real!
 
 /* Converte base64url → Uint8Array (exigido pela API do browser) */
@@ -9461,7 +9461,7 @@ function fecharBannerPush() {
   Durante desenvolvimento / sem Edge Function configurada,
   o sistema usa Notification API local (só funciona com o app aberto).
 */
-const EDGE_FUNCTION_URL = null; // Ex: 'https://pbxepekuxyfklarwunlf.supabase.co/functions/v1/send-push'
+const EDGE_FUNCTION_URL = 'https://pbxepekuxyfklarwunlf.supabase.co/functions/v1/send-push';
 
 async function enviarPushViaEdgeFunction(payload, subscriptions) {
   if (!EDGE_FUNCTION_URL) {
