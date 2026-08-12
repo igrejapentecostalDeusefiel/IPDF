@@ -9792,6 +9792,52 @@ async function carregarAdminPushHistorico() {
   }
 })();
 
+/* ---- Migra inscrição manual (notif:token) para endpoint real do FCM ----
+   Chamada automaticamente após login quando o usuário já tinha push ativo.
+   Se o SW conseguir fazer subscribe com a VAPID real, substitui no banco.   */
+async function migrarInscricaoPushSeNecessario() {
+  if (!state.sessionToken) return;
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+
+  try {
+    // Verifica se há inscrição ativa no banco
+    const { data: temInscricao } = await db.rpc('push_verificar_inscricao', { p_token: state.sessionToken });
+    if (!temInscricao) return; // usuário não tinha push ativo
+
+    // Verifica se já tem endpoint real (não manual)
+    const { data: minhaSub } = await db.rpc('push_minha_inscricao', { p_token: state.sessionToken });
+    const endpointAtual = minhaSub && minhaSub[0] && minhaSub[0].endpoint;
+    if (endpointAtual && endpointAtual.startsWith('http')) return; // já tem endpoint real, ok
+
+    // Tem inscrição manual — tenta registrar SW real e substituir
+    console.log('[Push] Migrando inscrição manual para endpoint real...');
+    const reg = await registrarServiceWorker();
+    if (!reg || !reg.pushManager) return;
+
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
+
+    const { endpoint, p256dh, auth } = serializarSubscription(sub);
+    const dispositivo = (typeof detectarDispositivo === 'function')
+      ? detectarDispositivo() : navigator.userAgent.slice(0, 80);
+
+    // Remove inscrição manual antiga e salva a real
+    await db.rpc('push_cancelar_inscricao', {
+      p_token: state.sessionToken,
+      p_endpoint: 'notif:' + state.sessionToken,
+    }).catch(() => {});
+
+    await salvarInscricaoNoBanco(endpoint, p256dh, auth, dispositivo);
+    console.log('[Push] Migração concluída — endpoint real salvo no banco.');
+  } catch(e) {
+    // VAPID ainda inválida ou SW indisponível — silencioso
+    console.warn('[Push] Migração não foi possível:', e.message);
+  }
+}
+
 /* ---- Registra SW na inicialização ---- */
 (function initServiceWorker() {
   if (!pushSuportado()) return;
@@ -11684,7 +11730,9 @@ document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', (
     // Verifica e atualiza UI do toggle de push nas configurações
     setTimeout(() => {
       if(typeof verificarEstadoPush === 'function') verificarEstadoPush();
-    }, 500);
+      // Se já tinha notificações ativas, tenta migrar endpoint manual → real (FCM)
+      if(typeof migrarInscricaoPushSeNecessario === 'function') migrarInscricaoPushSeNecessario();
+    }, 1000);
   }
 
   const loginBtn = document.getElementById('auth-login-btn');
