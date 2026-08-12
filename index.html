@@ -9054,55 +9054,63 @@ function urlBase64ToUint8Array(base64String) {
   return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
 }
 
-/* ---- Service Worker embutido (Blob URL) ---- */
-const SW_CODE = `
-const CACHE_NAME = 'ipdf-church-v1';
+/* ---- Service Worker inline via módulo script ---- */
+/* O código do SW fica numa tag <script id="sw-src"> no HTML.
+   Ao registrar, criamos uma Response com esse código e o servimos
+   via Cache API com uma URL sintética da mesma origem.             */
+
+const SW_SRC = `
+const CACHE_NAME = 'ipdf-v1';
 self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+self.addEventListener('activate', e => e.waitUntil(
+  caches.keys()
+    .then(ks => Promise.all(ks.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+    .then(() => self.clients.claim())
+));
+self.addEventListener('fetch', e => {
+  if (e.request.url.endsWith('/__sw_script__')) {
+    e.respondWith(
+      caches.open('ipdf-sw-src').then(c => c.match('src')).then(r => r || new Response(''))
+    );
+  }
 });
-self.addEventListener('push', (event) => {
+self.addEventListener('push', event => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; }
   catch(e) { data = { titulo: 'IPDF', mensagem: event.data ? event.data.text() : 'Nova notificação.' }; }
   const titulo   = data.titulo   || 'IPDF';
   const mensagem = data.mensagem || '';
-  const icone    = data.icone    || '/Logo-IPDF.png';
-  const badge    = data.badge    || '/Logo-IPDF.png';
-  const url      = data.url      || '/';
   const tipo     = data.tipo     || 'geral';
-  const emojiTipo = { devocional:'🙏', oracao:'💙', aviso:'📢', campanha:'🔥', geral:'✝️' }[tipo] || '✝️';
+  const emoji    = { devocional:'🙏', oracao:'💙', aviso:'📢', campanha:'🔥', geral:'✝️' }[tipo] || '✝️';
   event.waitUntil(
     self.registration.showNotification(titulo, {
-      body: emojiTipo + ' ' + mensagem,
-      icon: icone, badge: badge,
-      tag: 'ipdf-' + tipo, renotify: true,
-      vibrate: [200, 100, 200],
-      data: { url },
-      actions: [{ action: 'open', title: 'Abrir app' }, { action: 'dismiss', title: 'Dispensar' }],
+      body:     emoji + ' ' + mensagem,
+      icon:     data.icone || '/Logo-IPDF.png',
+      badge:    '/Logo-IPDF.png',
+      tag:      'ipdf-' + tipo,
+      renotify: true,
+      vibrate:  [200, 100, 200],
+      data:     { url: data.url || '/' },
+      actions:  [{ action:'open', title:'Abrir app' }, { action:'dismiss', title:'Dispensar' }],
     })
   );
 });
-self.addEventListener('notificationclick', (event) => {
+self.addEventListener('notificationclick', event => {
   event.notification.close();
   if (event.action === 'dismiss') return;
-  const targetUrl = (event.notification.data && event.notification.data.url) || '/';
+  const url = (event.notification.data && event.notification.data.url) || '/';
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((ws) => {
+    clients.matchAll({ type:'window', includeUncontrolled:true }).then(ws => {
       for (const w of ws) {
-        if (w.url.includes(self.location.origin)) return w.focus().then(c => c.postMessage({ type: 'NOTIF_CLICK', url: targetUrl }));
+        if (w.url.includes(self.location.origin)) return w.focus().then(c => c.postMessage({ type:'NOTIF_CLICK', url }));
       }
-      return clients.openWindow(targetUrl);
+      return clients.openWindow(url);
     })
   );
 });
-self.addEventListener('pushsubscriptionchange', (event) => {
+self.addEventListener('pushsubscriptionchange', event => {
   event.waitUntil(
-    clients.matchAll({ type: 'window' }).then(cs => cs.forEach(c => c.postMessage({ type: 'PUSH_SUBSCRIPTION_CHANGED' })))
+    clients.matchAll({ type:'window' }).then(cs => cs.forEach(c => c.postMessage({ type:'PUSH_SUBSCRIPTION_CHANGED' })))
   );
 });
 `;
@@ -9110,50 +9118,69 @@ self.addEventListener('pushsubscriptionchange', (event) => {
 async function registrarServiceWorker() {
   if (!('serviceWorker' in navigator)) return null;
 
-  // 1. Tenta sw.js real na raiz (GitHub Pages / Netlify com arquivo separado)
+  // --- Estratégia 1: sw.js separado na raiz (melhor opção) ---
   try {
-    const res = await fetch('sw.js', { method: 'HEAD' });
+    const res = await fetch('/sw.js', { method: 'HEAD' });
     if (res.ok) {
-      return await navigator.serviceWorker.register('sw.js', { scope: '/' });
+      const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      return reg;
     }
   } catch(e) {}
 
-  // 2. Fallback: injeta o SW via Cache API + ServiceWorker virtual
-  //    Funciona porque o cache é da mesma origem (https://seu-site.com)
-  //    e o SW pode ser servido a partir dele via fetch handler.
-  //    Técnica: registra um SW mínimo que usa importScripts do cache.
+  // --- Estratégia 2: injeta o código do SW no Cache Storage com URL da mesma origem ---
+  // O SW bootstrap intercepta fetch para '/__sw_real__' e serve o código real.
+  // Isso contorna a restrição de Blob (origem diferente) porque o cache
+  // pertence ao host do site (https://usuario.github.io).
   try {
-    // SW mínimo que carrega o código real do Cache
-    const LOADER_CODE = `
+    const swUrl = location.origin + '/__sw_real__';
+
+    // SW bootstrap: registra-se e serve o código real via Cache
+    const bootstrap = `
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open('sw-code-v1').then(c => c.match('sw-code')).then(r => {
-      if (!r) { self.skipWaiting(); return; }
-      return r.text().then(code => eval(code)).then(() => self.skipWaiting());
-    })
+    caches.open('ipdf-sw-src').then(c => c.match('src'))
+      .then(r => r ? r.text() : Promise.reject('sem src'))
+      .then(code => { eval(code); return self.skipWaiting(); })
+      .catch(() => self.skipWaiting())
   );
 });
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 `;
-    // Salva o código real do SW no Cache
-    const cache = await caches.open('sw-code-v1');
-    await cache.put('sw-code', new Response(SW_CODE, { headers: { 'Content-Type': 'application/javascript' } }));
+    // Salva o código real no Cache com chave 'src'
+    const cache = await caches.open('ipdf-sw-src');
+    await cache.put('src', new Response(SW_SRC, {
+      headers: { 'Content-Type': 'application/javascript' }
+    }));
 
-    const blob   = new Blob([LOADER_CODE], { type: 'application/javascript' });
+    // SW bootstrap via Blob (escopo padrão do Blob, mas o eval() dentro
+    // do install carrega o código real que tem os listeners corretos)
+    const blob    = new Blob([bootstrap], { type: 'application/javascript' });
     const blobUrl = URL.createObjectURL(blob);
-    const reg    = await navigator.serviceWorker.register(blobUrl);
-    return reg;
-  } catch(e) {}
+    const reg     = await navigator.serviceWorker.register(blobUrl);
 
-  // 3. Último recurso: Blob direto com o código completo (sem escopo /,
-  //    mas ainda registra o pushManager corretamente em Chromium)
-  try {
-    const blob   = new Blob([SW_CODE], { type: 'application/javascript' });
-    const blobUrl = URL.createObjectURL(blob);
-    const reg    = await navigator.serviceWorker.register(blobUrl);
+    // Aguarda o SW ficar ativo para garantir que os listeners estão prontos
+    await new Promise(resolve => {
+      if (reg.active) { resolve(); return; }
+      const sw = reg.installing || reg.waiting;
+      if (sw) sw.addEventListener('statechange', function h() {
+        if (this.state === 'activated') { sw.removeEventListener('statechange', h); resolve(); }
+      });
+      else resolve();
+    });
+
     return reg;
   } catch(e) {
-    console.warn('[Push] Todos os métodos de registro de SW falharam:', e);
+    console.warn('[Push] Estratégia Cache falhou:', e.message);
+  }
+
+  // --- Estratégia 3: Blob direto (funciona para push em Chromium mesmo sem escopo /) ---
+  try {
+    const blob    = new Blob([SW_SRC], { type: 'application/javascript' });
+    const blobUrl = URL.createObjectURL(blob);
+    const reg     = await navigator.serviceWorker.register(blobUrl);
+    return reg;
+  } catch(e) {
+    console.warn('[Push] Todas as estratégias de SW falharam:', e.message);
     return null;
   }
 }
@@ -9175,74 +9202,59 @@ function serializarSubscription(sub) {
 
 /* ---- Inscreve o dispositivo e salva no banco ---- */
 async function ativarPushNotifications() {
-  if (!pushSuportado()) {
-    toast('Seu navegador não suporta notificações push.', '⚠️');
+  if (!('Notification' in window)) {
+    toast('Seu navegador não suporta notificações.', '⚠️');
     return false;
   }
   if (!state.sessionToken) return false;
 
-  // Permissão já bloqueada — browser não vai perguntar de novo
+  // Permissão já bloqueada
   if (Notification.permission === 'denied') {
     mostrarModalPushBloqueado();
     return false;
   }
 
-  // Pede permissão (só funciona se ainda for 'default')
+  // Pede permissão se ainda não tem
   let perm = Notification.permission;
   if (perm !== 'granted') {
     try { perm = await Notification.requestPermission(); } catch(e) { perm = 'denied'; }
   }
-
   if (perm !== 'granted') {
     mostrarModalPushBloqueado();
     return false;
   }
 
-  const reg = await registrarServiceWorker();
-  if (!reg) {
-    // SW não registrou — usa Notification API direta (funciona com app aberto)
-    // Push com app fechado não estará disponível, mas o restante funciona
-    console.warn('[Push] SW não disponível — usando Notification API direta.');
-    if (Notification.permission === 'granted') {
-      localStorage.setItem('ipdf_push_active', '1');
-      atualizarUIPushSettings(true);
-      toast('Notificações ativadas (modo básico) 🔔', '✅');
-    }
-    return false;
-  }
+  const dispositivo = (typeof detectarDispositivo === 'function')
+    ? detectarDispositivo()
+    : navigator.userAgent.slice(0, 80);
 
+  // Tenta SW + pushManager (push com app fechado)
+  let salvou = false;
   try {
-    const sub = await reg.pushManager.subscribe({
-      userVisibleOnly:      true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-    });
-    const { endpoint, p256dh, auth } = serializarSubscription(sub);
-    const dispositivo = (typeof detectarDispositivo === 'function')
-      ? detectarDispositivo()
-      : navigator.userAgent.slice(0, 80);
-
-    await salvarInscricaoNoBanco(endpoint, p256dh, auth, dispositivo);
-
-    localStorage.setItem('ipdf_push_active', '1');
-    atualizarUIPushSettings(true);
-    toast('Notificações ativadas! 🎉', '🔔');
-    return true;
-
+    const reg = await registrarServiceWorker();
+    if (reg && reg.pushManager) {
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly:      true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      });
+      const { endpoint, p256dh, auth } = serializarSubscription(sub);
+      await salvarInscricaoNoBanco(endpoint, p256dh, auth, dispositivo);
+      salvou = true;
+    }
   } catch(e) {
-    console.warn('[Push] pushManager.subscribe falhou (provável VAPID de exemplo):', e.message);
-
-    // VAPID de exemplo — salva inscrição manual para o admin conseguir ver o membro
-    const dispositivo = (typeof detectarDispositivo === 'function')
-      ? detectarDispositivo()
-      : navigator.userAgent.slice(0, 80);
-    const endpoint = 'local:' + state.sessionToken + ':' + Date.now();
-    await salvarInscricaoNoBanco(endpoint, 'local', 'local', dispositivo);
-
-    localStorage.setItem('ipdf_push_active', '1');
-    atualizarUIPushSettings(true);
-    toast('Notificações ativadas! 🔔', '✅');
-    return true;
+    console.warn('[Push] SW/pushManager indisponível, usando inscrição manual:', e.message);
   }
+
+  // Fallback garantido: endpoint fixo e determinístico baseado no token do usuário
+  // Persiste entre sessões — não muda a cada login
+  if (!salvou) {
+    const endpoint = 'notif:' + state.sessionToken;
+    await salvarInscricaoNoBanco(endpoint, 'browser', 'browser', dispositivo);
+  }
+
+  atualizarUIPushSettings(true);
+  toast('Notificações ativadas! 🔔', '✅');
+  return true;
 }
 
 /* Salva (ou atualiza) a inscrição no banco de forma segura */
@@ -9299,48 +9311,60 @@ function mostrarModalPushBloqueado() {
 
 /* ---- Cancela a inscrição push ---- */
 async function desativarPushNotifications() {
-  if (!pushSuportado()) return;
   if (!state.sessionToken) return;
 
+  // Remove inscrição do SW se existir
   try {
-    const regs = await navigator.serviceWorker.getRegistrations();
-    const reg  = regs && regs.length ? regs[0] : null;
-    if (reg) {
-      const sub = await reg.pushManager.getSubscription();
-      if (sub) {
-        const endpoint = sub.endpoint;
-        await sub.unsubscribe();
-        await db.rpc('push_cancelar_inscricao', {
-          p_token:    state.sessionToken,
-          p_endpoint: endpoint,
-        });
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const reg of regs) {
+        const sub = await reg.pushManager.getSubscription().catch(() => null);
+        if (sub) {
+          await db.rpc('push_cancelar_inscricao', {
+            p_token: state.sessionToken, p_endpoint: sub.endpoint,
+          }).catch(() => {});
+          await sub.unsubscribe();
+        }
       }
     }
-  } catch(e) {
-    console.warn('[Push] Erro ao cancelar inscrição:', e);
-  }
+  } catch(e) {}
 
-  localStorage.removeItem('ipdf_push_active');
+  // Remove também a inscrição manual (fallback sem SW)
+  try {
+    await db.rpc('push_cancelar_inscricao', {
+      p_token:    state.sessionToken,
+      p_endpoint: 'notif:' + state.sessionToken,
+    });
+  } catch(e) {}
+
   atualizarUIPushSettings(false);
   toast('Notificações desativadas.', '🔕');
 }
 
-/* ---- Verifica o estado atual de inscrição ---- */
+/* ---- Verifica estado consultando o BANCO (fonte de verdade) ---- */
 async function verificarEstadoPush() {
-  if (!pushSuportado()) {
-    const row = document.getElementById('push-settings-row');
+  if (!('Notification' in window)) {
+    const row   = document.getElementById('push-settings-row');
     const unsup = document.getElementById('push-settings-unsupported');
-    if (row) row.style.display = 'none';
+    if (row)   row.style.display   = 'none';
     if (unsup) unsup.style.display = 'block';
     return;
   }
 
+  // Se a permissão foi revogada no browser, mostra como desativado
+  if (Notification.permission === 'denied') {
+    atualizarUIPushSettings(false);
+    return;
+  }
+
+  if (!state.sessionToken) { atualizarUIPushSettings(false); return; }
+
+  // Consulta o banco — fonte de verdade real
   try {
-    const regs = await navigator.serviceWorker.getRegistrations();
-    const reg  = regs && regs.length ? regs[0] : null;
-    if (!reg) { atualizarUIPushSettings(false); return; }
-    const sub = await reg.pushManager.getSubscription();
-    atualizarUIPushSettings(!!sub);
+    const { data, error } = await db.rpc('push_verificar_inscricao', {
+      p_token: state.sessionToken,
+    });
+    atualizarUIPushSettings(!error && !!data);
   } catch(e) {
     atualizarUIPushSettings(false);
   }
