@@ -9120,9 +9120,9 @@ async function registrarServiceWorker() {
 
   // --- Estratégia 1: sw.js separado na raiz (melhor opção) ---
   try {
-    const res = await fetch('/sw.js', { method: 'HEAD' });
+    const res = await fetch('sw.js', { method: 'HEAD' });
     if (res.ok) {
-      const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      const reg = await navigator.serviceWorker.register('sw.js', { scope: '/' });
       return reg;
     }
   } catch(e) {}
