@@ -786,9 +786,22 @@ body.show-admin #admin-shell{display:block;}
 .push-chip.erros{background:rgba(184,105,90,.15);color:var(--rose);}
 .push-chip.teste{background:rgba(42,59,92,.12);color:var(--ink-soft);}
 /* Banner/modal de ativar notificações (pós-login) */
+/* ---- Toast flutuante de ativação de push ---- */
+.push-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);z-index:9800;background:var(--ink);color:var(--parchment);border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.25);max-width:calc(100vw - 32px);width:360px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;}
+.push-toast.visivel{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+[data-theme="dark"] .push-toast{background:var(--paper);border:1px solid var(--line);}
+.push-toast-icon{font-size:1.6rem;flex-shrink:0;}
+.push-toast-texto{flex:1;min-width:0;}
+.push-toast-titulo{font-weight:700;font-size:.88rem;margin-bottom:2px;}
+.push-toast-sub{font-size:.75rem;opacity:.7;line-height:1.4;}
+.push-toast-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.push-toast-btn-ativar{background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:6px 12px;font-size:.78rem;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;}
+.push-toast-btn-fechar{background:none;border:none;color:rgba(255,255,255,.45);font-size:.72rem;cursor:pointer;font-family:inherit;text-align:center;padding:2px;}
+[data-theme="dark"] .push-toast-btn-fechar{color:var(--text-faint);}
+/* Banner overlay legado — mantido mas não usado */
 .push-banner-overlay{position:fixed;inset:0;background:rgba(26,37,64,.55);backdrop-filter:blur(3px);z-index:9900;display:flex;align-items:flex-end;justify-content:center;padding:0 0 20px;}
 @media(min-width:600px){.push-banner-overlay{align-items:center;}}
-.push-banner-box{background:var(--paper);border-radius:20px 20px 20px 20px;padding:28px 24px 20px;max-width:400px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.25);animation:riseIn .35s ease both;}
+.push-banner-box{background:var(--paper);border-radius:20px;padding:28px 24px 20px;max-width:400px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.25);animation:riseIn .35s ease both;}
 .push-banner-icon{font-size:2.8rem;text-align:center;margin-bottom:12px;}
 .push-banner-title{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--ink);text-align:center;margin-bottom:8px;}
 .push-banner-sub{font-size:.86rem;color:var(--text-dim);text-align:center;line-height:1.55;margin-bottom:20px;}
@@ -802,7 +815,7 @@ body.show-admin #admin-shell{display:block;}
 .push-settings-status.on{background:rgba(110,143,114,.18);color:var(--sage);}
 .push-settings-status.off{background:rgba(184,105,90,.14);color:var(--rose);}
 /* ---- Painel de inscritos ---- */
-.push-inscritos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:12px;}
+.push-inscritos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:12px;}
 .push-inscrito-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-md);padding:12px 14px;display:flex;align-items:center;gap:12px;transition:box-shadow .18s;}
 .push-inscrito-card:hover{box-shadow:var(--shadow-sm);}
 .push-inscrito-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#b8860b);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;color:var(--ink);flex-shrink:0;}
@@ -810,7 +823,15 @@ body.show-admin #admin-shell{display:block;}
 .push-inscrito-nome{font-weight:700;font-size:.83rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .push-inscrito-dispositivo{font-size:.7rem;color:var(--text-faint);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .push-inscrito-badge{width:8px;height:8px;border-radius:50%;background:#4caf50;flex-shrink:0;box-shadow:0 0 0 2px rgba(76,175,80,.25);}
+.push-inscrito-badge.off{background:var(--line);box-shadow:none;}
 .push-inscritos-empty{text-align:center;padding:32px 16px;color:var(--text-faint);font-size:.86rem;}
+.push-status-tag{font-size:.65rem;font-weight:700;letter-spacing:.05em;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.push-status-tag.ativo{background:rgba(76,175,80,.15);color:#388e3c;}
+.push-status-tag.inativo{background:rgba(150,150,150,.12);color:var(--text-faint);}
+.push-inscritos-filter{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.push-filter-pill{font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid var(--line);background:var(--paper);color:var(--text-dim);cursor:pointer;transition:all .15s;}
+.push-filter-pill.active{background:var(--ink);color:var(--parchment);border-color:var(--ink);}
+[data-theme="dark"] .push-filter-pill.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
 @media(max-width:920px){
   .admin-shell-inner{grid-template-columns:1fr;}
   .admin-sidebar{position:relative;height:auto;}
@@ -2849,8 +2870,13 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
           <!-- Membros inscritos -->
           <div style="margin-top:28px;">
             <div class="admin-sec-row">
-              <div class="admin-sec-title">&#128276; Membros com notificações ativas</div>
+              <div class="admin-sec-title">👥 Membros e status de notificação</div>
               <button class="admin-sec-link" id="push-inscritos-refresh-btn">Atualizar</button>
+            </div>
+            <div class="push-inscritos-filter">
+              <button class="push-filter-pill active" data-push-filter="todos">Todos</button>
+              <button class="push-filter-pill" data-push-filter="ativo">🟢 Ativado</button>
+              <button class="push-filter-pill" data-push-filter="inativo">⚫ Desativado</button>
             </div>
             <div id="push-inscritos-list">
               <div class="admin-empty-state">Carregando…</div>
@@ -2862,7 +2888,20 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   </div>
 </div>
 
-<!-- Banner pós-login: ativar notificações -->
+<!-- Toast flutuante: ativar notificações -->
+<div id="push-toast" class="push-toast" role="alert" aria-live="polite">
+  <div class="push-toast-icon">🔔</div>
+  <div class="push-toast-texto">
+    <div class="push-toast-titulo">Ativar notificações?</div>
+    <div class="push-toast-sub">Receba avisos e devocionais da IPDF mesmo com o app fechado.</div>
+  </div>
+  <div class="push-toast-btns">
+    <button class="push-toast-btn-ativar" id="push-toast-ativar-btn">Ativar</button>
+    <button class="push-toast-btn-fechar" id="push-toast-fechar-btn">Agora não</button>
+  </div>
+</div>
+
+<!-- Banner overlay legado (mantido oculto) -->
 <div id="push-banner-overlay" class="push-banner-overlay" style="display:none;">
   <div class="push-banner-box">
     <div class="push-banner-icon">&#128276;</div>
@@ -9406,49 +9445,71 @@ function atualizarUIPushSettings(ativo) {
 })();
 
 /* ---- Banner pós-login (1ª vez) ---- */
-function mostrarBannerPush() {
-  if (!pushSuportado()) return;
-  if (Notification.permission === 'granted') return;     // já tem permissão
-  if (Notification.permission === 'denied') return;      // usuário recusou antes
-  if (localStorage.getItem('ipdf_push_dispensado')) return; // dispensou antes
-  if (localStorage.getItem('ipdf_push_active')) return;  // já ativou
+/* ---- Toast flutuante: ativar notificações ---- */
+let _pushToastTimer = null;
 
-  const overlay = document.getElementById('push-banner-overlay');
-  if (!overlay) return;
-  overlay.style.display = 'flex';
+async function mostrarBannerPush() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'denied') return;
+  if (!state.sessionToken) return;
+
+  // Verifica no banco se já tem inscrição ativa
+  try {
+    const { data: temAtivo } = await db.rpc('push_verificar_inscricao', { p_token: state.sessionToken });
+    if (temAtivo) return; // já tem push ativo — não mostra
+  } catch(e) {}
+
+  // Se a permissão já está concedida mas não tem inscrição no banco,
+  // tenta registrar silenciosamente sem mostrar o toast
+  if (Notification.permission === 'granted') {
+    await ativarPushNotifications();
+    return;
+  }
+
+  // Mostra o toast após 3 segundos
+  clearTimeout(_pushToastTimer);
+  _pushToastTimer = setTimeout(() => {
+    const toast = document.getElementById('push-toast');
+    if (toast) toast.classList.add('visivel');
+  }, 3000);
 }
 
-function fecharBannerPush() {
-  const overlay = document.getElementById('push-banner-overlay');
-  if (overlay) overlay.style.display = 'none';
+function fecharToastPush(dispensar) {
+  const toast = document.getElementById('push-toast');
+  if (toast) toast.classList.remove('visivel');
+  clearTimeout(_pushToastTimer);
+  // Se dispensou, espera 24h para mostrar de novo
+  if (dispensar) {
+    localStorage.setItem('ipdf_push_snooze', String(Date.now() + 24 * 60 * 60 * 1000));
+  }
 }
+
+function fecharBannerPush() { fecharToastPush(false); }
 
 (function initPushBanner() {
-  const btnAtivar  = document.getElementById('push-banner-ativar-btn');
-  const btnDepois  = document.getElementById('push-banner-depois-btn');
-  const overlay    = document.getElementById('push-banner-overlay');
+  const btnAtivar = document.getElementById('push-toast-ativar-btn');
+  const btnFechar = document.getElementById('push-toast-fechar-btn');
 
   if (btnAtivar) {
     btnAtivar.addEventListener('click', async () => {
-      fecharBannerPush();
+      fecharToastPush(false);
       await ativarPushNotifications();
     });
   }
-  if (btnDepois) {
-    btnDepois.addEventListener('click', () => {
-      localStorage.setItem('ipdf_push_dispensado', '1');
-      fecharBannerPush();
-    });
+  if (btnFechar) {
+    btnFechar.addEventListener('click', () => fecharToastPush(true));
   }
-  // Fecha clicando fora
-  if (overlay) {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) {
-        localStorage.setItem('ipdf_push_dispensado', '1');
-        fecharBannerPush();
-      }
-    });
-  }
+
+  // Botões do overlay legado (caso ainda existam)
+  const btnLegacyAtivar = document.getElementById('push-banner-ativar-btn');
+  const btnLegacyDepois = document.getElementById('push-banner-depois-btn');
+  if (btnLegacyAtivar) btnLegacyAtivar.addEventListener('click', async () => {
+    document.getElementById('push-banner-overlay').style.display = 'none';
+    await ativarPushNotifications();
+  });
+  if (btnLegacyDepois) btnLegacyDepois.addEventListener('click', () => {
+    document.getElementById('push-banner-overlay').style.display = 'none';
+  });
 })();
 
 /* ---- Envio de push: chama Edge Function ou simula localmente ---- */
@@ -9502,67 +9563,89 @@ async function enviarPushViaEdgeFunction(payload, subscriptions) {
 }
 
 /* ---- Admin: carregar lista de inscritos com nome do usuário ---- */
+let _pushMembrosCache = []; // cache para os filtros
+
 async function carregarAdminPushInscritos() {
   if (!state.sessionToken) return;
   const list = document.getElementById('push-inscritos-list');
   if (!list) return;
   list.innerHTML = '<div class="admin-empty-state">Carregando…</div>';
-  try {
-    const { data: subs, error } = await db.rpc('admin_push_listar_inscricoes', { p_token: state.sessionToken });
-    if (error) {
-      list.innerHTML = '<div class="admin-empty-state">⚠️ Execute o <strong>push-notifications.sql</strong> no Supabase para ver os inscritos.</div>';
-      return;
-    }
-    if (!subs || !subs.length) {
-      list.innerHTML = '<div class="push-inscritos-empty">Nenhum membro ativou as notificações ainda.</div>';
-      return;
-    }
 
-    // Agrupa por usuario_id (um usuário pode ter vários dispositivos)
-    const porUsuario = {};
-    subs.forEach(s => {
-      const uid = s.usuario_id || s.endpoint;
-      if (!porUsuario[uid]) {
-        porUsuario[uid] = {
-          subs: [],
-          nome: s.nome_exibicao || s.nome_usuario || 'Membro'
-        };
-      }
-      porUsuario[uid].subs.push(s);
+  try {
+    // Busca todos os membros
+    const { data: membros, error: errMembros } = await db.rpc('admin_listar_membros', { p_token: state.sessionToken });
+    if (errMembros) throw errMembros;
+
+    // Busca inscrições ativas
+    const { data: subs } = await db.rpc('admin_push_listar_inscricoes', { p_token: state.sessionToken }).catch(() => ({ data: [] }));
+
+    // Monta set de usuario_ids com push ativo
+    const ativosSet = new Set((subs || []).map(s => s.usuario_id).filter(Boolean));
+    const subsPorUsuario = {};
+    (subs || []).forEach(s => {
+      if (!subsPorUsuario[s.usuario_id]) subsPorUsuario[s.usuario_id] = [];
+      subsPorUsuario[s.usuario_id].push(s);
     });
 
-    const total     = Object.keys(porUsuario).length;
-    const totalDisp = subs.length;
+    // Monta lista completa de membros com status
+    _pushMembrosCache = (membros || []).map(m => ({
+      id:       m.id,
+      nome:     m.nome_exibicao || m.nome_usuario || 'Membro',
+      usuario:  m.nome_usuario  || '',
+      ativo:    ativosSet.has(m.id),
+      subs:     subsPorUsuario[m.id] || [],
+    }));
 
-    // Atualiza pills de stats
+    // Atualiza stats
+    const totalAtivos = _pushMembrosCache.filter(m => m.ativo).length;
+    const totalDisp   = (subs || []).length;
     const elI = document.getElementById('push-stat-inscritos');
     const elD = document.getElementById('push-stat-dispositivos');
-    if (elI) elI.textContent = total;
+    if (elI) elI.textContent = totalAtivos;
     if (elD) elD.textContent = totalDisp;
 
-    list.innerHTML = `<div class="push-inscritos-grid">` +
-      Object.entries(porUsuario).map(([uid, dados]) => {
-        const nome    = dados.nome;
-        const inicial = nome.charAt(0).toUpperCase();
-        const nDisp   = dados.subs.length;
-        const rawDisp = dados.subs[0].dispositivo || 'Dispositivo desconhecido';
-        const dispLabel = nDisp > 1
-          ? `${nDisp} dispositivos`
-          : rawDisp.split('/')[0].trim().slice(0, 30);
-        return `<div class="push-inscrito-card">
-          <div class="push-inscrito-avatar">${escapeHtml(inicial)}</div>
-          <div class="push-inscrito-info">
-            <div class="push-inscrito-nome">${escapeHtml(nome)}</div>
-            <div class="push-inscrito-dispositivo">📱 ${escapeHtml(dispLabel)}</div>
-          </div>
-          <div class="push-inscrito-badge" title="Ativo"></div>
-        </div>`;
-      }).join('') +
-    `</div>`;
-
+    renderPushMembros('todos');
   } catch(e) {
-    list.innerHTML = '<div class="admin-empty-state">Erro ao carregar inscritos.</div>';
+    list.innerHTML = '<div class="admin-empty-state">Erro ao carregar membros.</div>';
   }
+}
+
+function renderPushMembros(filtro) {
+  const list = document.getElementById('push-inscritos-list');
+  if (!list) return;
+
+  const dados = filtro === 'ativo'  ? _pushMembrosCache.filter(m => m.ativo)
+              : filtro === 'inativo' ? _pushMembrosCache.filter(m => !m.ativo)
+              : _pushMembrosCache;
+
+  if (!dados.length) {
+    list.innerHTML = '<div class="push-inscritos-empty">Nenhum membro encontrado.</div>';
+    return;
+  }
+
+  list.innerHTML = '<div class="push-inscritos-grid">' +
+    dados.map(m => {
+      const inicial   = m.nome.charAt(0).toUpperCase();
+      const statusTag = m.ativo
+        ? '<span class="push-status-tag ativo">🔔 Ativado</span>'
+        : '<span class="push-status-tag inativo">🔕 Desativado</span>';
+      const nDisp = m.subs.length;
+      const dispInfo = m.ativo
+        ? (nDisp > 1 ? `${nDisp} dispositivos` : (m.subs[0]?.dispositivo || '').split('/')[0].trim().slice(0, 28) || '1 dispositivo')
+        : 'Sem notificações';
+      return `<div class="push-inscrito-card">
+        <div class="push-inscrito-avatar">${escapeHtml(inicial)}</div>
+        <div class="push-inscrito-info">
+          <div class="push-inscrito-nome">${escapeHtml(m.nome)}</div>
+          <div class="push-inscrito-dispositivo">📱 ${escapeHtml(dispInfo)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;">
+          ${statusTag}
+          <div class="push-inscrito-badge ${m.ativo ? '' : 'off'}" title="${m.ativo ? 'Ativo' : 'Inativo'}"></div>
+        </div>
+      </div>`;
+    }).join('') +
+  '</div>';
 }
 
 /* ---- Admin: carregar estatísticas de push ---- */
@@ -9846,6 +9929,15 @@ async function deletarNotifHistorico(id, btn) {
   if (btnInscRefresh) {
     btnInscRefresh.addEventListener('click', () => carregarAdminPushInscritos());
   }
+
+  // Filtros de status (Todos / Ativado / Desativado)
+  document.querySelectorAll('[data-push-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-push-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderPushMembros(btn.dataset.pushFilter);
+    });
+  });
 })();
 
 /* ---- Migra inscrição manual (notif:token) para endpoint real do FCM ----
