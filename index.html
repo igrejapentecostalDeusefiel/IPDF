@@ -9459,32 +9459,27 @@ async function mostrarBannerPush() {
     if (temAtivo) return; // já tem push ativo — não mostra
   } catch(e) {}
 
-  // Se a permissão já está concedida mas não tem inscrição no banco,
-  // tenta registrar silenciosamente sem mostrar o toast
+  // Permissão já concedida mas sem inscrição no banco → ativa silenciosamente
   if (Notification.permission === 'granted') {
     await ativarPushNotifications();
     return;
   }
 
-  // Mostra o toast após 3 segundos
+  // Mostra o toast após 3 segundos — aparece SEMPRE que entrar sem push ativo
   clearTimeout(_pushToastTimer);
   _pushToastTimer = setTimeout(() => {
-    const toast = document.getElementById('push-toast');
-    if (toast) toast.classList.add('visivel');
+    const el = document.getElementById('push-toast');
+    if (el) el.classList.add('visivel');
   }, 3000);
 }
 
-function fecharToastPush(dispensar) {
-  const toast = document.getElementById('push-toast');
-  if (toast) toast.classList.remove('visivel');
+function fecharToastPush() {
+  const el = document.getElementById('push-toast');
+  if (el) el.classList.remove('visivel');
   clearTimeout(_pushToastTimer);
-  // Se dispensou, espera 24h para mostrar de novo
-  if (dispensar) {
-    localStorage.setItem('ipdf_push_snooze', String(Date.now() + 24 * 60 * 60 * 1000));
-  }
 }
 
-function fecharBannerPush() { fecharToastPush(false); }
+function fecharBannerPush() { fecharToastPush(); }
 
 (function initPushBanner() {
   const btnAtivar = document.getElementById('push-toast-ativar-btn');
@@ -9492,12 +9487,12 @@ function fecharBannerPush() { fecharToastPush(false); }
 
   if (btnAtivar) {
     btnAtivar.addEventListener('click', async () => {
-      fecharToastPush(false);
+      fecharToastPush();
       await ativarPushNotifications();
     });
   }
   if (btnFechar) {
-    btnFechar.addEventListener('click', () => fecharToastPush(true));
+    btnFechar.addEventListener('click', () => fecharToastPush());
   }
 
   // Botões do overlay legado (caso ainda existam)
@@ -9574,39 +9569,69 @@ async function carregarAdminPushInscritos() {
   try {
     // Busca todos os membros
     const { data: membros, error: errMembros } = await db.rpc('admin_listar_membros', { p_token: state.sessionToken });
-    if (errMembros) throw errMembros;
+
+    if (errMembros) {
+      console.error('[Push] Erro ao buscar membros:', errMembros);
+      list.innerHTML = `<div class="admin-empty-state">Erro ao carregar membros: ${escapeHtml(errMembros.message || String(errMembros))}</div>`;
+      return;
+    }
+
+    if (!membros || !membros.length) {
+      list.innerHTML = '<div class="push-inscritos-empty">Nenhum membro cadastrado.</div>';
+      return;
+    }
+
+    console.log('[Push] Membros carregados:', membros.length);
 
     // Busca inscrições ativas
-    const { data: subs } = await db.rpc('admin_push_listar_inscricoes', { p_token: state.sessionToken }).catch(() => ({ data: [] }));
+    let subs = [];
+    try {
+      const { data: subsData, error: errSubs } = await db.rpc('admin_push_listar_inscricoes', { p_token: state.sessionToken });
+      if (errSubs) console.warn('[Push] Erro ao buscar inscrições:', errSubs);
+      else subs = subsData || [];
+    } catch(e) {
+      console.warn('[Push] Exceção ao buscar inscrições:', e);
+    }
+
+    console.log('[Push] Inscrições ativas:', subs.length);
 
     // Monta set de usuario_ids com push ativo
-    const ativosSet = new Set((subs || []).map(s => s.usuario_id).filter(Boolean));
+    const ativosSet = new Set(subs.map(s => s.usuario_id).filter(Boolean));
     const subsPorUsuario = {};
-    (subs || []).forEach(s => {
+    subs.forEach(s => {
       if (!subsPorUsuario[s.usuario_id]) subsPorUsuario[s.usuario_id] = [];
       subsPorUsuario[s.usuario_id].push(s);
     });
 
     // Monta lista completa de membros com status
-    _pushMembrosCache = (membros || []).map(m => ({
-      id:       m.id,
-      nome:     m.nome_exibicao || m.nome_usuario || 'Membro',
-      usuario:  m.nome_usuario  || '',
-      ativo:    ativosSet.has(m.id),
-      subs:     subsPorUsuario[m.id] || [],
+    _pushMembrosCache = membros.map(m => ({
+      id:      m.id,
+      nome:    m.nome_exibicao || m.nome_usuario || 'Membro',
+      usuario: m.nome_usuario  || '',
+      ativo:   ativosSet.has(m.id),
+      subs:    subsPorUsuario[m.id] || [],
     }));
+
+    console.log('[Push] Cache montado:', _pushMembrosCache.length, '| Ativos:', _pushMembrosCache.filter(m=>m.ativo).length);
 
     // Atualiza stats
     const totalAtivos = _pushMembrosCache.filter(m => m.ativo).length;
-    const totalDisp   = (subs || []).length;
+    const totalDisp   = subs.length;
     const elI = document.getElementById('push-stat-inscritos');
     const elD = document.getElementById('push-stat-dispositivos');
     if (elI) elI.textContent = totalAtivos;
     if (elD) elD.textContent = totalDisp;
 
+    // Garante que o filtro ativo está em "Todos"
+    document.querySelectorAll('[data-push-filter]').forEach(b => b.classList.remove('active'));
+    const btnTodos = document.querySelector('[data-push-filter="todos"]');
+    if (btnTodos) btnTodos.classList.add('active');
+
     renderPushMembros('todos');
+
   } catch(e) {
-    list.innerHTML = '<div class="admin-empty-state">Erro ao carregar membros.</div>';
+    console.error('[Push] Exceção geral:', e);
+    list.innerHTML = `<div class="admin-empty-state">Erro inesperado: ${escapeHtml(String(e))}</div>`;
   }
 }
 
