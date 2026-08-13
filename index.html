@@ -9093,7 +9093,7 @@ self.addEventListener('push', event => {
       tag:      'ipdf-' + tipo,
       renotify: true,
       vibrate:  [200, 100, 200],
-      data:     { url: data.url || '/' },
+      data:     { url: data.url || '/IPDF/' },
       actions:  [{ action:'open', title:'Abrir app' }, { action:'dismiss', title:'Dispensar' }],
     })
   );
@@ -9101,7 +9101,7 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   if (event.action === 'dismiss') return;
-  const url = (event.notification.data && event.notification.data.url) || '/';
+  const url = (event.notification.data && event.notification.data.url) || '/IPDF/';
   event.waitUntil(
     clients.matchAll({ type:'window', includeUncontrolled:true }).then(ws => {
       for (const w of ws) {
@@ -9607,7 +9607,7 @@ async function carregarAdminPushHistorico() {
           </div>
           <div style="display:flex;align-items:center;gap:6px;">
             ${testeChip}
-            <button class="push-hist-delete" title="Excluir do histórico" onclick="deletarNotifHistorico('${n.id}', this)">🗑️</button>
+            <button class="push-hist-delete" title="Excluir do histórico" data-delete-notif="${n.id}">🗑️</button>
           </div>
         </div>
         <div class="push-hist-msg">${escapeHtml(n.mensagem)}</div>
@@ -9730,7 +9730,7 @@ async function deletarNotifHistorico(id, btn) {
           p_mensagem:         mensagem,
           p_tipo:             tipoSelecionado,
           p_icone:            '/Logo-IPDF.png',
-          p_url_destino:      '/',
+          p_url_destino:      '/IPDF/',
           p_total_assinantes: 1,
           p_total_enviados:   1,
           p_total_erros:      0,
@@ -9779,7 +9779,7 @@ async function deletarNotifHistorico(id, btn) {
         let enviados = 0, erros = 0;
         try {
           const result = await enviarPushViaEdgeFunction(
-            { titulo, mensagem, tipo: tipoSelecionado, icone: '/Logo-IPDF.png', url: '/' },
+            { titulo, mensagem, tipo: tipoSelecionado, icone: '/Logo-IPDF.png', url: '/IPDF/' },
             inscricoes
           );
           enviados = result.enviados ?? total;
@@ -9795,7 +9795,7 @@ async function deletarNotifHistorico(id, btn) {
           p_mensagem:         mensagem,
           p_tipo:             tipoSelecionado,
           p_icone:            '/Logo-IPDF.png',
-          p_url_destino:      '/',
+          p_url_destino:      '/IPDF/',
           p_total_assinantes: total,
           p_total_enviados:   enviados,
           p_total_erros:      erros,
@@ -9826,6 +9826,19 @@ async function deletarNotifHistorico(id, btn) {
   const btnHistRefresh = document.getElementById('push-hist-refresh-btn');
   if (btnHistRefresh) {
     btnHistRefresh.addEventListener('click', () => carregarAdminPushHistorico());
+  }
+
+  // Delegação de eventos para o botão lixeira do histórico
+  const histList = document.getElementById('push-historico-list');
+  if (histList) {
+    histList.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-delete-notif]');
+      if (!btn) return;
+      const id   = btn.dataset.deleteNotif;
+      const card = btn.closest('.push-hist-item');
+      if (!id || !card) return;
+      await deletarNotifHistorico(id, btn);
+    });
   }
 
   // Botão de refresh dos inscritos
