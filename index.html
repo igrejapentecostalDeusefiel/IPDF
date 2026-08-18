@@ -1661,21 +1661,22 @@ body.show-admin #admin-shell{display:block;}
 
 /* Seletor Entrar / Cadastrar / Ver Campanha */
 .auth-tabs{
-  position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;
+  position:relative;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
   background:var(--parchment-dim);border-radius:14px;padding:4px;margin-bottom:24px;
 }
 .auth-tab{
   position:relative;z-index:2;padding:10px 4px;border-radius:11px;border:none;background:transparent;
-  font-weight:700;font-size:.78rem;color:var(--text-dim);transition:color .25s ease;white-space:nowrap;
+  font-weight:700;font-size:.72rem;color:var(--text-dim);transition:color .25s ease;white-space:nowrap;
 }
 .auth-tab.active{color:var(--ink);}
 .auth-tab-indicator{
-  position:absolute;top:4px;left:4px;width:calc(33.333% - 4px);height:calc(100% - 8px);
+  position:absolute;top:4px;left:4px;width:calc(25% - 4px);height:calc(100% - 8px);
   background:var(--paper);border-radius:11px;box-shadow:0 3px 10px -2px rgba(26,37,64,.18);
   transition:transform .32s cubic-bezier(.4,0,.2,1);
 }
 .auth-tabs.tab-signup .auth-tab-indicator{transform:translateX(100%);}
 .auth-tabs.tab-campaign .auth-tab-indicator{transform:translateX(200%);}
+.auth-tabs.tab-localidade .auth-tab-indicator{transform:translateX(300%);}
 .auth-glass--forgot .auth-tabs{display:none;}
 
 /* =========================================================
@@ -3332,11 +3333,12 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
         </div>
       </div>
 
-      <!-- Seletor deslizante Entrar / Cadastrar / Ver Campanha -->
+      <!-- Seletor deslizante Entrar / Cadastrar / Ver Campanha / Ver Localização -->
       <div class="auth-tabs" id="auth-tabs">
         <button type="button" class="auth-tab active" data-auth-goto="login">Entrar</button>
         <button type="button" class="auth-tab" data-auth-goto="signup">Cadastrar</button>
         <button type="button" class="auth-tab" data-auth-goto="campaign">🔥 Campanha</button>
+        <button type="button" class="auth-tab" data-auth-goto="localidade">📍 Localização</button>
         <span class="auth-tab-indicator"></span>
       </div>
 
@@ -3474,6 +3476,34 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
           <button type="button" class="btn auth-submit" id="auth-view-campaign-btn">
             🔥 Ver a campanha em andamento
           </button>
+          <button type="button" class="btn btn-ghost" style="width:100%;justify-content:center;" data-auth-goto="login">
+            ← Voltar para o login
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== VER LOCALIZAÇÃO ===== -->
+      <div class="auth-panel" id="auth-localidade">
+        <div class="auth-eyebrow">Nossa Igreja</div>
+        <h1 class="auth-title" style="font-size:1.35rem;">📍 Igreja Pentecostal Deus é Fiel</h1>
+        <p class="auth-sub">Venha nos visitar! Veja nossa localização no mapa abaixo.</p>
+
+        <!-- Mapa Leaflet reutilizando o mesmo container lógico -->
+        <div id="auth-leaflet-map" style="
+          width:100%;height:220px;border-radius:14px;overflow:hidden;
+          margin-top:18px;border:1px solid var(--line);
+          background:var(--parchment-dim);
+        "></div>
+
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px;">
+          <a
+            href="https://www.google.com/maps/place/Igreja+Pentecostal+Deus+%C3%A9+Fiel/@-22.9390388,-43.6958807,17z/data=!3m1!4b1!4m6!3m5!1s0x9bfa750e2c4997:0xc2e6e1582a141f1a!8m2!3d-22.9390438!4d-43.6933058!16s%2Fg%2F11gty23qdg?entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D"
+            target="_blank" rel="noopener noreferrer"
+            class="btn auth-submit"
+            style="text-decoration:none;justify-content:center;display:flex;align-items:center;gap:8px;"
+          >
+            🗺️ Abrir no Google Maps
+          </a>
           <button type="button" class="btn btn-ghost" style="width:100%;justify-content:center;" data-auth-goto="login">
             ← Voltar para o login
           </button>
@@ -6587,6 +6617,56 @@ function iniciarMapaLocalidade(){
 }
 
 /* Atualiza o card "Continue de onde parou" com base na última seção visitada */
+let _leafletMapAuth = null;
+
+function iniciarMapaAuth(){
+  if(_leafletMapAuth){
+    setTimeout(()=> _leafletMapAuth.invalidateSize(), 120);
+    return;
+  }
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      const el = document.getElementById('auth-leaflet-map');
+      if(!el || typeof L === 'undefined') return;
+
+      const LAT = -22.9390438, LNG = -43.6933058;
+
+      _leafletMapAuth = L.map(el, {
+        center: [LAT, LNG],
+        zoom: 16,
+        scrollWheelZoom: false, // desabilitado dentro do card de login para não conflitar com scroll da página
+        zoomControl: true,
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+      }).addTo(_leafletMapAuth);
+
+      const igrejaIcon = L.divIcon({
+        className: '',
+        html: `<div style="width:36px;height:46px;display:flex;flex-direction:column;align-items:center;">
+          <div style="width:36px;height:36px;border-radius:50% 50% 50% 0;background:#1A2540;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(26,37,64,.45);">
+            <span style="transform:rotate(45deg);font-size:17px;line-height:1;">⛪</span>
+          </div>
+          <div style="width:5px;height:8px;background:#1A2540;border-radius:0 0 3px 3px;margin-top:-1px;"></div>
+        </div>`,
+        iconSize: [36, 46],
+        iconAnchor: [18, 46],
+        popupAnchor: [0, -50],
+      });
+
+      L.marker([LAT, LNG], { icon: igrejaIcon })
+        .addTo(_leafletMapAuth)
+        .bindPopup('<div class="localidade-leaflet-popup"><span>⛪</span> Igreja Pentecostal Deus é Fiel</div>',
+          { maxWidth: 220, className: 'localidade-popup-wrapper' })
+        .openPopup();
+
+      setTimeout(()=> _leafletMapAuth.invalidateSize(), 200);
+    });
+  });
+}
+
 function renderHomeContinue(){
   const icon = document.getElementById('home-continue-icon');
   const title = document.getElementById('home-continue-title');
@@ -12814,11 +12894,15 @@ document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', (
     if(target) target.classList.add('active');
 
     if(tabs){
-      tabs.classList.toggle('tab-signup', view==='signup');
-      tabs.classList.toggle('tab-campaign', view==='campaign');
+      tabs.classList.toggle('tab-signup',    view==='signup');
+      tabs.classList.toggle('tab-campaign',  view==='campaign');
+      tabs.classList.toggle('tab-localidade',view==='localidade');
       document.querySelectorAll('.auth-tab').forEach(t=> t.classList.toggle('active', t.dataset.authGoto===view));
     }
     if(glass) glass.classList.toggle('auth-glass--forgot', view==='forgot');
+
+    // Inicializa o mini-mapa quando a tab localidade é aberta
+    if(view==='localidade') iniciarMapaAuth();
   }
 
   document.querySelectorAll('[data-auth-goto]').forEach(el=>{
