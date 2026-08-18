@@ -1665,8 +1665,9 @@ body.show-admin #admin-shell{display:block;}
   background:var(--parchment-dim);border-radius:14px;padding:4px;margin-bottom:24px;
 }
 .auth-tab{
-  position:relative;z-index:2;padding:10px 4px;border-radius:11px;border:none;background:transparent;
-  font-weight:700;font-size:.72rem;color:var(--text-dim);transition:color .25s ease;white-space:nowrap;
+  position:relative;z-index:2;padding:10px 6px;border-radius:11px;border:none;background:transparent;
+  font-weight:700;font-size:.78rem;color:var(--text-dim);transition:color .25s ease;
+  white-space:nowrap;cursor:pointer;
 }
 .auth-tab.active{color:var(--ink);}
 .auth-tab-indicator{
@@ -1678,6 +1679,28 @@ body.show-admin #admin-shell{display:block;}
 .auth-tabs.tab-campaign .auth-tab-indicator{transform:translateX(200%);}
 .auth-tabs.tab-localidade .auth-tab-indicator{transform:translateX(300%);}
 .auth-glass--forgot .auth-tabs{display:none;}
+
+/* Mobile: 2 linhas de 2 botões — cada um com espaço confortável */
+@media(max-width:480px){
+  .auth-tabs{
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto auto;
+    border-radius:16px;
+  }
+  .auth-tab{
+    font-size:.82rem;
+    padding:12px 8px;
+    border-radius:12px;
+  }
+  /* O JS posiciona o indicador via offsetTop/offsetLeft no mobile */
+  .auth-tab-indicator{
+    transform:none !important;
+    transition:top .3s cubic-bezier(.4,0,.2,1),
+               left .3s cubic-bezier(.4,0,.2,1),
+               width .3s cubic-bezier(.4,0,.2,1),
+               height .3s cubic-bezier(.4,0,.2,1);
+  }
+}
 
 /* =========================================================
    TELA PÚBLICA DE CAMPANHA (visitante sem login)
@@ -12898,6 +12921,8 @@ document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', (
       tabs.classList.toggle('tab-campaign',  view==='campaign');
       tabs.classList.toggle('tab-localidade',view==='localidade');
       document.querySelectorAll('.auth-tab').forEach(t=> t.classList.toggle('active', t.dataset.authGoto===view));
+      // Posiciona o indicador com precisão no mobile (grid 2x2)
+      posicionarIndicadorAuth(view);
     }
     if(glass) glass.classList.toggle('auth-glass--forgot', view==='forgot');
 
@@ -12905,9 +12930,34 @@ document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', (
     if(view==='localidade') iniciarMapaAuth();
   }
 
+  function posicionarIndicadorAuth(view){
+    const indicator = tabs && tabs.querySelector('.auth-tab-indicator');
+    const activeBtn = tabs && tabs.querySelector('.auth-tab.active');
+    if(!indicator || !activeBtn) return;
+    // No desktop (linha única) o CSS cuida via translateX
+    // No mobile (2x2) usamos offsetTop/offsetLeft do botão ativo
+    if(window.innerWidth <= 480){
+      indicator.style.top  = (activeBtn.offsetTop  + 4) + 'px';
+      indicator.style.left = (activeBtn.offsetLeft + 0) + 'px';
+      indicator.style.width  = (activeBtn.offsetWidth  - 4) + 'px';
+      indicator.style.height = (activeBtn.offsetHeight - 8) + 'px';
+    } else {
+      // Limpa estilos inline para o desktop usar o CSS/transform normalmente
+      indicator.style.top = '';
+      indicator.style.left = '';
+      indicator.style.width = '';
+      indicator.style.height = '';
+    }
+  }
+
   document.querySelectorAll('[data-auth-goto]').forEach(el=>{
     el.addEventListener('click', ()=> switchAuth(el.dataset.authGoto));
   });
+
+  // Reposiciona o indicador ao redimensionar (rotação de tela, etc.)
+  window.addEventListener('resize', ()=> posicionarIndicadorAuth(
+    (tabs && tabs.querySelector('.auth-tab.active')?.dataset.authGoto) || 'login'
+  ));
 
   // Rola suavemente da tela de novidades até o cartão de login/cadastro
   const landingScrollBtn = document.getElementById('auth-landing-scroll-btn');
