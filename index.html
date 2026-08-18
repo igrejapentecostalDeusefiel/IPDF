@@ -1692,13 +1692,19 @@ body.show-admin #admin-shell{display:block;}
     padding:12px 8px;
     border-radius:12px;
   }
-  /* O JS posiciona o indicador via offsetTop/offsetLeft no mobile */
+  /* Esconde o indicador até o JS posicioná-lo corretamente */
   .auth-tab-indicator{
     transform:none !important;
+    opacity:0;
     transition:top .3s cubic-bezier(.4,0,.2,1),
                left .3s cubic-bezier(.4,0,.2,1),
                width .3s cubic-bezier(.4,0,.2,1),
-               height .3s cubic-bezier(.4,0,.2,1);
+               height .3s cubic-bezier(.4,0,.2,1),
+               opacity .15s ease;
+  }
+  /* Fica visível só depois que o JS aplicar os estilos inline */
+  .auth-tab-indicator[style]{
+    opacity:1;
   }
 }
 
@@ -4077,7 +4083,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
         <div class="chat-wrap" style="margin-top:22px;">
           <div class="chat-head">
-            <div class="chat-avatar"><img src="Logo-IA.png" alt="Assistente IA" style="width:200%;height:200%;object-fit:contain;border-radius:10px;"></div>
+            <div class="chat-avatar"><img src="ChatGPT Image 6 de ago. de 2026, 12_48_36.png" alt="Assistente IA" style="width:100%;height:100%;object-fit:contain;border-radius:10px;"></div>
             <div>
               <div style="font-weight:600;color:var(--ink);font-size:.92rem;">Assistente IPDF</div>
               <div class="muted" style="font-size:.76rem;">Respostas baseadas na Palavra</div>
@@ -12993,6 +12999,9 @@ document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', (
     }
   };
   if(document.body.classList.contains('show-auth')) window.resetAuthScroll();
+
+  // Posiciona o indicador corretamente já na abertura (antes de qualquer clique)
+  requestAnimationFrame(()=> posicionarIndicadorAuth('login'));
 
   // Impede espaços nos campos de usuário/senha — evita erro de digitação
   // que uma pessoa idosa pode não perceber (espaço em branco invisível).
