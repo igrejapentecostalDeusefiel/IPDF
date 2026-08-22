@@ -2257,18 +2257,166 @@ textarea.notes-area:focus{border-color:var(--gold);}
 .next-study-card .study-tag{margin-bottom:8px;}
 .next-study-card .nx-title{font-weight:600;font-size:.9rem;color:var(--ink);}
 
-/* Quiz */
-.quiz-option{
-  display:block;width:100%;text-align:left;padding:14px 18px;border-radius:12px;
-  border:1px solid var(--line);background:var(--paper);margin-bottom:10px;font-size:.92rem;color:var(--text);
-  transition:all .15s ease;
+/* ======== QUIZ — NOVA ESTÉTICA ======== */
+/* Cards de estatísticas */
+.quiz-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px;}
+@media(max-width:500px){.quiz-stats-row{grid-template-columns:repeat(3,1fr);gap:8px;}}
+.quiz-stat-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:14px 10px;text-align:center;box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
 }
-.quiz-option:hover{border-color:var(--gold);}
-.quiz-option.correct{background:var(--sage-soft);border-color:var(--sage);font-weight:600;}
-.quiz-option.wrong{background:#F3DCD8;border-color:var(--rose);}
+.quiz-stat-ic{font-size:1.4rem;line-height:1;}
+.quiz-stat-num{font-size:1.45rem;font-weight:700;color:var(--ink);font-family:'Fraunces',serif;line-height:1.1;}
+.quiz-stat-label{font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;}
+
+/* Área da pergunta */
+.quiz-question-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:24px 22px 20px;margin-top:20px;max-width:680px;
+  box-shadow:var(--shadow-sm);
+  position:relative;overflow:hidden;
+}
+.quiz-question-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--sage));
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+}
+.quiz-diff-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.quiz-progress-bar{
+  flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden;
+}
+.quiz-progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--gold),var(--sage));
+  border-radius:3px;transition:width .6s ease;
+}
+.quiz-question-text{
+  font-size:1.08rem;font-weight:600;color:var(--ink);line-height:1.55;
+  font-family:'Fraunces',serif;margin:0;
+}
+.quiz-options-wrap{margin-top:18px;display:flex;flex-direction:column;gap:9px;}
+.quiz-option{
+  display:flex;align-items:center;gap:13px;
+  width:100%;text-align:left;padding:13px 16px;border-radius:var(--radius-md);
+  border:1.5px solid var(--line);background:var(--paper);
+  font-size:.91rem;color:var(--text);
+  transition:all .18s ease;cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.quiz-option::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  background:linear-gradient(135deg,var(--gold-soft),transparent);
+  transition:opacity .18s;
+}
+.quiz-option:hover:not(:disabled)::before{opacity:1;}
+.quiz-option:hover:not(:disabled){border-color:var(--gold);transform:translateX(3px);}
+.quiz-option-letter{
+  width:28px;height:28px;min-width:28px;border-radius:50%;
+  background:var(--line);display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:700;color:var(--text-dim);transition:all .18s;
+}
+.quiz-option:hover:not(:disabled) .quiz-option-letter{background:var(--gold-soft);color:var(--ink);}
+.quiz-option.correct{background:var(--sage-soft);border-color:var(--sage);font-weight:600;color:var(--ink);}
+.quiz-option.correct .quiz-option-letter{background:var(--sage);color:#fff;}
+.quiz-option.wrong{background:#F3DCD8;border-color:var(--rose);color:var(--ink);}
+.quiz-option.wrong .quiz-option-letter{background:var(--rose);color:#fff;}
 [data-theme="dark"] .quiz-option.wrong{background:#3A2422;}
+.quiz-option.correct::after,.quiz-option.wrong::after{
+  content:'';position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  font-size:1.1rem;
+}
+.quiz-option.correct::after{content:'✓';}
+.quiz-option.wrong::after{content:'✗';}
+.quiz-option:disabled{cursor:default;}
+
+/* Timer */
+.quiz-next-timer{margin-top:14px;display:none;align-items:center;gap:10px;}
 .quiz-next-timer-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);display:inline-block;animation:quiz-timer-pulse 1s ease-in-out infinite;}
 @keyframes quiz-timer-pulse{0%,100%{opacity:.35;}50%{opacity:1;}}
+
+/* Streak badge */
+.quiz-streak-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,var(--gold-soft),color-mix(in srgb,var(--gold) 20%,transparent));
+  border:1.5px solid var(--gold);color:var(--ink);
+  border-radius:20px;padding:4px 12px;font-size:.8rem;font-weight:700;
+  animation:streakPop .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes streakPop{from{transform:scale(.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+/* ======== RANKING ======== */
+.quiz-ranking-section{margin-top:28px;}
+.quiz-ranking-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:16px;
+  font-family:'Fraunces',serif;
+}
+.quiz-ranking-list{display:flex;flex-direction:column;gap:8px;}
+.quiz-ranking-item{
+  display:flex;align-items:center;gap:13px;
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:12px 16px;box-shadow:var(--shadow-sm);
+  transition:transform .15s,border-color .15s;
+  position:relative;overflow:hidden;
+}
+.quiz-ranking-item:hover{transform:translateY(-1px);border-color:var(--gold-soft);}
+.quiz-ranking-item.rank-1{border-color:var(--gold);background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 12%,var(--paper)),var(--paper));}
+.quiz-ranking-item.rank-2{border-color:#B0B8C4;}
+.quiz-ranking-item.rank-3{border-color:#C4916A;}
+.quiz-ranking-item.rank-mine{
+  border-color:var(--sage);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--sage) 10%,var(--paper)),var(--paper));
+}
+.quiz-rank-pos{
+  font-size:1.05rem;font-weight:700;min-width:26px;text-align:center;
+  color:var(--text-faint);font-family:'Fraunces',serif;
+}
+.quiz-rank-pos.gold{color:#C99A4A;}
+.quiz-rank-pos.silver{color:#9EA8B2;}
+.quiz-rank-pos.bronze{color:#C4916A;}
+.quiz-rank-avatar{
+  width:36px;height:36px;min-width:36px;border-radius:50%;
+  background:var(--gold-soft);display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;font-weight:700;color:var(--ink);
+  border:2px solid transparent;
+}
+.quiz-ranking-item.rank-1 .quiz-rank-avatar{border-color:var(--gold);}
+.quiz-ranking-item.rank-mine .quiz-rank-avatar{border-color:var(--sage);}
+.quiz-rank-info{flex:1;min-width:0;}
+.quiz-rank-name{font-weight:600;font-size:.9rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.quiz-rank-sub{font-size:.75rem;color:var(--text-faint);margin-top:1px;}
+.quiz-rank-score{text-align:right;}
+.quiz-rank-xp{font-size:1.1rem;font-weight:700;color:var(--gold);font-family:'Fraunces',serif;}
+.quiz-rank-xp-label{font-size:.7rem;color:var(--text-faint);}
+.quiz-rank-crown{position:absolute;top:8px;right:12px;font-size:1rem;opacity:.6;}
+.quiz-ranking-empty{
+  text-align:center;padding:28px 16px;color:var(--text-faint);
+  border:1px dashed var(--line);border-radius:var(--radius-md);font-size:.9rem;
+}
+.quiz-ranking-loading{text-align:center;padding:20px;color:var(--text-faint);font-size:.88rem;}
+.quiz-ranking-me-banner{
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--sage) 18%,var(--paper)),var(--paper));
+  border:1.5px solid var(--sage);border-radius:var(--radius-md);
+  padding:12px 16px;margin-bottom:12px;
+}
+.quiz-ranking-me-banner .quiz-rank-xp{color:var(--sage);}
+.quiz-my-best-label{font-size:.8rem;color:var(--text-dim);font-weight:600;}
+
+/* Tabs do quiz */
+.quiz-tabs{
+  display:flex;gap:0;margin-top:22px;
+  background:var(--line);border-radius:var(--radius-md);padding:3px;max-width:680px;
+}
+.quiz-tab{
+  flex:1;padding:9px 14px;border-radius:calc(var(--radius-md) - 3px);
+  font-size:.82rem;font-weight:600;color:var(--text-dim);
+  transition:all .2s;cursor:pointer;text-align:center;
+  background:transparent;
+}
+.quiz-tab.active{background:var(--paper);color:var(--ink);box-shadow:var(--shadow-sm);}
+.quiz-tab-panel{display:none;}
+.quiz-tab-panel.active{display:block;}
 
 /* ---------------- Media library ---------------- */
 .media-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;flex-wrap:wrap;}
@@ -2708,6 +2856,8 @@ textarea.notes-area:focus{border-color:var(--gold);}
 .pill-gold{background:var(--gold-soft);color:#7A5A21;}
 [data-theme="dark"] .pill-gold{color:var(--gold);}
 .pill-sage{background:var(--sage-soft);color:var(--sage);}
+.pill-rose{background:#F3DCD8;color:var(--rose);}
+[data-theme="dark"] .pill-rose{background:#3A2422;color:var(--rose);}
 hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
 /* ---- Campanhas Proféticas ---- */
@@ -4320,27 +4470,75 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
           <div class="page-head-text">
             <div class="page-head-eyebrow">Aprendizado</div>
             <h1 class="page-head-title">Quiz bíblico</h1>
-            <p class="page-head-sub">Teste seu conhecimento das Escrituras. Sua pontuação é por sessão: ao sair desta tela, tudo reinicia.</p>
+            <p class="page-head-sub">Teste seu conhecimento. Sessão reinicia ao sair, mas seu melhor XP fica salvo no ranking!</p>
           </div>
         </div>
 
-        <div class="grid" style="grid-template-columns:repeat(2,minmax(160px,1fr));margin-top:22px;">
-          <div class="card stat-card"><div class="stat-ic" style="background:var(--gold-soft)">⭐</div><div class="stat-num" id="quiz-xp">0</div><div class="stat-label">XP da sessão</div></div>
-          <div class="card stat-card"><div class="stat-ic" style="background:var(--sage-soft)">🎯</div><div class="stat-num" id="quiz-score">0</div><div class="stat-label">acertos nesta sessão</div></div>
+        <!-- Tabs -->
+        <div class="quiz-tabs" role="tablist">
+          <button class="quiz-tab active" data-quiz-tab="jogar" role="tab">🎯 Jogar</button>
+          <button class="quiz-tab" data-quiz-tab="ranking" role="tab">🏆 Ranking</button>
+          <button class="quiz-tab" data-quiz-tab="conquistas" role="tab">⭐ Conquistas</button>
         </div>
 
-        <div class="card" style="margin-top:22px;max-width:640px;">
-          <div class="pill pill-sage" id="quiz-difficulty">Fácil</div>
-          <h3 style="margin-top:14px;font-size:1.15rem;" id="quiz-question"></h3>
-          <div id="quiz-options" style="margin-top:18px;"></div>
-          <div class="quiz-next-timer" id="quiz-next-timer" style="margin-top:8px;display:none;align-items:center;gap:8px;">
-            <span class="quiz-next-timer-dot"></span>
-            <span class="muted" id="quiz-next-timer-text" style="font-size:.85rem;">Próxima pergunta em 2s…</span>
+        <!-- TAB: JOGAR -->
+        <div class="quiz-tab-panel active" id="quiz-panel-jogar">
+          <!-- Stats da sessão -->
+          <div class="quiz-stats-row">
+            <div class="quiz-stat-card">
+              <span class="quiz-stat-ic">⭐</span>
+              <span class="quiz-stat-num" id="quiz-xp">0</span>
+              <span class="quiz-stat-label">XP sessão</span>
+            </div>
+            <div class="quiz-stat-card">
+              <span class="quiz-stat-ic">🎯</span>
+              <span class="quiz-stat-num" id="quiz-score">0</span>
+              <span class="quiz-stat-label">acertos</span>
+            </div>
+            <div class="quiz-stat-card">
+              <span class="quiz-stat-ic">🔥</span>
+              <span class="quiz-stat-num" id="quiz-streak-display">0</span>
+              <span class="quiz-stat-label">sequência</span>
+            </div>
+          </div>
+
+          <!-- Pergunta -->
+          <div class="quiz-question-card" id="quiz-question-card">
+            <div class="quiz-diff-row">
+              <span class="pill pill-sage" id="quiz-difficulty">Fácil</span>
+              <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div></div>
+              <span style="font-size:.75rem;color:var(--text-faint);" id="quiz-counter">0/0</span>
+            </div>
+            <p class="quiz-question-text" id="quiz-question"></p>
+            <div class="quiz-options-wrap" id="quiz-options"></div>
+            <div class="quiz-next-timer" id="quiz-next-timer">
+              <span class="quiz-next-timer-dot"></span>
+              <span style="font-size:.82rem;color:var(--text-faint);" id="quiz-next-timer-text">Próxima em 2s…</span>
+              <span id="quiz-streak-badge-area"></span>
+            </div>
           </div>
         </div>
 
-        <div class="sec-row"><h2>Conquistas do quiz</h2></div>
-        <div class="ach-grid" id="achievements-grid"></div>
+        <!-- TAB: RANKING -->
+        <div class="quiz-tab-panel" id="quiz-panel-ranking">
+          <div style="margin-top:20px;" id="quiz-ranking-me-area"></div>
+          <div class="quiz-ranking-section">
+            <div class="quiz-ranking-title">
+              <span>🏅</span> Melhores da comunidade
+              <button class="btn btn-ghost btn-sm" id="quiz-ranking-refresh" style="margin-left:auto;font-size:.75rem;" title="Atualizar">↻ Atualizar</button>
+            </div>
+            <div id="quiz-ranking-list" class="quiz-ranking-list">
+              <div class="quiz-ranking-loading">Carregando ranking…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: CONQUISTAS -->
+        <div class="quiz-tab-panel" id="quiz-panel-conquistas">
+          <div style="margin-top:20px;">
+            <div class="ach-grid" id="achievements-grid"></div>
+          </div>
+        </div>
       </section>
 
       <!-- ============ CAMPAIGNS ============ -->
@@ -8760,6 +8958,133 @@ function shuffleQuestion(q){
     correct: order.indexOf(q.correct)
   };
 }
+/* =========================================================
+   QUIZ — TABS
+   ========================================================= */
+document.querySelectorAll('.quiz-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.quiz-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.quiz-tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    const panel = document.getElementById('quiz-panel-' + tab.dataset.quizTab);
+    if(panel) panel.classList.add('active');
+    if(tab.dataset.quizTab === 'ranking') carregarRankingQuiz();
+  });
+});
+
+/* =========================================================
+   QUIZ — RANKING (Supabase localStorage-based)
+   O ranking usa localStorage com chave global: 'ipge_quiz_ranking'
+   Formato: [ { userId, nome, xp, acertos, avatar } ]
+   A pontuação só é salva quando supera o melhor anterior do usuário.
+   ========================================================= */
+const QUIZ_RANKING_KEY = 'ipge_quiz_ranking_v1';
+
+function getRankingData(){
+  try { return JSON.parse(localStorage.getItem(QUIZ_RANKING_KEY) || '[]'); } catch(e){ return []; }
+}
+function saveRankingData(data){ localStorage.setItem(QUIZ_RANKING_KEY, JSON.stringify(data)); }
+
+function atualizarRankingPessoal(xp, acertos){
+  if(!state.perfil) return;
+  const userId = state.perfil.id || state.perfil.nome_usuario;
+  const nome = state.perfil.nome_exibicao || state.perfil.nome_usuario || 'Você';
+  const avatar = state.perfil.avatar_emoji || nome.charAt(0).toUpperCase();
+  const gradient = state.perfil.avatar_gradient || '';
+  const ranking = getRankingData();
+  const idx = ranking.findIndex(r => r.userId === userId);
+  let atualizado = false;
+  if(idx === -1){
+    ranking.push({ userId, nome, xp, acertos, avatar, gradient });
+    atualizado = true;
+  } else if(xp > ranking[idx].xp){
+    ranking[idx] = { ...ranking[idx], nome, xp, acertos, avatar, gradient };
+    atualizado = true;
+  }
+  if(atualizado){
+    saveRankingData(ranking);
+    return true;
+  }
+  return false;
+}
+
+function getMeuMelhorRanking(){
+  if(!state.perfil) return null;
+  const userId = state.perfil.id || state.perfil.nome_usuario;
+  const ranking = getRankingData();
+  return ranking.find(r => r.userId === userId) || null;
+}
+
+function carregarRankingQuiz(){
+  const listEl = document.getElementById('quiz-ranking-list');
+  const meArea = document.getElementById('quiz-ranking-me-area');
+  if(!listEl) return;
+
+  const ranking = getRankingData();
+  ranking.sort((a, b) => b.xp - a.xp);
+
+  const meuId = state.perfil ? (state.perfil.id || state.perfil.nome_usuario) : null;
+  const meuRecord = meuId ? ranking.find(r => r.userId === meuId) : null;
+
+  // Banner "minha posição"
+  if(meArea){
+    if(meuRecord){
+      const minhaPos = ranking.findIndex(r => r.userId === meuId) + 1;
+      const xpSessao = state.quizXp;
+      meArea.innerHTML = `
+        <div class="quiz-ranking-me-banner">
+          <div class="quiz-rank-avatar" style="${meuRecord.gradient ? 'background:'+meuRecord.gradient+';' : 'background:var(--sage-soft);'}">${meuRecord.avatar}</div>
+          <div class="quiz-rank-info">
+            <div class="quiz-rank-name">Você está em ${minhaPos}º lugar</div>
+            <div class="quiz-rank-sub">Sessão atual: ${xpSessao} XP · Seu recorde: ${meuRecord.xp} XP</div>
+          </div>
+          <div class="quiz-rank-score">
+            <div class="quiz-rank-xp">${meuRecord.xp}</div>
+            <div class="quiz-rank-xp-label">XP recorde</div>
+          </div>
+        </div>`;
+    } else {
+      meArea.innerHTML = `<p style="font-size:.85rem;color:var(--text-faint);margin-bottom:12px;">Jogue para aparecer no ranking! Seu melhor XP será salvo automaticamente.</p>`;
+    }
+  }
+
+  if(ranking.length === 0){
+    listEl.innerHTML = '<div class="quiz-ranking-empty">🕊️ Nenhuma pontuação ainda.<br>Seja o primeiro a aparecer no ranking!</div>';
+    return;
+  }
+
+  const medals = ['🥇','🥈','🥉'];
+  const posClasses = ['gold','silver','bronze'];
+  const rankClasses = ['rank-1','rank-2','rank-3'];
+
+  listEl.innerHTML = ranking.slice(0, 20).map((r, i) => {
+    const isMine = r.userId === meuId;
+    const pos = i + 1;
+    const medal = medals[i] || '';
+    const posClass = posClasses[i] || '';
+    const rankClass = (rankClasses[i] || '') + (isMine ? ' rank-mine' : '');
+    return `
+      <div class="quiz-ranking-item ${rankClass}">
+        ${pos <= 3 ? `<span class="quiz-rank-crown">${medal}</span>` : ''}
+        <div class="quiz-rank-pos ${posClass}">${pos <= 3 ? medal : pos+'º'}</div>
+        <div class="quiz-rank-avatar" style="${r.gradient ? 'background:'+r.gradient+';' : 'background:var(--gold-soft);'}">${r.avatar}</div>
+        <div class="quiz-rank-info">
+          <div class="quiz-rank-name">${escapeHtml(r.nome)}${isMine ? ' <span style="font-size:.7rem;color:var(--sage);font-weight:700;">você</span>' : ''}</div>
+          <div class="quiz-rank-sub">${r.acertos || 0} acerto${(r.acertos||0)===1?'':'s'} no melhor jogo</div>
+        </div>
+        <div class="quiz-rank-score">
+          <div class="quiz-rank-xp">${r.xp}</div>
+          <div class="quiz-rank-xp-label">XP</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('quiz-ranking-refresh') && document.getElementById('quiz-ranking-refresh').addEventListener('click', carregarRankingQuiz);
+
+/* =========================================================
+   QUIZ — TIMER / RENDERIZAÇÃO
+   ========================================================= */
 let quizNextTimerId = null;
 function clearQuizNextTimer(){
   if(quizNextTimerId){ clearInterval(quizNextTimerId); quizNextTimerId = null; }
@@ -8771,7 +9096,7 @@ function startQuizNextCountdown(){
   let secondsLeft = 2;
   const timerEl = document.getElementById('quiz-next-timer');
   const textEl = document.getElementById('quiz-next-timer-text');
-  if(textEl) textEl.textContent = `Próxima pergunta em ${secondsLeft}s…`;
+  if(textEl) textEl.textContent = `Próxima em ${secondsLeft}s…`;
   if(timerEl) timerEl.style.display = 'flex';
   quizNextTimerId = setInterval(()=>{
     secondsLeft -= 1;
@@ -8780,18 +9105,27 @@ function startQuizNextCountdown(){
       state.quizPos += 1;
       renderQuiz();
     } else if(textEl){
-      textEl.textContent = `Próxima pergunta em ${secondsLeft}s…`;
+      textEl.textContent = `Próxima em ${secondsLeft}s…`;
     }
   }, 1000);
 }
 function buildQuizDeck(){
-  // Quando restar menos de 20 perguntas no pool, gera mais em segundo plano
   if(QUIZ_QUESTIONS.length < 20 || (state.quizPos > 0 && QUIZ_QUESTIONS.length - state.quizPos < 15)){
     generateQuizQuestions();
   }
   return shuffleArray(QUIZ_QUESTIONS).map(shuffleQuestion);
 }
-// Reinicia totalmente a sessão do quiz: XP, acertos, erros, sequência e conquistas voltam a 0
+
+function atualizarStatsQuizUI(){
+  const xpEl = document.getElementById('quiz-xp');
+  const scoreEl = document.getElementById('quiz-score');
+  const streakEl = document.getElementById('quiz-streak-display');
+  if(xpEl) xpEl.textContent = state.quizXp;
+  if(scoreEl) scoreEl.textContent = state.quizScore;
+  if(streakEl) streakEl.textContent = state.quizStreak;
+}
+
+// Reinicia sessão (XP, acertos etc.) mas mantém o ranking
 function resetQuizSession(){
   state.quizXp = 0;
   state.quizScore = 0;
@@ -8803,32 +9137,54 @@ function resetQuizSession(){
   state.quizPos = 0;
   state.quizAnswered = false;
   clearQuizNextTimer();
-  document.getElementById('quiz-xp').textContent = state.quizXp;
-  document.getElementById('quiz-score').textContent = state.quizScore;
+  atualizarStatsQuizUI();
+  // Ativar aba de jogar ao entrar
+  document.querySelectorAll('.quiz-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.quiz-tab-panel').forEach(p => p.classList.remove('active'));
+  const tabJogar = document.querySelector('.quiz-tab[data-quiz-tab="jogar"]');
+  const panelJogar = document.getElementById('quiz-panel-jogar');
+  if(tabJogar) tabJogar.classList.add('active');
+  if(panelJogar) panelJogar.classList.add('active');
   renderQuiz();
   renderAchievements();
 }
+
 function renderQuiz(){
   if(state.quizPos >= state.quizDeck.length){
-    // Acabou o baralho de perguntas: embaralha um novo lote, mantendo XP/acertos da sessão
     state.quizDeck = buildQuizDeck();
     state.quizPos = 0;
   }
   const q = state.quizDeck[state.quizPos];
-  document.getElementById('quiz-difficulty').textContent = q.level;
-  document.getElementById('quiz-question').textContent = q.q;
+  const total = state.quizDeck.length;
+  const progPct = Math.round(((state.quizPos) / total) * 100);
+
+  const diffEl = document.getElementById('quiz-difficulty');
+  const questionEl = document.getElementById('quiz-question');
+  const progressEl = document.getElementById('quiz-progress-fill');
+  const counterEl = document.getElementById('quiz-counter');
+  if(diffEl){
+    diffEl.textContent = q.level;
+    diffEl.className = 'pill ' + (q.level==='Difícil' ? 'pill-rose' : q.level==='Médio' ? 'pill-gold' : 'pill-sage');
+  }
+  if(questionEl) questionEl.textContent = q.q;
+  if(progressEl) progressEl.style.width = progPct + '%';
+  if(counterEl) counterEl.textContent = (state.quizPos+1) + '/' + total;
+
   const optsEl = document.getElementById('quiz-options');
   optsEl.innerHTML = '';
   state.quizAnswered = false;
   clearQuizNextTimer();
-  q.options.forEach((opt, i)=>{
+  const LETRAS = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
     const b = document.createElement('button');
     b.className = 'quiz-option';
-    b.textContent = opt;
-    b.addEventListener('click', ()=>{
+    b.innerHTML = `<span class="quiz-option-letter">${LETRAS[i]||i+1}</span>${escapeHtml(opt)}`;
+    b.addEventListener('click', () => {
       if(state.quizAnswered) return;
       state.quizAnswered = true;
-      const correct = i===q.correct;
+      // Desabilitar todos
+      optsEl.querySelectorAll('.quiz-option').forEach(btn => btn.disabled = true);
+      const correct = i === q.correct;
       b.classList.add(correct ? 'correct' : 'wrong');
       if(!correct) optsEl.children[q.correct].classList.add('correct');
       if(correct){
@@ -8836,16 +9192,27 @@ function renderQuiz(){
         state.quizStreak += 1;
         state.quizBestStreak = Math.max(state.quizBestStreak, state.quizStreak);
         if(q.level === 'Difícil') state.quizHardCorrect = true;
-        state.quizXp += 10;
-        document.getElementById('quiz-score').textContent = state.quizScore;
-        document.getElementById('quiz-xp').textContent = state.quizXp;
-        toast('Resposta correta! +10 XP', '🎉');
+        const xpBonus = q.level === 'Difícil' ? 20 : q.level === 'Médio' ? 15 : 10;
+        state.quizXp += xpBonus;
+        atualizarStatsQuizUI();
+        // Exibe streak badge se >= 3
+        const badgeArea = document.getElementById('quiz-streak-badge-area');
+        if(badgeArea && state.quizStreak >= 3){
+          badgeArea.innerHTML = `<span class="quiz-streak-badge">🔥 ${state.quizStreak}x!</span>`;
+        } else if(badgeArea){
+          badgeArea.innerHTML = '';
+        }
+        toast(`Correto! +${xpBonus} XP` + (state.quizStreak >= 2 ? ` 🔥 Sequência de ${state.quizStreak}!` : ''), '🎉');
+        // Salvar recorde no ranking
+        atualizarRankingPessoal(state.quizXp, state.quizScore);
       } else {
         state.quizWrong += 1;
         state.quizStreak = 0;
         state.quizXp = Math.max(0, state.quizXp - 5);
-        document.getElementById('quiz-xp').textContent = state.quizXp;
-        toast('Quase! A resposta certa está em verde. -5 XP', '📖');
+        atualizarStatsQuizUI();
+        const badgeArea = document.getElementById('quiz-streak-badge-area');
+        if(badgeArea) badgeArea.innerHTML = '';
+        toast('Quase! A resposta correta está em verde. −5 XP', '📖');
       }
       renderAchievements();
       startQuizNextCountdown();
