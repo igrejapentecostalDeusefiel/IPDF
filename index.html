@@ -2385,10 +2385,12 @@ textarea.notes-area:focus{border-color:var(--gold);}
 .quiz-rank-info{flex:1;min-width:0;}
 .quiz-rank-name{font-weight:600;font-size:.9rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .quiz-rank-sub{font-size:.75rem;color:var(--text-faint);margin-top:1px;}
-.quiz-rank-score{text-align:right;}
-.quiz-rank-xp{font-size:1.1rem;font-weight:700;color:var(--gold);font-family:'Fraunces',serif;}
+.quiz-rank-score{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.quiz-rank-xp-row{display:flex;align-items:center;gap:5px;}
+.quiz-rank-xp{font-size:1.1rem;font-weight:700;color:var(--gold);font-family:'Fraunces',serif;line-height:1;}
+.quiz-rank-medal{font-size:1.1rem;line-height:1;}
 .quiz-rank-xp-label{font-size:.7rem;color:var(--text-faint);}
-.quiz-rank-crown{position:absolute;top:8px;right:12px;font-size:1rem;opacity:.6;}
+.quiz-rank-crown{display:none;}/* removido — medalha agora fica ao lado do XP */
 .quiz-ranking-empty{
   text-align:center;padding:28px 16px;color:var(--text-faint);
   border:1px dashed var(--line);border-radius:var(--radius-md);font-size:.9rem;
@@ -9003,6 +9005,16 @@ function atualizarRankingPessoal(xp, acertos){
   }
   if(atualizado){
     saveRankingData(ranking);
+    // Tenta salvar no banco também (fire-and-forget, não bloqueia o jogo)
+    if(state.sessionToken && typeof db !== 'undefined'){
+      db.rpc('salvar_pontuacao_quiz', {
+        p_token: state.sessionToken,
+        p_xp: xp,
+        p_acertos: acertos
+      }).then(({ error }) => {
+        if(error) console.warn('salvar_pontuacao_quiz indisponível:', error.message);
+      }).catch(() => {});
+    }
     return true;
   }
   return false;
@@ -9015,15 +9027,38 @@ function getMeuMelhorRanking(){
   return ranking.find(r => r.userId === userId) || null;
 }
 
-function carregarRankingQuiz(){
+// Mescla dados do banco com localStorage, garantindo que o melhor XP de cada usuário prevaleça
+function mesclarRankingComBanco(dadosBanco){
+  const local = getRankingData();
+  const merged = new Map();
+  // Primeiro carrega os dados locais
+  local.forEach(r => merged.set(r.userId, { ...r }));
+  // Sobrescreve/mescla com os dados do banco (mais autoritativos)
+  dadosBanco.forEach(r => {
+    const existing = merged.get(r.userId);
+    if(!existing || r.xp >= existing.xp){
+      merged.set(r.userId, {
+        userId: r.userId,
+        nome: r.nome || r.nome_exibicao || r.nome_usuario || 'Membro',
+        xp: r.xp || 0,
+        acertos: r.acertos || 0,
+        avatar: r.avatar_emoji || (r.nome || r.nome_exibicao || '?').charAt(0).toUpperCase(),
+        gradient: r.avatar_gradient || ''
+      });
+    }
+  });
+  // Salva resultado mesclado de volta no localStorage
+  const resultado = Array.from(merged.values());
+  saveRankingData(resultado);
+  return resultado;
+}
+
+function renderizarListaRanking(ranking, meuId){
   const listEl = document.getElementById('quiz-ranking-list');
   const meArea = document.getElementById('quiz-ranking-me-area');
   if(!listEl) return;
 
-  const ranking = getRankingData();
   ranking.sort((a, b) => b.xp - a.xp);
-
-  const meuId = state.perfil ? (state.perfil.id || state.perfil.nome_usuario) : null;
   const meuRecord = meuId ? ranking.find(r => r.userId === meuId) : null;
 
   // Banner "minha posição"
@@ -9036,10 +9071,10 @@ function carregarRankingQuiz(){
           <div class="quiz-rank-avatar" style="${meuRecord.gradient ? 'background:'+meuRecord.gradient+';' : 'background:var(--sage-soft);'}">${meuRecord.avatar}</div>
           <div class="quiz-rank-info">
             <div class="quiz-rank-name">Você está em ${minhaPos}º lugar</div>
-            <div class="quiz-rank-sub">Sessão atual: ${xpSessao} XP · Seu recorde: ${meuRecord.xp} XP</div>
+            <div class="quiz-rank-sub">Sessão atual: ${xpSessao} XP &middot; Seu recorde: ${meuRecord.xp} XP</div>
           </div>
           <div class="quiz-rank-score">
-            <div class="quiz-rank-xp">${meuRecord.xp}</div>
+            <div class="quiz-rank-xp-row"><span class="quiz-rank-xp">${meuRecord.xp}</span></div>
             <div class="quiz-rank-xp-label">XP recorde</div>
           </div>
         </div>`;
@@ -9063,21 +9098,59 @@ function carregarRankingQuiz(){
     const medal = medals[i] || '';
     const posClass = posClasses[i] || '';
     const rankClass = (rankClasses[i] || '') + (isMine ? ' rank-mine' : '');
+    // Score: número à esquerda, medalha à direita (sem sobreposição)
+    const scoreHtml = `
+      <div class="quiz-rank-score">
+        <div class="quiz-rank-xp-row">
+          <span class="quiz-rank-xp">${r.xp}</span>
+          ${medal ? `<span class="quiz-rank-medal">${medal}</span>` : ''}
+        </div>
+        <div class="quiz-rank-xp-label">XP</div>
+      </div>`;
     return `
       <div class="quiz-ranking-item ${rankClass}">
-        ${pos <= 3 ? `<span class="quiz-rank-crown">${medal}</span>` : ''}
-        <div class="quiz-rank-pos ${posClass}">${pos <= 3 ? medal : pos+'º'}</div>
+        <div class="quiz-rank-pos ${posClass}">${pos <= 3 ? pos+'º' : pos+'º'}</div>
         <div class="quiz-rank-avatar" style="${r.gradient ? 'background:'+r.gradient+';' : 'background:var(--gold-soft);'}">${r.avatar}</div>
         <div class="quiz-rank-info">
           <div class="quiz-rank-name">${escapeHtml(r.nome)}${isMine ? ' <span style="font-size:.7rem;color:var(--sage);font-weight:700;">você</span>' : ''}</div>
           <div class="quiz-rank-sub">${r.acertos || 0} acerto${(r.acertos||0)===1?'':'s'} no melhor jogo</div>
         </div>
-        <div class="quiz-rank-score">
-          <div class="quiz-rank-xp">${r.xp}</div>
-          <div class="quiz-rank-xp-label">XP</div>
-        </div>
+        ${scoreHtml}
       </div>`;
   }).join('');
+}
+
+async function carregarRankingQuiz(){
+  const listEl = document.getElementById('quiz-ranking-list');
+  const refreshBtn = document.getElementById('quiz-ranking-refresh');
+  if(!listEl) return;
+
+  // Mostra loading
+  listEl.innerHTML = '<div class="quiz-ranking-loading">🔄 Carregando ranking…</div>';
+  if(refreshBtn){ refreshBtn.disabled = true; refreshBtn.textContent = '↻ Carregando…'; }
+
+  const meuId = state.perfil ? (state.perfil.id || state.perfil.nome_usuario) : null;
+
+  // Tenta buscar do banco de dados
+  if(state.sessionToken && typeof db !== 'undefined'){
+    try {
+      const { data, error } = await db.rpc('buscar_ranking_quiz', { p_token: state.sessionToken });
+      if(!error && data && Array.isArray(data)){
+        // Banco retornou dados — mescla com localStorage e renderiza
+        const merged = mesclarRankingComBanco(data);
+        renderizarListaRanking(merged, meuId);
+        if(refreshBtn){ refreshBtn.disabled = false; refreshBtn.textContent = '↻ Atualizar'; }
+        return;
+      }
+    } catch(e){
+      console.warn('RPC buscar_ranking_quiz não disponível, usando localStorage.', e);
+    }
+  }
+
+  // Fallback: usa apenas localStorage
+  const localData = getRankingData();
+  renderizarListaRanking(localData, meuId);
+  if(refreshBtn){ refreshBtn.disabled = false; refreshBtn.textContent = '↻ Atualizar'; }
 }
 
 document.getElementById('quiz-ranking-refresh') && document.getElementById('quiz-ranking-refresh').addEventListener('click', carregarRankingQuiz);
