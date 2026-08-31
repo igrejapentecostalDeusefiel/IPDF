@@ -2097,6 +2097,21 @@ body.show-public-campaign #app-shell{display:none;}
 .contact-search-results{max-height:280px;overflow-y:auto;margin-top:10px;}
 .verse-share-section-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);font-weight:700;margin:12px 2px 6px;}
 .verse-share-section-label:first-child{margin-top:0;}
+.verse-share-image-card{display:flex;flex-direction:column;align-items:center;}
+.verse-share-image-frame{
+  width:150px;aspect-ratio:9/16;border-radius:var(--radius-md);overflow:hidden;
+  background:var(--parchment-dim);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.verse-share-image-loading{font-size:.68rem;color:var(--text-faint);text-align:center;padding:0 14px;line-height:1.4;}
+.verse-share-image-thumb{width:100%;height:100%;object-fit:cover;display:block;}
+.verse-share-bg-picker{display:flex;gap:8px;justify-content:center;margin-top:10px;}
+.verse-share-bg-swatch{
+  width:36px;height:52px;border-radius:8px;background-size:cover;background-position:center;
+  cursor:pointer;border:2px solid transparent;opacity:.55;transition:opacity .15s,border-color .15s,transform .15s;
+}
+.verse-share-bg-swatch:hover{opacity:.85;}
+.verse-share-bg-swatch.active{opacity:1;border-color:var(--gold);transform:translateY(-2px);}
 .contact-result-row{
   display:flex;align-items:center;gap:12px;padding:10px 6px;border-radius:var(--radius-sm);cursor:pointer;
 }
@@ -5263,6 +5278,19 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
     <div class="confirm-title">Compartilhar versículo</div>
     <div class="confirm-text" id="verse-share-preview"></div>
     <div id="verse-share-results" class="contact-search-results" style="margin-top:14px;"></div>
+    <div class="verse-share-section-label">Compartilhar como imagem</div>
+    <div class="verse-share-image-card">
+      <div class="verse-share-image-frame" id="verse-share-image-frame">
+        <div class="verse-share-image-loading" id="verse-share-image-loading">Preparando prévia…</div>
+        <img class="verse-share-image-thumb" id="verse-share-image-thumb" alt="Prévia da imagem do versículo" style="display:none;">
+      </div>
+      <div class="verse-share-bg-picker" id="verse-share-bg-picker">
+        <div class="verse-share-bg-swatch active" data-bg="campo" style="background-image:url('versiculo-compartilhar-fundo.jpg');" title="Campo ao entardecer"></div>
+        <div class="verse-share-bg-swatch" data-bg="maos" style="background-image:url('versiculo-fundo-maos.jpg');" title="Mãos em luz"></div>
+        <div class="verse-share-bg-swatch" data-bg="moldura" style="background-image:url('Story de Bom dia com mensagem de fé em tons pasteis.png');" title="Moldura dourada"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" id="verse-share-image-btn" style="margin-top:10px;width:100%;" disabled>Compartilhar imagem</button>
+    </div>
     <div class="confirm-actions">
       <button class="btn btn-ghost" id="verse-share-close-btn">Fechar</button>
     </div>
@@ -12221,7 +12249,13 @@ function canalEhTestemunhos(canal){
   return canal.emoji === '🙌' || nome === 'testemunhos';
 }
 
+let versiculoAtualParaImagem = { ref:'', texto:'' };
+let versiculoImagemBlobCache = null;
+let versiculoImagemUrlCache = null;
+
 async function abrirCompartilharVersiculo(ref, texto){
+  versiculoAtualParaImagem = { ref, texto };
+  prepararPreviaImagemVersiculo(ref, texto);
   const overlay = document.getElementById('verse-share-overlay');
   document.getElementById('verse-share-preview').textContent = '"' + texto + '" — ' + ref;
   const resultsEl = document.getElementById('verse-share-results');
@@ -12303,6 +12337,245 @@ async function abrirCompartilharVersiculo(ref, texto){
 document.getElementById('verse-share-close-btn')?.addEventListener('click', ()=>{
   document.getElementById('verse-share-overlay').classList.remove('show');
 });
+
+/* ---- Compartilhar versículo como imagem (WhatsApp e outros apps) ----
+   Gera uma imagem no mesmo estilo visual do app (fundo com foto,
+   gradiente + brilho dourado "Lâmpada", tipografia Fraunces/IBM Plex Mono)
+   e abre o menu nativo de compartilhamento do aparelho. */
+const VERSE_IMG_BACKGROUNDS = {
+  campo:   'versiculo-compartilhar-fundo.jpg',
+  maos:    'versiculo-fundo-maos.jpg',
+  moldura: 'Story de Bom dia com mensagem de fé em tons pasteis.png'
+};
+let verseImgBgSelecionado = 'campo';
+let verseImgBgCache = {};
+
+function carregarImagemVerseShare(src){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.onload = ()=>resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+function desenharImagemCover(ctx, img, x, y, w, h){
+  const imgRatio = img.width / img.height;
+  const boxRatio = w / h;
+  let sx, sy, sw, sh;
+  if(imgRatio > boxRatio){
+    sh = img.height; sw = sh * boxRatio; sx = (img.width - sw) / 2; sy = 0;
+  } else {
+    sw = img.width; sh = sw / boxRatio; sx = 0; sy = (img.height - sh) / 2;
+  }
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+
+function quebrarLinhasVerseShare(ctx, texto, maxWidth){
+  const palavras = texto.split(' ');
+  const linhas = [];
+  let atual = '';
+  palavras.forEach(p=>{
+    const teste = atual ? atual + ' ' + p : p;
+    if(atual && ctx.measureText(teste).width > maxWidth){
+      linhas.push(atual);
+      atual = p;
+    } else {
+      atual = teste;
+    }
+  });
+  if(atual) linhas.push(atual);
+  return linhas;
+}
+
+/* Desenha texto com espaçamento manual entre letras — mais confiável que
+   ctx.letterSpacing dentro do WebView do app Android. */
+function desenharTextoEspacado(ctx, texto, cx, y, spacing){
+  const chars = texto.split('');
+  let total = 0;
+  chars.forEach(ch=>{ total += ctx.measureText(ch).width + spacing; });
+  total -= spacing;
+  const alinhamentoAnterior = ctx.textAlign;
+  ctx.textAlign = 'left';
+  let x = cx - total / 2;
+  chars.forEach(ch=>{
+    ctx.fillText(ch, x, y);
+    x += ctx.measureText(ch).width + spacing;
+  });
+  ctx.textAlign = alinhamentoAnterior;
+}
+
+async function gerarImagemVersiculoBlob(ref, texto, bgId){
+  bgId = bgId || verseImgBgSelecionado;
+  const bgSrc = VERSE_IMG_BACKGROUNDS[bgId] || VERSE_IMG_BACKGROUNDS.campo;
+  const W = 1080, H = 1920;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  if(document.fonts && document.fonts.load){
+    try{
+      await Promise.all([
+        document.fonts.load('italic 600 66px Fraunces'),
+        document.fonts.load('700 30px "IBM Plex Mono"'),
+        document.fonts.load('600 26px Inter')
+      ]);
+    }catch(e){ /* segue mesmo se a fonte não carregar a tempo */ }
+  }
+
+  if(!verseImgBgCache[bgSrc]){ verseImgBgCache[bgSrc] = await carregarImagemVerseShare(bgSrc); }
+  desenharImagemCover(ctx, verseImgBgCache[bgSrc], 0, 0, W, H);
+
+  // Brilho dourado "Lâmpada" (mesmo motivo do .hero do app)
+  let glow = ctx.createRadialGradient(W*0.14, -H*0.05, 0, W*0.14, -H*0.05, W*0.85);
+  glow.addColorStop(0, 'rgba(232,201,138,0.30)');
+  glow.addColorStop(1, 'rgba(232,201,138,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0,0,W,H);
+
+  // Halo suave atrás do texto
+  let halo = ctx.createRadialGradient(W/2, H*0.56, 0, W/2, H*0.56, W*0.7);
+  halo.addColorStop(0, 'rgba(232,201,138,0.14)');
+  halo.addColorStop(1, 'rgba(232,201,138,0)');
+  ctx.fillStyle = halo; ctx.fillRect(0,0,W,H);
+
+  // Gradiente escuro para legibilidade (mesma receita do .comunidade-hero)
+  let escurecer = ctx.createLinearGradient(0,0,0,H);
+  escurecer.addColorStop(0, 'rgba(15,20,36,0.18)');
+  escurecer.addColorStop(0.55, 'rgba(15,20,36,0.40)');
+  escurecer.addColorStop(0.78, 'rgba(15,20,36,0.72)');
+  escurecer.addColorStop(1, 'rgba(15,20,36,0.92)');
+  ctx.fillStyle = escurecer; ctx.fillRect(0,0,W,H);
+
+  // Texto do versículo — Fraunces itálico, com auto-ajuste de tamanho
+  const maxWidth = W - 190;
+  let fontSize = 66;
+  const minFont = 34;
+  let linhas = [];
+  while(fontSize > minFont){
+    ctx.font = `italic 600 ${fontSize}px Fraunces, serif`;
+    linhas = quebrarLinhasVerseShare(ctx, '"' + texto + '"', maxWidth);
+    const lineHeight = fontSize * 1.32;
+    if(linhas.length * lineHeight <= 620) break;
+    fontSize -= 3;
+  }
+  const lineHeight = fontSize * 1.32;
+  const totalH = linhas.length * lineHeight;
+  let y = H*0.50 - totalH/2 + lineHeight*0.72;
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#FBF8F2';
+  ctx.shadowColor = 'rgba(15,20,36,0.5)';
+  ctx.shadowBlur = 20;
+  linhas.forEach((linha, i)=>{
+    ctx.fillText(linha, W/2, y + i*lineHeight);
+  });
+  ctx.shadowBlur = 0;
+
+  // Filete dourado
+  const ruleY = y + (linhas.length-1)*lineHeight + fontSize*0.85;
+  ctx.strokeStyle = 'rgba(232,201,138,0.9)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(W/2 - 34, ruleY);
+  ctx.lineTo(W/2 + 34, ruleY);
+  ctx.stroke();
+
+  // Referência — IBM Plex Mono, maiúsculas, espaçada (mesmo estilo do .hero-ref)
+  ctx.font = '700 30px "IBM Plex Mono", monospace';
+  ctx.fillStyle = '#E8C98A';
+  desenharTextoEspacado(ctx, ref.toUpperCase(), W/2, ruleY + 54, 3);
+
+  // Assinatura da igreja, discreta, no espaço acima do texto do versículo
+  ctx.font = '600 26px Inter, sans-serif';
+  ctx.fillStyle = 'rgba(251,248,242,0.62)';
+  desenharTextoEspacado(ctx, 'IPDF - Igreja Pentecostal Deus é Fiel', W/2, H*0.255, 3);
+
+  return new Promise(resolve=>canvas.toBlob(resolve, 'image/png', 0.95));
+}
+
+/* Gera a imagem assim que o modal abre e já mostra a prévia real
+   (miniatura) dentro do card, em vez de só um botão de texto. */
+async function prepararPreviaImagemVersiculo(ref, texto){
+  const loadingEl = document.getElementById('verse-share-image-loading');
+  const imgEl = document.getElementById('verse-share-image-thumb');
+  const btn = document.getElementById('verse-share-image-btn');
+  const bgId = verseImgBgSelecionado;
+
+  if(versiculoImagemUrlCache){ URL.revokeObjectURL(versiculoImagemUrlCache); versiculoImagemUrlCache = null; }
+  versiculoImagemBlobCache = null;
+  if(imgEl){ imgEl.style.display = 'none'; imgEl.removeAttribute('src'); }
+  if(loadingEl){ loadingEl.style.display = 'flex'; loadingEl.textContent = 'Preparando prévia…'; }
+  if(btn) btn.disabled = true;
+
+  try{
+    const blob = await gerarImagemVersiculoBlob(ref, texto, bgId);
+    // Evita aplicar um resultado atrasado se o usuário já trocou de versículo ou de fundo
+    if(versiculoAtualParaImagem.ref !== ref || versiculoAtualParaImagem.texto !== texto) return;
+    if(verseImgBgSelecionado !== bgId) return;
+    versiculoImagemBlobCache = blob;
+    const url = URL.createObjectURL(blob);
+    versiculoImagemUrlCache = url;
+    if(imgEl){ imgEl.src = url; imgEl.style.display = 'block'; }
+    if(loadingEl){ loadingEl.style.display = 'none'; }
+    if(btn) btn.disabled = false;
+  }catch(err){
+    console.error('Erro ao preparar prévia da imagem do versículo:', err);
+    if(loadingEl){ loadingEl.textContent = 'Não foi possível gerar a prévia'; }
+  }
+}
+
+document.querySelectorAll('.verse-share-bg-swatch').forEach(sw=>{
+  sw.addEventListener('click', ()=>{
+    const bgId = sw.getAttribute('data-bg');
+    if(bgId === verseImgBgSelecionado) return;
+    verseImgBgSelecionado = bgId;
+    document.querySelectorAll('.verse-share-bg-swatch').forEach(el=>el.classList.remove('active'));
+    sw.classList.add('active');
+    if(versiculoAtualParaImagem.ref){
+      prepararPreviaImagemVersiculo(versiculoAtualParaImagem.ref, versiculoAtualParaImagem.texto);
+    }
+  });
+});
+
+async function compartilharVersiculoComoImagem(){
+  const { ref, texto } = versiculoAtualParaImagem;
+  if(!ref){ return; }
+  const btn = document.getElementById('verse-share-image-btn');
+  try{
+    if(btn) btn.disabled = true;
+
+    const blob = versiculoImagemBlobCache || await gerarImagemVersiculoBlob(ref, texto);
+    if(!blob) throw new Error('Falha ao gerar imagem');
+    const arquivo = new File([blob], 'versiculo.png', { type:'image/png' });
+
+    document.getElementById('verse-share-overlay').classList.remove('show');
+
+    if(navigator.canShare && navigator.canShare({ files:[arquivo] })){
+      try{
+        await navigator.share({ files:[arquivo], title: ref, text: '"' + texto + '" — ' + ref });
+      }catch(err){
+        if(err && err.name !== 'AbortError'){
+          console.error('Erro ao compartilhar imagem do versículo:', err);
+          toast('Não foi possível compartilhar a imagem', '⚠️');
+        }
+      }
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'versiculo.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 4000);
+      toast('Imagem salva! Agora é só compartilhar no WhatsApp 📸', '📥');
+    }
+  }catch(err){
+    console.error('Erro ao gerar imagem do versículo:', err);
+    toast('Não foi possível gerar a imagem', '⚠️');
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+}
+
+document.getElementById('verse-share-image-btn')?.addEventListener('click', compartilharVersiculoComoImagem);
 
 async function carregarSessoes(){
   if(!state.sessionToken) return;
