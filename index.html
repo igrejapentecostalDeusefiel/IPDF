@@ -5284,11 +5284,9 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
         <div class="verse-share-image-loading" id="verse-share-image-loading">Preparando prévia…</div>
         <img class="verse-share-image-thumb" id="verse-share-image-thumb" alt="Prévia da imagem do versículo" style="display:none;">
       </div>
-      <div class="verse-share-bg-picker" id="verse-share-bg-picker">
-        <div class="verse-share-bg-swatch active" data-bg="campo" style="background-image:url('versiculo-compartilhar-fundo.jpg');" title="Campo ao entardecer"></div>
-        <div class="verse-share-bg-swatch" data-bg="maos" style="background-image:url('versiculo-fundo-maos.jpg');" title="Mãos em luz"></div>
-        <div class="verse-share-bg-swatch" data-bg="moldura" style="background-image:url('Story de Bom dia com mensagem de fé em tons pasteis.png');" title="Moldura dourada"></div>
-      </div>
+      <!-- As opções de imagem são criadas automaticamente pelo JavaScript
+           a partir de VERSE_IMG_BACKGROUNDS. -->
+      <div class="verse-share-bg-picker" id="verse-share-bg-picker"></div>
       <button class="btn btn-primary btn-sm" id="verse-share-image-btn" style="margin-top:10px;width:100%;" disabled>Compartilhar imagem</button>
     </div>
     <div class="confirm-actions">
@@ -12342,12 +12340,32 @@ document.getElementById('verse-share-close-btn')?.addEventListener('click', ()=>
    Gera uma imagem no mesmo estilo visual do app (fundo com foto,
    gradiente + brilho dourado "Lâmpada", tipografia Fraunces/IBM Plex Mono)
    e abre o menu nativo de compartilhamento do aparelho. */
+/* =========================================================
+   🖼️ IMAGENS DOS VERSÍCULOS PARA COMPARTILHAMENTO
+
+   👉 Para adicionar uma nova imagem:
+      1. Coloque a imagem na mesma pasta do index.html
+         (ou dentro de uma pasta, ex.: imagens/).
+      2. Adicione SOMENTE uma nova linha abaixo.
+      3. Não precisa alterar o restante do código.
+
+   Exemplo:
+      novoFundo: 'imagens/meu-versiculo.jpg',
+
+   O sistema cria automaticamente a opção, a prévia e o
+   compartilhamento da imagem.
+   ==========================================const VERSE_IMG_BACKGROUND=============== */
 const VERSE_IMG_BACKGROUNDS = {
   campo:   'versiculo-compartilhar-fundo.jpg',
   maos:    'versiculo-fundo-maos.jpg',
-  moldura: 'Story de Bom dia com mensagem de fé em tons pasteis.png'
+  moldura: 'Story de Bom dia com mensagem de fé em tons pasteis.png',
+  outra: 'versiculo-fundo-moldura.jpg',
+
+  // ➕ ADICIONE NOVAS IMAGENS AQUI:
+  // exemplo: novoFundo: 'imagens/novo-fundo.jpg',
 };
-let verseImgBgSelecionado = 'campo';
+
+let verseImgBgSelecionado = Object.keys(VERSE_IMG_BACKGROUNDS)[0];
 let verseImgBgCache = {};
 
 function carregarImagemVerseShare(src){
@@ -12524,18 +12542,54 @@ async function prepararPreviaImagemVersiculo(ref, texto){
   }
 }
 
-document.querySelectorAll('.verse-share-bg-swatch').forEach(sw=>{
-  sw.addEventListener('click', ()=>{
-    const bgId = sw.getAttribute('data-bg');
-    if(bgId === verseImgBgSelecionado) return;
-    verseImgBgSelecionado = bgId;
-    document.querySelectorAll('.verse-share-bg-swatch').forEach(el=>el.classList.remove('active'));
-    sw.classList.add('active');
-    if(versiculoAtualParaImagem.ref){
-      prepararPreviaImagemVersiculo(versiculoAtualParaImagem.ref, versiculoAtualParaImagem.texto);
-    }
+/* Cria automaticamente as miniaturas das imagens cadastradas acima.
+   Assim, para adicionar uma imagem nova, basta editar VERSE_IMG_BACKGROUNDS. */
+function renderizarOpcoesImagemVersiculo(){
+  const picker = document.getElementById('verse-share-bg-picker');
+  if(!picker) return;
+
+  picker.innerHTML = '';
+
+  Object.entries(VERSE_IMG_BACKGROUNDS).forEach(([bgId, src], index)=>{
+    const sw = document.createElement('div');
+    sw.className = 'verse-share-bg-swatch' + (bgId === verseImgBgSelecionado ? ' active' : '');
+    sw.dataset.bg = bgId;
+    sw.style.backgroundImage = `url("${src.replace(/"/g, '\\"')}")`;
+    sw.title = `Modelo ${index + 1}`;
+    sw.setAttribute('role', 'button');
+    sw.setAttribute('tabindex', '0');
+    sw.setAttribute('aria-label', `Selecionar modelo ${index + 1}`);
+
+    const selecionar = ()=>{
+      if(bgId === verseImgBgSelecionado) return;
+
+      verseImgBgSelecionado = bgId;
+      picker.querySelectorAll('.verse-share-bg-swatch')
+        .forEach(el=>el.classList.remove('active'));
+
+      sw.classList.add('active');
+
+      if(versiculoAtualParaImagem.ref){
+        prepararPreviaImagemVersiculo(
+          versiculoAtualParaImagem.ref,
+          versiculoAtualParaImagem.texto
+        );
+      }
+    };
+
+    sw.addEventListener('click', selecionar);
+    sw.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        selecionar();
+      }
+    });
+
+    picker.appendChild(sw);
   });
-});
+}
+
+renderizarOpcoesImagemVersiculo();
 
 async function compartilharVersiculoComoImagem(){
   const { ref, texto } = versiculoAtualParaImagem;
