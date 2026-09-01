@@ -14315,6 +14315,22 @@ function aplicarPermissoesAdmin(){
         if(el && el.parentElement !== adminContent) adminContent.appendChild(el);
       });
     }
+  } else {
+    // Conta comum: garante que essas telas voltem para o conteúdo principal
+    // do app (#content), caso tenham sido movidas para dentro do Painel do
+    // Administrador numa sessão de admin anterior, no mesmo carregamento da
+    // página (ex.: sair do painel admin e entrar com um usuário comum sem
+    // recarregar a página). Sem isso, elas ficam "presas" dentro do
+    // #admin-shell — que fica com display:none fora do modo admin — e a
+    // tela correspondente aparece em branco quando o usuário comum navega
+    // até ela.
+    const appContent = document.getElementById('content');
+    if(appContent){
+      ['view-bible', 'view-conversas', 'view-comunidade', 'view-settings'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el && el.parentElement !== appContent) appContent.appendChild(el);
+      });
+    }
   }
 
   // Administrador só navega por Bíblia, Conversas, Comunidade e Perfil — o
