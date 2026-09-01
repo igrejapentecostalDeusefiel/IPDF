@@ -2890,20 +2890,25 @@ textarea.notes-area:focus{border-color:var(--gold);}
 hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 
 /* ---- Campanhas Proféticas ---- */
+/* Card "vitrine": a arte da campanha já traz toda a informação (dia, horário,
+   versículo, propósito) desenhada pelo próprio designer da igreja — então em vez
+   de repetir tudo em texto, a foto vira a protagonista, emoldurada pela cor-tema
+   da campanha, com só o selo de status e o título como legenda. */
 .campaign-hero{
   position:relative;overflow:hidden;
-  display:grid;grid-template-columns:280px 1fr;
+  display:flex;flex-direction:column;gap:16px;
+  padding:20px 20px 26px;
   border-radius:26px;margin-top:22px;
   background:
-    radial-gradient(560px 320px at 88% -10%, rgba(232,201,138,.4) 0%, transparent 60%),
-    linear-gradient(160deg, #100C06 0%, #241B0E 40%, #4A3216 76%, #6B4A22 100%);
-  border:1px solid rgba(232,201,138,.18);
+    radial-gradient(560px 320px at 88% -10%, var(--campaign-glow-a, rgba(232,201,138,.4)) 0%, transparent 60%),
+    linear-gradient(160deg, var(--campaign-bg-from, #100C06) 0%, var(--campaign-bg-mid, #241B0E) 40%, var(--campaign-bg-to, #4A3216) 76%, var(--campaign-bg-to, #6B4A22) 100%);
+  border:1px solid var(--campaign-accent-border, rgba(232,201,138,.18));
   color:var(--parchment);
   box-shadow:var(--shadow), 0 0 0 1px rgba(201,154,74,.08);
 }
 .campaign-hero::before{
   content:"";position:absolute;inset:0;opacity:.32;z-index:0;
-  background-image:radial-gradient(rgba(232,201,138,.55) .7px, transparent .7px);
+  background-image:radial-gradient(var(--campaign-texture, rgba(232,201,138,.55)) .7px, transparent .7px);
   background-size:24px 24px;
   mask-image:radial-gradient(circle at 82% 12%, black, transparent 62%);
   -webkit-mask-image:radial-gradient(circle at 82% 12%, black, transparent 62%);
@@ -2912,41 +2917,70 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
 .campaign-hero::after{
   content:"";position:absolute;inset:0;
   background:
-    radial-gradient(240px 240px at 6% 92%, rgba(232,201,138,.32), transparent 70%),
-    radial-gradient(220px 220px at 98% 100%, rgba(201,154,74,.26), transparent 72%);
+    radial-gradient(240px 240px at 6% 92%, var(--campaign-glow-a, rgba(232,201,138,.32)), transparent 70%),
+    radial-gradient(220px 220px at 98% 100%, var(--campaign-glow-b, rgba(201,154,74,.26)), transparent 72%);
   animation:glow 8s ease-in-out infinite;
   pointer-events:none;
 }
-.campaign-hero-media{position:relative;z-index:1;min-height:220px;background:linear-gradient(160deg, rgba(232,201,138,.26), rgba(16,12,6,.35));}
-.campaign-hero-media img{width:100%;height:100%;object-fit:cover;display:block;}
-.campaign-hero-media.media-empty{display:flex;align-items:center;justify-content:center;}
-.campaign-hero-media.media-empty::after{content:attr(data-emblem);font-size:4.2rem;filter:drop-shadow(0 6px 16px rgba(0,0,0,.3));}
-.campaign-hero-body{position:relative;z-index:1;padding:32px 34px;display:flex;flex-direction:column;gap:14px;}
+.campaign-hero-top{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .campaign-status{
   display:inline-flex;align-items:center;gap:6px;width:fit-content;
   font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
   padding:5px 12px;border-radius:20px;
-  background:rgba(232,201,138,.16);color:var(--gold-soft);border:1px solid rgba(232,201,138,.35);
+  background:var(--campaign-accent-soft, rgba(232,201,138,.16));
+  color:var(--campaign-accent, var(--gold-soft));
+  border:1px solid var(--campaign-accent-border, rgba(232,201,138,.35));
 }
-.campaign-hero-title{font-family:var(--font-display);font-weight:600;font-size:clamp(1.4rem,2.6vw,1.9rem);color:#F3DDA8;text-shadow:0 2px 14px rgba(0,0,0,.35);}
-.campaign-hero-ref{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;opacity:.7;}
-.campaign-hero-verse{font-family:var(--font-display);font-style:italic;font-size:1.05rem;line-height:1.6;opacity:.95;}
-.campaign-hero-purpose{font-size:.92rem;line-height:1.7;opacity:.85;max-width:62ch;}
-.campaign-hero-schedule{font-size:.88rem;line-height:1.6;opacity:.9;max-width:62ch;}
-.campaign-hero-actions{margin-top:4px;}
-@media(max-width:760px){
-  .campaign-hero{grid-template-columns:1fr;}
-  .campaign-hero-media{min-height:150px;}
-  .campaign-hero-body{padding:24px 22px;}
+.campaign-hero-share{
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:34px;height:34px;border-radius:50%;cursor:pointer;
+  background:var(--campaign-accent-soft, rgba(232,201,138,.16));
+  border:1px solid var(--campaign-accent-border, rgba(232,201,138,.35));
+  color:var(--campaign-accent, var(--gold-soft));
+  transition:transform .15s ease, background .15s ease;
+}
+.campaign-hero-share:hover{transform:scale(1.08);background:var(--campaign-accent-border, rgba(232,201,138,.35));}
+.campaign-hero-share svg{width:16px;height:16px;}
+.campaign-hero-frame{
+  position:relative;z-index:1;border-radius:18px;overflow:hidden;
+  background:rgba(0,0,0,.18);
+  box-shadow:inset 0 0 0 1px var(--campaign-accent-border, rgba(232,201,138,.25));
+}
+/* Sem aspect-ratio fixo: cada foto tem sua própria proporção (retrato alto, quadrado
+   etc.), então a altura segue a proporção natural da imagem — sem cortar e sem
+   barras vazias nas laterais. */
+.campaign-hero-media{position:relative;width:100%;}
+.campaign-hero-media img{width:100%;height:auto;display:block;}
+.campaign-hero-media.media-empty{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg, rgba(232,201,138,.26), rgba(16,12,6,.35));}
+.campaign-hero-media.media-empty::after{content:attr(data-emblem);font-size:4.2rem;filter:drop-shadow(0 6px 16px rgba(0,0,0,.3));}
+.campaign-hero-title{
+  position:relative;z-index:1;text-align:center;
+  font-family:var(--font-display);font-weight:600;font-size:clamp(1.4rem,2.6vw,1.9rem);
+  color:#F3DDA8;text-shadow:0 2px 14px rgba(0,0,0,.35);
+}
+/* ---- Layout de computador: a foto vira uma coluna de largura contida (um "pôster"),
+   lado a lado com o selo/compartilhar em cima e o título embaixo — em vez de esticar
+   a imagem pela largura toda da tela, que ficava enorme e desproporcional. ---- */
+@media(min-width:761px){
+  .campaign-hero{
+    display:grid;
+    grid-template-columns:minmax(240px,320px) 1fr;
+    grid-template-rows:auto 1fr;
+    grid-template-areas:
+      "frame top"
+      "frame title";
+    column-gap:32px;row-gap:8px;
+    padding:26px 30px;
+  }
+  .campaign-hero-frame{grid-area:frame;align-self:start;}
+  .campaign-hero-top{grid-area:top;align-self:start;}
+  .campaign-hero-title{grid-area:title;align-self:end;text-align:left;font-size:clamp(1.6rem,2.2vw,2.1rem);}
 }
 @media(max-width:480px){
-  .campaign-hero{border-radius:20px;}
-  .campaign-hero-media{min-height:120px;}
-  .campaign-hero-body{padding:18px 16px;gap:10px;}
-  .campaign-hero-verse{font-size:.98rem;}
-  .campaign-hero-purpose{font-size:.87rem;}
+  .campaign-hero{border-radius:20px;padding:16px 16px 20px;gap:12px;}
   .campaign-status{font-size:.65rem;padding:4px 10px;}
-  .campaign-hero-actions .chip-btn{width:100%;justify-content:center;}
+  .campaign-hero-share{width:30px;height:30px;}
+  .campaign-hero-share svg{width:14px;height:14px;}
 }
 
 /* ---- Campanhas anteriores (cards com foto, mais discretas que a atual) ---- */
@@ -6511,84 +6545,91 @@ const CAMPAIGNS = [
   {
     id:"vale-ossos-secos",
     status:"ativa",
-    period:"Julho 2026",
+    statusLabel:"🔥 Campanha em andamento",
+    period:"Setembro 2026",
     title:"Portas abertas com água",
-    verseRef:"BASE BÍBLICA",
-    verseText:"\"BASE BIBLICA\"",
-    purpose:"ESCREVA O PROPÓSITO AQUI",
+    verseRef:"Apocalipse 3:8",
+    verseText:"\"Eis que tenho posto diante de ti uma porta aberta, e ninguém a pode fechar.\"",
+    purpose:"Buscar o milagre e vivenciar o agir de Deus em nossas vidas, com o coração aberto para o que Ele tem preparado.",
     schedule:"Terça 19:30h",
     image:"foto03.jpeg",
-    emblem:"🦴"
+    emblem:"🦴",
+    // Paleta extraída da arte "Portas Abertas com Água": azul-noite e respingos de água
+    theme:{
+      accent:"#6FB7DE",
+      accentSoft:"rgba(111,183,222,.16)",
+      accentBorder:"rgba(111,183,222,.38)",
+      glowA:"rgba(111,183,222,.36)",
+      glowB:"rgba(30,74,120,.32)",
+      bgFrom:"#050B14",
+      bgMid:"#0E2036",
+      bgTo:"#1B3A5C",
+      texture:"rgba(111,183,222,.5)"
+    }
   },
   {
     id:"campanha-ativa-2",
     status:"ativa",
-    period:"Julho 2026",
-    title:"Portas abertas com água",
-    verseRef:"BASE BÍBLICA",
-    verseText:"\"BASE BIBLICA\"",
-    purpose:"ESCREVA O PROPÓSITO AQUI",
+    statusLabel:"Culto de Consagração",
+    period:"Setembro 2026",
+    title:"Consagração",
+    verseRef:"Mateus 21:22",
+    verseText:"\"E tudo quanto pedirdes em oração, crendo, o recebereis.\"",
+    purpose:"Consagrar a vida ao Senhor e clamar, em oração e fé, pelo milagre que só Ele pode fazer.",
     schedule:"Quinta 16:30h",
     image:"foto02.jpeg",
-    emblem:"🕊️"
+    emblem:"🕊️",
+    // Paleta extraída da arte "Culto de Consagração": dourado claro e luz quente
+    theme:{
+      accent:"#E8B23D",
+      accentSoft:"rgba(232,178,61,.18)",
+      accentBorder:"rgba(232,178,61,.4)",
+      glowA:"rgba(255,214,140,.42)",
+      glowB:"rgba(201,140,40,.3)",
+      bgFrom:"#241705",
+      bgMid:"#4A2F0A",
+      bgTo:"#7A4E12",
+      texture:"rgba(255,214,140,.55)"
+    }
   },
   {
     id:"campanha-ativa-3",
     status:"ativa",
-    period:"Julho 2026",
-    title:"Portas abertas com água",
-    verseRef:"BASE BÍBLICA",
-    verseText:"\"BASE BIBLICA\"",
-    purpose:"ESCREVA O PROPÓSITO AQUI",
-    schedule:"Terça 19:30h",
-    image:"foto03.jpeg",
-    emblem:"⚡"
+    statusLabel:"Culto de Domingo",
+    period:"Setembro 2026",
+    title:"Culto de Domingo",
+    verseRef:"Salmos 100:2",
+    verseText:"\"Servi ao Senhor com alegria; entrai diante dele com canto.\"",
+    purpose:"Uma noite de fé, adoração e presença de Deus, reunindo toda a família diante do Senhor.",
+    schedule:"Domingo 19:30h",
+    image:"foto01.png",
+    emblem:"⚡",
+    // Paleta extraída da arte "Culto de Domingo": preto profundo e dourado
+    theme:{
+      accent:"#D8B36A",
+      accentSoft:"rgba(216,179,106,.16)",
+      accentBorder:"rgba(216,179,106,.32)",
+      glowA:"rgba(216,179,106,.28)",
+      glowB:"rgba(90,60,20,.3)",
+      bgFrom:"#020202",
+      bgMid:"#120D06",
+      bgTo:"#2E2110",
+      texture:"rgba(216,179,106,.5)"
+    }
   },
  
   {
     id:"aguas-no-deserto",
     status:"encerrada",
-    period:"Junho 2026",
-    title:"Águas no Deserto",
-    verseRef:"Isaías 43:19",
-    verseText:"\"Eis que faço uma coisa nova; agora sairá à luz; porventura não a percebeis? Eis que porei um caminho no deserto e rios no ermo.\"",
-    purpose:"Buscar a presença de Deus, renovando a fé e entregando a Ele nossos planos, para viver o novo que Ele tem preparado.",
-    image:"foto02.jpeg",
+    period:"",
+    title:"EM ESPERA",
+    verseRef:"",
+    verseText:"\"\"",
+    purpose:"",
+    image:"imagem-de-espera.jpg",
     emblem:"🌊"
   },
-  {
-    id:"aguas-no-deserto",
-    status:"encerrada",
-    period:"Junho 2026",
-    title:"Águas no Deserto",
-    verseRef:"Isaías 43:19",
-    verseText:"\"Eis que faço uma coisa nova; agora sairá à luz; porventura não a percebeis? Eis que porei um caminho no deserto e rios no ermo.\"",
-    purpose:"Buscar a presença de Deus, renovando a fé e entregando a Ele nossos planos, para viver o novo que Ele tem preparado.",
-    image:"foto02.jpeg",
-    emblem:"🌊"
-  },
-  {
-    id:"aguas-no-deserto",
-    status:"encerrada",
-    period:"Junho 2026",
-    title:"Águas no Deserto",
-    verseRef:"Isaías 43:19",
-    verseText:"\"Eis que faço uma coisa nova; agora sairá à luz; porventura não a percebeis? Eis que porei um caminho no deserto e rios no ermo.\"",
-    purpose:"Buscar a presença de Deus, renovando a fé e entregando a Ele nossos planos, para viver o novo que Ele tem preparado.",
-    image:"foto02.jpeg",
-    emblem:"🌊"
-  },
-  {
-    id:"aguas-no-deserto",
-    status:"encerrada",
-    period:"Junho 2026",
-    title:"Águas no Deserto",
-    verseRef:"Isaías 43:19",
-    verseText:"\"Eis que faço uma coisa nova; agora sairá à luz; porventura não a percebeis? Eis que porei um caminho no deserto e rios no ermo.\"",
-    purpose:"Buscar a presença de Deus, renovando a fé e entregando a Ele nossos planos, para viver o novo que Ele tem preparado.",
-    image:"foto02.jpeg",
-    emblem:"🌊"
-  }
+
 ];
 
 const QUIZ_ACHIEVEMENTS = [
@@ -10661,6 +10702,48 @@ renderAchievements();
 /* =========================================================
    CAMPANHAS PROFÉTICAS
    ========================================================= */
+/* Compartilha a própria foto/arte da campanha (não mais texto de versículo).
+   Busca o arquivo de imagem já usado no card, monta um File e tenta a Web Share API
+   (abre o menu do WhatsApp/Instagram/etc no celular); se o navegador não suportar
+   compartilhar arquivos, baixa a imagem e avisa o usuário. */
+async function compartilharImagemCampanha(campaign, btn){
+  if(!campaign || !campaign.image) return;
+  try{
+    if(btn) btn.disabled = true;
+    const resp = await fetch(campaign.image);
+    if(!resp.ok) throw new Error('Falha ao carregar imagem da campanha');
+    const blob = await resp.blob();
+    const extBruta = (campaign.image.split('.').pop() || 'png').toLowerCase();
+    const ext = extBruta === 'jpeg' ? 'jpg' : extBruta;
+    const mime = blob.type || (ext === 'png' ? 'image/png' : 'image/jpeg');
+    const nomeArquivo = (campaign.id || 'campanha') + '.' + ext;
+    const arquivo = new File([blob], nomeArquivo, { type: mime });
+
+    if(navigator.canShare && navigator.canShare({ files:[arquivo] })){
+      try{
+        await navigator.share({ files:[arquivo], title: campaign.title });
+      }catch(err){
+        if(err && err.name !== 'AbortError'){
+          console.error('Erro ao compartilhar imagem da campanha:', err);
+          toast('Não foi possível compartilhar a imagem', '⚠️');
+        }
+      }
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = nomeArquivo;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 4000);
+      toast('Imagem salva! Agora é só compartilhar no WhatsApp 📸', '📥');
+    }
+  }catch(err){
+    console.error('Erro ao compartilhar imagem da campanha:', err);
+    toast('Não foi possível compartilhar a imagem', '⚠️');
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+}
+
 function renderCampaigns(){
   const activeCampaigns = CAMPAIGNS.filter(c => c.status === 'ativa');
   const featuredList = activeCampaigns.length ? activeCampaigns : (CAMPAIGNS[0] ? [CAMPAIGNS[0]] : []);
@@ -10673,17 +10756,7 @@ function renderCampaigns(){
       const idx = Number(btn.getAttribute('data-campaign-share'));
       const campaign = featuredList[idx];
       if(!campaign) return;
-      btn.addEventListener('click', ()=>{
-        const text = campaign.verseText + ' — ' + campaign.verseRef;
-        if(navigator.clipboard && navigator.clipboard.writeText){
-          navigator.clipboard.writeText(text).then(
-            ()=> toast('Base bíblica copiada', '🔗'),
-            ()=> toast('Base bíblica: ' + text, '🔗')
-          );
-        } else {
-          toast('Base bíblica: ' + text, '🔗');
-        }
-      });
+      btn.addEventListener('click', ()=> compartilharImagemCampanha(campaign, btn));
     });
   }
 
@@ -11463,23 +11536,40 @@ function syncDashSurpriseFavBtn(){
    Passe { withActions:true, index:N } para incluir o botão de compartilhar (N identifica o painel). */
 function renderCampaignHero(campaign, opts){
   opts = opts || {};
-  const actionsHtml = opts.withActions ? `
-          <div class="campaign-hero-actions">
-            <button class="chip-btn" data-campaign-share="${opts.index != null ? opts.index : 0}"><span class="em">🔗</span>Compartilhar base bíblica</button>
-          </div>` : '';
+  // Ícone de compartilhar (sem texto) — compartilha a imagem da própria campanha (ver compartilharImagemCampanha).
+  const shareHtml = opts.withActions ? `
+        <button type="button" class="campaign-hero-share" data-campaign-share="${opts.index != null ? opts.index : 0}" aria-label="Compartilhar imagem da campanha" title="Compartilhar imagem da campanha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.6" x2="15.4" y2="6.4"/><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"/></svg>
+        </button>` : '';
+  // Cada campanha pode trazer um "theme" com a paleta extraída da própria arte/foto,
+  // aplicada via CSS custom properties no card. Sem "theme", cai no dourado padrão (ver CSS).
+  const t = campaign.theme || {};
+  const themeVars = [
+    t.accent       ? `--campaign-accent:${t.accent}`             : '',
+    t.accentSoft   ? `--campaign-accent-soft:${t.accentSoft}`     : '',
+    t.accentBorder ? `--campaign-accent-border:${t.accentBorder}` : '',
+    t.glowA        ? `--campaign-glow-a:${t.glowA}`               : '',
+    t.glowB        ? `--campaign-glow-b:${t.glowB}`               : '',
+    t.bgFrom       ? `--campaign-bg-from:${t.bgFrom}`             : '',
+    t.bgMid        ? `--campaign-bg-mid:${t.bgMid}`               : '',
+    t.bgTo         ? `--campaign-bg-to:${t.bgTo}`                 : '',
+    t.texture      ? `--campaign-texture:${t.texture}`            : ''
+  ].filter(Boolean).join(';');
+  const statusLabel = campaign.statusLabel || '🔥 Campanha em andamento';
+  // A própria arte da campanha já traz dia, horário, versículo e propósito desenhados —
+  // então o card vira uma "vitrine": foto inteira emoldurada, sem repetir tudo em texto.
   return `
-    <article class="campaign-hero">
-      <div class="campaign-hero-media" data-emblem="${campaign.emblem || '🔥'}">
-        <img src="${campaign.image}" alt="${escapeHtml(campaign.title)}" onerror="this.remove();this.parentElement.classList.add('media-empty');">
+    <article class="campaign-hero"${themeVars ? ` style="${themeVars}"` : ''}>
+      <div class="campaign-hero-top">
+        <span class="campaign-status">${escapeHtml(statusLabel)}</span>
+        ${shareHtml}
       </div>
-      <div class="campaign-hero-body">
-        <span class="campaign-status">🔥 Campanha em andamento</span>
-        <h2 class="campaign-hero-title">${escapeHtml(campaign.title)}</h2>
-        <span class="campaign-hero-ref">${escapeHtml(campaign.period)} · Base bíblica: ${escapeHtml(campaign.verseRef)}</span>
-        <p class="campaign-hero-verse">${escapeHtml(campaign.verseText)}</p>
-        <p class="campaign-hero-purpose"><strong>Propósito:</strong> ${escapeHtml(campaign.purpose)}</p>
-        ${campaign.schedule ? `<p class="campaign-hero-schedule">🗓️ <strong>Dias de culto:</strong> ${escapeHtml(campaign.schedule)}</p>` : ''}${actionsHtml}
+      <div class="campaign-hero-frame">
+        <div class="campaign-hero-media" data-emblem="${campaign.emblem || '🔥'}">
+          <img src="${campaign.image}" alt="${escapeHtml(campaign.title)}" onerror="this.remove();this.parentElement.classList.add('media-empty');">
+        </div>
       </div>
+      <h2 class="campaign-hero-title">${escapeHtml(campaign.title)}</h2>
     </article>`;
 }
 
