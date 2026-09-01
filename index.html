@@ -15076,7 +15076,13 @@ document.getElementById('comunidade-canal-send')?.addEventListener('click', asyn
   const texto = input.value.trim();
   if(!texto || !comunidadeCanalAtivo) return;
   input.value = '';
-  const { error } = await db.rpc('enviar_mensagem_canal', { p_token: state.sessionToken, p_canal_id: comunidadeCanalAtivo, p_texto: texto });
+  const { error } = await db.rpc('enviar_mensagem_canal', {
+    p_token: state.sessionToken,
+    p_canal_id: comunidadeCanalAtivo,
+    p_texto: texto,
+    p_referencia_versiculo: null,
+    p_texto_versiculo: null
+  });
   if(error){ console.error('Erro ao enviar mensagem:', error); toast('Não foi possível enviar', '⚠️'); return; }
   await carregarMensagensCanal(comunidadeCanalAtivo);
 });
