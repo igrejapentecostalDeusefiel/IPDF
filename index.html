@@ -14401,9 +14401,12 @@ async function carregarComunidadeMembrosOnline(){
    para quem não é admin ---- */
 function canalComunidadeAbertoParaTodos(canal){
   if(!canal) return false;
-  const nome = (canal.nome || '').trim().toLowerCase();
-  return canal.emoji === '🙌' || nome === 'testemunhos'
-      || canal.emoji === '📖' || nome === 'estudo bíblico';
+  // Normaliza o nome: remove acentos, minúsculas, sem espaços extras —
+  // protege contra variações de digitação no banco ('Estudo Biblico', 'estudo-bíblico', etc.)
+  const norm = s => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();
+  const nome = norm(canal.nome);
+  return canal.emoji === '🙌' || nome === 'testemunhos' || nome.includes('testemunho')
+      || canal.emoji === '📖' || nome === 'estudo biblico' || nome.includes('estudo') && nome.includes('bib');
 }
 
 /* ---- Canais de conversa (listas + abertura do chat em grupo) ---- */
