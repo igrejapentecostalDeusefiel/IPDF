@@ -15348,6 +15348,32 @@ document.getElementById('comunidade-canal-del-btn')?.addEventListener('click', (
           : 'Não foi possível concluir o cadastro. Tente outro nome de usuário.');
         return;
       }
+
+      // Sorteia automaticamente um avatar bíblico para o novo usuário,
+      // garantindo que nunca fique com a inicial do nome.
+      const AVATARES_BIBLICOS = [
+        { emoji: '🕊️', gradient: 'linear-gradient(135deg,#8FA6C9,#DCE6DD)' },
+        { emoji: '🔥', gradient: 'linear-gradient(135deg,var(--gold),var(--rose))' },
+        { emoji: '📜', gradient: 'linear-gradient(135deg,var(--sage),#D9C48A)' },
+        { emoji: '🐑', gradient: 'linear-gradient(135deg,#DCE6DD,#E8C98A)' },
+        { emoji: '🌾', gradient: 'linear-gradient(135deg,#D9C48A,#C99A4A)' },
+        { emoji: '⚓', gradient: 'linear-gradient(135deg,#8FA6C9,#1A2540)' },
+        { emoji: '⭐', gradient: 'linear-gradient(135deg,#1A2540,#C99A4A)' },
+        { emoji: '🐟', gradient: 'linear-gradient(135deg,#6E8F72,#8FA6C9)' },
+        { emoji: '👑', gradient: 'linear-gradient(135deg,#C99A4A,#B8695A)' },
+        { emoji: '🪔', gradient: 'linear-gradient(135deg,#E8C98A,#C99A4A)' },
+        { emoji: '✝️', gradient: 'linear-gradient(135deg,#1A2540,#6E8F72)' }
+      ];
+      const avatarSorteado = AVATARES_BIBLICOS[Math.floor(Math.random() * AVATARES_BIBLICOS.length)];
+      await db.rpc('atualizar_perfil', {
+        p_token: data,
+        p_nome_exibicao: nome,
+        p_sobre_mim: '',
+        p_membro_desde: null,
+        p_avatar_emoji: avatarSorteado.emoji,
+        p_avatar_gradient: avatarSorteado.gradient
+      });
+
       await entrarNoApp(data, true);
       toast('Cadastro concluído! Bem-vindo à IPDF.', '🎉');
     });
