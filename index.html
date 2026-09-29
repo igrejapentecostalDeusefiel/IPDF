@@ -2158,6 +2158,85 @@ body.show-public-campaign #app-shell{display:none;}
 .typing-dots span:nth-child(3){animation-delay:.3s;}
 @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
 
+
+/* DV — Devocional redesenhado */
+#view-devotional .dv{--c1:#fff1a8;--c2:#f6c9ee;--gl:color-mix(in srgb,var(--paper) 72%,transparent);margin-top:14px;padding:26px 20px 30px;border-radius:28px;background:linear-gradient(155deg,var(--c1) 0%,var(--parchment) 42%,var(--c2) 100%);}
+[data-theme="dark"] #view-devotional .dv{--c1:#3b3210;--c2:#3a1f45;}
+.dv-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.dv-title{font-size:clamp(2.2rem,8vw,3.2rem);font-weight:800;line-height:1;margin:0;}
+.dv-sub{font-family:var(--font-display);font-size:clamp(1.6rem,6vw,2.3rem);font-weight:700;line-height:1.15;background:linear-gradient(90deg,var(--text-faint),transparent 90%);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.75;}
+.dv-date{font-size:.85rem;color:var(--text-dim);margin-top:10px;text-transform:capitalize;}
+.dv-streak{text-align:center;background:var(--gl);backdrop-filter:blur(8px);border-radius:18px;padding:10px 14px;box-shadow:var(--shadow-sm);flex:none;}
+.dv-streak b{display:block;font-family:var(--font-display);font-size:1.7rem;color:var(--ink);line-height:1.1;}
+.dv-streak span{font-size:.68rem;color:var(--text-dim);}
+.dv-week{display:flex;gap:8px;margin:20px 0 4px;}
+.dv-day{flex:1;text-align:center;font-size:.68rem;color:var(--text-dim);text-transform:uppercase;}
+.dv-day i{display:grid;place-items:center;width:100%;aspect-ratio:1;max-width:38px;margin:4px auto 0;border-radius:50%;border:2px dashed var(--line);font-style:normal;font-size:.8rem;}
+.dv-day.on i{background:var(--ink);border:2px solid var(--ink);color:var(--parchment);}
+[data-theme="dark"] .dv-day.on i{background:var(--gold);border-color:var(--gold);color:var(--ink);}
+.dv-day.today i{border-style:solid;border-color:var(--gold);}
+.dv-total{display:flex;justify-content:space-between;align-items:flex-end;margin:18px 4px 12px;font-size:.74rem;letter-spacing:.08em;color:var(--text-dim);}
+.dv-total b{font-family:var(--font-display);font-size:2.4rem;color:var(--ink);letter-spacing:0;line-height:1;}
+.dv-folders{display:grid;grid-template-columns:1fr 1fr;gap:20px 16px;}
+.fd{position:relative;height:124px;border:0;background:none;padding:0;cursor:pointer;text-align:left;transition:transform .25s cubic-bezier(.3,1.4,.5,1);}
+.fd:hover,.fd.on{transform:translateY(-5px);}
+.fd .bk{position:absolute;inset:10px 0 0;border-radius:6px 20px 16px 16px;background:color-mix(in srgb,var(--c) 72%,#000);}
+.fd .bk::before{content:"";position:absolute;left:0;top:-12px;width:46%;height:20px;border-radius:12px 14px 0 0;background:inherit;}
+.fd .sh{position:absolute;left:12px;right:18px;top:6px;height:60%;border-radius:8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15);transform:rotate(-1.5deg);}
+.fd .fr{position:absolute;inset:34px 0 0;border-radius:16px 22px 18px 18px;background:var(--c);padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;color:#1a1408;box-shadow:0 8px 18px -8px rgba(0,0,0,.35);}
+.fd .fr b{font-size:.95rem;}
+.fd .fr em{font-style:normal;font-family:var(--font-display);font-size:1.6rem;font-weight:700;align-self:flex-end;line-height:1;}
+.fd.on .fr{outline:3px solid var(--ink);outline-offset:2px;}
+[data-theme="dark"] .fd.on .fr{outline-color:var(--gold);}
+.dv-card{background:var(--gl);backdrop-filter:blur(10px);border:1px solid color-mix(in srgb,var(--paper) 60%,transparent);border-radius:24px;padding:18px;margin-top:22px;box-shadow:var(--shadow-sm);}
+.dv-verse{background:linear-gradient(135deg,#1A2540,#4a2f6b);color:#fbf8f2;border-radius:20px;padding:24px 22px 16px;position:relative;overflow:hidden;}
+.dv-verse::before{content:"“";position:absolute;right:14px;top:-26px;font:700 9rem/1 var(--font-display);opacity:.12;}
+#devo-verse{font-family:var(--font-display);font-style:italic;font-size:1.25rem;line-height:1.55;position:relative;}
+#devo-ref{margin-top:10px;font-size:.8rem;color:#e8c98a;font-weight:600;}
+.dv-vact{display:flex;gap:8px;margin-top:14px;}
+.dv-vact button{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:inherit;border-radius:20px;padding:6px 12px;font-size:.78rem;cursor:pointer;}
+.dv-prog{height:6px;border-radius:6px;background:var(--line);margin:16px 0 6px;overflow:hidden;}
+.dv-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--sage));transition:width .4s;}
+.dv-step{display:flex;gap:12px;padding:14px 0;margin:0 !important;border-bottom:1px solid var(--line);}
+.dv-step:last-child{border:0;padding-bottom:0;}
+.dv-chk{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--gold);background:none;cursor:pointer;color:transparent;font-size:.8rem;transition:.2s;}
+.dv-step.done .dv-chk{background:var(--sage);border-color:var(--sage);color:#fff;}
+.dv-step.done .devo-text{opacity:.6;}
+.dv-chips,.dv-mood{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.dv-chip{border:1.5px solid var(--line);background:var(--paper);border-radius:20px;padding:6px 12px;font-size:.8rem;cursor:pointer;color:var(--text);}
+.dv-chip.on{background:var(--c);border-color:var(--c);color:#1a1408;font-weight:600;}
+.dv-mood button{font-size:1.4rem;background:none;border:0;border-radius:50%;width:42px;height:42px;cursor:pointer;opacity:.5;transition:.2s;}
+.dv-mood button.on{opacity:1;background:var(--paper);box-shadow:var(--shadow-sm);transform:scale(1.12);}
+.dv-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;}
+.dv-bar .sp{flex:1;}
+#dv-mic.on{background:var(--rose);color:#fff;}
+.dv-count{font-size:.72rem;color:var(--text-faint);}
+.dv-loghead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:28px 0 12px;}
+.dv-loghead h3{flex:none;}
+.dv-search{flex:1;min-width:150px;border:1px solid var(--line);background:var(--gl);border-radius:20px;padding:9px 14px;font:inherit;font-size:.85rem;color:var(--text);}
+.dv-tag{display:inline-block;font-size:.68rem;padding:2px 8px;border-radius:10px;background:var(--c);color:#1a1408;margin:0 6px;}
+#view-devotional .note-block{border-radius:20px;background:var(--gl);}
+@media(max-width:480px){#view-devotional .dv{padding:20px 14px 24px;border-radius:22px;}}
+@media(prefers-reduced-motion:reduce){.fd,.dv-prog i,.dv-chk,.dv-mood button{transition:none;}}
+
+/* NB — Minhas anotações redesenhado */
+#view-notes .dv{--c1:#b8f0dc;--c2:#c4d6ff;--gl:color-mix(in srgb,var(--paper) 72%,transparent);margin-top:14px;padding:26px 20px 30px;border-radius:28px;background:linear-gradient(155deg,var(--c1) 0%,var(--parchment) 42%,var(--c2) 100%);}
+[data-theme="dark"] #view-notes .dv{--c1:#10382d;--c2:#1c2a55;}
+.nb-oh{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px;}
+.nb-oh h3{font-size:1.15rem;overflow-wrap:anywhere;}.nb-oh .sp{flex:1;}
+.nb-ic{border:0;background:var(--paper);border-radius:10px;width:32px;height:32px;cursor:pointer;font-size:.9rem;box-shadow:var(--shadow-sm);}
+.nb-sw{width:30px;height:30px;border-radius:50%;border:2px solid var(--paper);cursor:pointer;}
+.nb-sw.on{outline:3px solid var(--ink);outline-offset:1px;}
+[data-theme="dark"] .nb-sw.on{outline-color:var(--gold);}
+.nb-note{background:var(--paper);border-radius:16px;border-left:5px solid var(--c);padding:14px 16px;margin-top:12px;box-shadow:var(--shadow-sm);min-width:0;}
+.nb-note p{margin-top:8px;line-height:1.7;overflow-wrap:anywhere;}
+.nb-recall{margin-top:22px;background:linear-gradient(135deg,#1A2540,#4a2f6b);color:#fbf8f2;border-radius:20px;padding:20px;position:relative;overflow:hidden;}
+.nb-recall small{color:#e8c98a;font-weight:600;}.nb-recall p{font-family:var(--font-display);font-style:italic;font-size:1.1rem;line-height:1.55;margin:8px 0 12px;overflow-wrap:anywhere;}
+.nb-recall button{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:inherit;border-radius:20px;padding:6px 12px;font-size:.78rem;cursor:pointer;}
+#nb-ffav.on{background:var(--gold);color:var(--ink);}
+#nb-mic.on{background:var(--rose);color:#fff;}
+@media(max-width:480px){#view-notes .dv{padding:20px 14px 24px;border-radius:22px;}}
+
 /* Devotional */
 .devo-block{margin-bottom:22px;}
 .devo-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;margin-bottom:8px;}
@@ -4319,52 +4398,62 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <!-- ============ DEVOTIONAL ============ -->
       <section class="view" id="view-devotional">
         <button type="button" class="view-back-btn" data-goto="home"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>Voltar ao início</button>
-        <div class="page-head" style="--ph-tone:var(--sage-soft);">
-          <div class="page-head-icon">🙏</div>
-          <div class="page-head-text">
-            <div class="page-head-eyebrow">Vida devocional</div>
-            <h1 class="page-head-title">Devocional de hoje</h1>
-            <p class="page-head-sub" id="devo-date"></p>
+        <div class="dv">
+          <div class="dv-top">
+            <div>
+              <h1 class="dv-title">Devocional</h1>
+              <div class="dv-sub">Um dia de cada vez</div>
+              <p class="dv-date" id="devo-date"></p>
+            </div>
+            <div class="dv-streak"><b id="dv-streak">0</b><span>dias seguidos</span></div>
           </div>
-        </div>
+          <div class="dv-week" id="dv-week"></div>
+          <div class="dv-total"><span>TOTAL DE ANOTAÇÕES</span><b id="dv-total">0</b></div>
+          <div class="dv-folders" id="dv-folders"></div>
 
-        <div class="grid grid-2" style="margin-top:22px;align-items:start;">
-          <div class="card">
-            <div id="devo-loading" style="display:none;align-items:center;gap:10px;padding:10px 0 18px;color:var(--text-faint);font-size:.85rem;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;flex-shrink:0;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-              Gerando devocional de hoje…
+          <div class="dv-card">
+            <div class="dv-verse">
+              <div id="devo-loading" style="display:none;align-items:center;gap:10px;padding-bottom:12px;font-size:.85rem;opacity:.8;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;flex-shrink:0;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                Gerando devocional de hoje…
+              </div>
+              <div id="devo-verse"></div>
+              <div id="devo-ref"></div>
+              <div class="dv-vact">
+                <button type="button" id="dv-listen">🔊 Ouvir</button>
+                <button type="button" id="dv-copy">📋 Compartilhar</button>
+              </div>
             </div>
-            <div class="devo-block">
-              <div class="devo-label">Versículo</div>
-              <div class="devo-text" id="devo-verse" style="font-family:var(--font-display);font-style:italic;font-size:1.15rem;"></div>
-            </div>
-            <div class="devo-block">
-              <div class="devo-label">Reflexão</div>
-              <div class="devo-text" id="devo-reflection"></div>
-            </div>
-            <div class="devo-block">
-              <div class="devo-label">Aplicação prática</div>
-              <div class="devo-text" id="devo-application"></div>
-            </div>
-            <div class="devo-block">
-              <div class="devo-label">Pergunta para reflexão</div>
-              <div class="devo-text" id="devo-question"></div>
-            </div>
-            <div class="devo-block">
-              <div class="devo-label">Oração sugerida</div>
-              <div class="devo-text" id="devo-prayer" style="font-style:italic;"></div>
-            </div>
+            <div class="dv-prog"><i id="dv-prog"></i></div>
+            <div class="dv-count" id="dv-prog-t"></div>
+            <div class="devo-block dv-step" data-s="reflection"><button type="button" class="dv-chk" aria-label="Marcar reflexão como lida">✓</button><div><div class="devo-label">Reflexão</div><div class="devo-text" id="devo-reflection"></div></div></div>
+            <div class="devo-block dv-step" data-s="application"><button type="button" class="dv-chk" aria-label="Marcar aplicação como lida">✓</button><div><div class="devo-label">Aplicação prática</div><div class="devo-text" id="devo-application"></div></div></div>
+            <div class="devo-block dv-step" data-s="question"><button type="button" class="dv-chk" aria-label="Marcar pergunta como lida">✓</button><div><div class="devo-label">Pergunta para reflexão</div><div class="devo-text" id="devo-question"></div></div></div>
+            <div class="devo-block dv-step" data-s="prayer"><button type="button" class="dv-chk" aria-label="Marcar oração como feita">✓</button><div><div class="devo-label">Oração sugerida</div><div class="devo-text" id="devo-prayer" style="font-style:italic;"></div></div></div>
           </div>
-          <div class="card">
-            <h3 style="font-size:1rem;margin-bottom:10px;">Minhas anotações de hoje</h3>
-            <textarea class="notes-area" id="devo-notes" placeholder="Escreva o que Deus falou ao seu coração hoje…"></textarea>
-            <button class="btn btn-ghost btn-sm" style="margin-top:12px;" id="devo-save-note">Salvar anotação</button>
-          </div>
-        </div>
 
-        <div style="margin-top:22px;">
-          <h3 style="font-size:1rem;margin-bottom:12px;">Meu registro devocional</h3>
-          <div id="devo-note-blocks-list" style="display:flex;flex-direction:column;gap:16px;"></div>
+          <div class="dv-card">
+            <h3 style="font-size:1.05rem;margin-bottom:12px;">O que Deus falou com você hoje?</h3>
+            <div class="dv-mood" id="dv-mood"></div>
+            <textarea class="notes-area" id="devo-notes" placeholder="Escreva aqui…"></textarea>
+            <div class="dv-chips" id="dv-chips" style="margin:12px 0 0;"></div>
+            <div class="dv-bar">
+              <button type="button" class="btn btn-ghost btn-sm" id="dv-ask">✍️ Responder à pergunta</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="dv-mic" title="Ditar por voz">🎤</button>
+              <span class="sp"></span>
+              <span class="dv-count" id="dv-count"></span>
+              <button type="button" class="btn btn-primary btn-sm" id="devo-save-note">Salvar anotação</button>
+            </div>
+          </div>
+
+          <div id="dv-log">
+            <div class="dv-loghead">
+              <h3 style="font-size:1.05rem;">Meu diário</h3>
+              <input type="search" class="dv-search" id="dv-search" placeholder="Buscar nas anotações">
+              <button type="button" class="btn btn-ghost btn-sm" id="dv-export">Exportar</button>
+            </div>
+            <div id="devo-note-blocks-list" style="display:flex;flex-direction:column;gap:16px;"></div>
+          </div>
         </div>
       </section>
 
@@ -4467,24 +4556,33 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <!-- ============ NOTES ============ -->
       <section class="view" id="view-notes">
         <button type="button" class="view-back-btn" data-goto="home"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>Voltar ao início</button>
-        <div class="page-head" style="--ph-tone:var(--sage-soft);">
-          <div class="page-head-icon">📝</div>
-          <div class="page-head-text">
-            <div class="page-head-eyebrow">Minha jornada</div>
-            <h1 class="page-head-title">Minhas anotações</h1>
-            <p class="page-head-sub">Reflexões organizadas por livro, capítulo ou tema.</p>
+        <div class="dv nb" id="nb">
+          <div class="dv-top">
+            <div>
+              <h1 class="dv-title">Anotações</h1>
+              <div class="dv-sub">Guarde o que Deus fala</div>
+              <p class="dv-date" id="nb-date"></p>
+            </div>
+            <div class="dv-streak"><b id="nb-streak">0</b><span>dias seguidos</span></div>
           </div>
-        </div>
-
-        <div class="card" style="margin-top:22px;">
-          <h3 style="font-size:1rem;margin-bottom:10px;">Criar novo bloco de notas</h3>
-          <div class="note-toolbar-row">
-            <input id="new-block-name" class="note-input" placeholder="Nome do bloco (ex: Salmos, Estudo de quarta, Orações 2026)">
-            <button class="btn btn-primary" id="add-block-btn"><span class="em">📓</span>Criar bloco</button>
+          <div class="dv-week" id="nb-week"></div>
+          <div class="dv-total"><span>TOTAL DE ANOTAÇÕES</span><b id="nb-total">0</b></div>
+          <div class="dv-card" style="margin-top:0;margin-bottom:18px;">
+            <div class="note-toolbar-row">
+              <input id="new-block-name" class="note-input" placeholder="Novo bloco (ex: Salmos, Estudo de quarta, Orações 2026)">
+              <button class="btn btn-primary" id="add-block-btn"><span class="em">📓</span>Criar bloco</button>
+            </div>
           </div>
+          <div class="dv-folders" id="nb-folders"></div>
+          <div id="nb-recall"></div>
+          <div class="dv-loghead">
+            <h3 style="font-size:1.05rem;">Meu caderno</h3>
+            <input type="search" class="dv-search" id="nb-search" placeholder="Buscar em todas as anotações">
+            <button type="button" class="btn btn-ghost btn-sm" data-act="ffav" id="nb-ffav">⭐ Favoritas</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-act="rand">🎲 Relembrar</button>
+          </div>
+          <div id="note-blocks-list"></div>
         </div>
-
-        <div id="note-blocks-list" style="margin-top:20px;display:flex;flex-direction:column;gap:16px;"></div>
       </section>
 
       <!-- ============ FAVORITES ============ -->
@@ -5975,7 +6073,8 @@ function applyDevoToPage(devo){
   const questEl = document.getElementById('devo-question');
   const prayEl  = document.getElementById('devo-prayer');
   const loadEl  = document.getElementById('devo-loading');
-  if(verseEl) verseEl.textContent = devo.verse + ' — ' + devo.ref;
+  if(verseEl) verseEl.textContent = devo.verse;
+  const refEl = document.getElementById('devo-ref'); if(refEl) refEl.textContent = devo.ref;
   if(reflEl)  reflEl.textContent  = devo.reflection;
   if(applEl)  applEl.textContent  = devo.application;
   if(questEl) questEl.textContent = devo.question;
@@ -9121,13 +9220,62 @@ if(!state.sessionToken){
     generateDevoWithAI().then(devo => applyDevoToPage(devo || DEVO_FALLBACK));
   }
 }
-document.getElementById('devo-save-note').addEventListener('click', ()=>{
-  const val = document.getElementById('devo-notes').value;
-  if(!val.trim()) return toast('Escreva algo antes de salvar', '⚠️');
-  addDevoNote(val);
-  document.getElementById('devo-notes').value = '';
-  toast('Anotação salva', '📝');
-});
+;/* DV — pastas, humor, progresso, sequência, voz, exportação */
+var DV_PASTAS=[{id:'oracao',n:'Oração',e:'🙏',c:'#f0594d'},{id:'gratidao',n:'Gratidão',e:'💛',c:'#d3e24a'},{id:'aprendizado',n:'Aprendizado',e:'📖',c:'#d3e24a'},{id:'proposito',n:'Propósito',e:'🎯',c:'#f0594d'}];
+var DV_HUMORES=['😊','🥰','🙏','😔','😰'];
+var dvFilter={pasta:null,q:''}, dvSel={pasta:null,humor:null}, dvMeta={};
+try{ dvMeta=JSON.parse(localStorage.getItem('ipge_dv_meta_v1')||'{}'); }catch(e){}
+function dvSetMeta(n){ if(n.id&&(n.pasta||n.humor)){ dvMeta[n.id]={p:n.pasta,h:n.humor}; try{localStorage.setItem('ipge_dv_meta_v1',JSON.stringify(dvMeta));}catch(e){} } }
+function dvGet(n){ const m=dvMeta[n.id]||{}; return {p:n.pasta||m.p, h:n.humor||m.h}; }
+function dvMatch(n,q){ if(dvFilter.pasta&&dvGet(n).p!==dvFilter.pasta) return false; return !q||(n.text||'').toLowerCase().includes(q); }
+function dvVisibleBlocks(){ const q=dvFilter.q.trim().toLowerCase(); if(!dvFilter.pasta&&!q) return state.devoNoteBlocks; return state.devoNoteBlocks.filter(b=>b.notes.some(n=>dvMatch(n,q))); }
+function dvBadge(n){ const m=dvGet(n), p=DV_PASTAS.find(x=>x.id===m.p); return (m.h?'<span>'+m.h+'</span>':'')+(p?'<span class="dv-tag" style="--c:'+p.c+'">'+p.n+'</span>':''); }
+function dvKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function dvRenderStats(){
+  const $=id=>document.getElementById(id); if(!$('dv-total')) return;
+  const blocks=(state.devoNoteBlocks||[]).filter(b=>b.notes.length), days=new Set(blocks.map(b=>b.dateKey)), all=blocks.flatMap(b=>b.notes);
+  $('dv-total').textContent=all.length;
+  let s=0, d=new Date(); if(!days.has(dvKey(d))) d.setDate(d.getDate()-1);
+  while(days.has(dvKey(d))){ s++; d.setDate(d.getDate()-1); }
+  $('dv-streak').textContent=s;
+  let w=''; for(let i=6;i>=0;i--){ const x=new Date(); x.setDate(x.getDate()-i); const on=days.has(dvKey(x)); w+='<div class="dv-day'+(on?' on':'')+(i?'':' today')+'">'+x.toLocaleDateString('pt-BR',{weekday:'narrow'})+'<i>'+(on?'✓':'')+'</i></div>'; }
+  $('dv-week').innerHTML=w;
+  $('dv-folders').innerHTML=DV_PASTAS.map(p=>{ const c=all.filter(n=>dvGet(n).p===p.id).length, on=dvFilter.pasta===p.id; return '<button type="button" class="fd'+(on?' on':'')+'" data-p="'+p.id+'" style="--c:'+p.c+'" aria-pressed="'+on+'"><span class="bk"></span><span class="sh"></span><span class="fr"><b>'+p.e+' '+p.n+'</b><em>'+c+'</em></span></button>'; }).join('');
+}
+;(function(){
+  const $=id=>document.getElementById(id), ta=$('devo-notes');
+  $('dv-chips').innerHTML=DV_PASTAS.map(p=>'<button type="button" class="dv-chip" data-p="'+p.id+'" style="--c:'+p.c+'">'+p.e+' '+p.n+'</button>').join('');
+  $('dv-mood').innerHTML=DV_HUMORES.map(h=>'<button type="button" data-h="'+h+'" aria-label="Humor '+h+'">'+h+'</button>').join('');
+  const pick=(box,attr,key)=>box.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; const v=b.dataset[attr]; dvSel[key]=dvSel[key]===v?null:v; box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset[attr]===dvSel[key])); });
+  pick($('dv-chips'),'p','pasta'); pick($('dv-mood'),'h','humor');
+  $('dv-folders').addEventListener('click',e=>{ const b=e.target.closest('.fd'); if(!b) return; dvFilter.pasta=dvFilter.pasta===b.dataset.p?null:b.dataset.p; renderDevoNoteBlocks(); $('dv-log').scrollIntoView({behavior:'smooth',block:'start'}); });
+  $('dv-search').addEventListener('input',e=>{ dvFilter.q=e.target.value; renderDevoNoteBlocks(); });
+  // rascunho automático + contador
+  try{ ta.value=localStorage.getItem('ipge_dv_draft')||''; }catch(e){}
+  const upd=()=>{ $('dv-count').textContent=ta.value.length+' caracteres'; try{localStorage.setItem('ipge_dv_draft',ta.value);}catch(e){} };
+  ta.addEventListener('input',upd); upd();
+  $('dv-ask').onclick=()=>{ const q=($('devo-question').textContent||'').trim(); if(!q) return; ta.value+=(ta.value?'\n\n':'')+'“'+q+'”\n'; ta.focus(); upd(); };
+  $('devo-save-note').addEventListener('click',()=>{
+    const v=ta.value; if(!v.trim()) return toast('Escreva algo antes de salvar','⚠️');
+    addDevoNote(v,{pasta:dvSel.pasta,humor:dvSel.humor});
+    ta.value=''; upd(); toast('Anotação salva','📝');
+  });
+  // etapas lidas do dia
+  const rk='ipge_dv_read_'+todayDevoKey(); let rd=[]; try{ rd=JSON.parse(localStorage.getItem(rk)||'[]'); }catch(e){}
+  const steps=[...document.querySelectorAll('.dv-step')];
+  const paint=()=>{ steps.forEach(s=>s.classList.toggle('done',rd.includes(s.dataset.s))); $('dv-prog').style.width=(rd.length/steps.length*100)+'%'; $('dv-prog-t').textContent=rd.length+' de '+steps.length+' etapas concluídas'; };
+  steps.forEach(s=>s.querySelector('.dv-chk').onclick=()=>{ const k=s.dataset.s; rd=rd.includes(k)?rd.filter(x=>x!==k):[...rd,k]; try{localStorage.setItem(rk,JSON.stringify(rd));}catch(e){} paint(); if(rd.length===steps.length) toast('Devocional de hoje concluído!','🎉'); });
+  paint();
+  // ouvir e compartilhar
+  $('dv-listen').onclick=()=>{ if(!('speechSynthesis' in window)) return toast('Seu navegador não lê em voz alta','⚠️'); const ss=speechSynthesis; if(ss.speaking){ ss.cancel(); return; } const u=new SpeechSynthesisUtterance(['devo-verse','devo-ref','devo-reflection'].map(i=>$(i).textContent).join('. ')); u.lang='pt-BR'; u.rate=.92; ss.speak(u); };
+  $('dv-copy').onclick=async()=>{ const t=$('devo-verse').textContent+' — '+$('devo-ref').textContent; try{ if(navigator.share) await navigator.share({text:t}); else { await navigator.clipboard.writeText(t); toast('Versículo copiado','📋'); } }catch(e){} };
+  // ditado por voz
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) $('dv-mic').style.display='none'; else { let rec=null; $('dv-mic').onclick=()=>{ if(rec){ rec.stop(); return; } rec=new SR(); rec.lang='pt-BR'; rec.continuous=true; rec.onresult=e=>{ for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) ta.value+=(ta.value&&!/\s$/.test(ta.value)?' ':'')+e.results[i][0].transcript; upd(); }; rec.onend=()=>{ rec=null; $('dv-mic').classList.remove('on'); }; rec.start(); $('dv-mic').classList.add('on'); }; }
+  // exportar diário
+  $('dv-export').onclick=()=>{ const bl=state.devoNoteBlocks; if(!bl.length) return toast('Nada para exportar ainda','⚠️'); const t=bl.map(b=>{ const d=b.devoContent; return b.dateLabel+'\n'+(d?d.verse+' — '+d.ref+'\n':'')+b.notes.map(n=>'• '+n.text).join('\n'); }).join('\n\n----\n\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'})); a.download='meu-diario-devocional.txt'; a.click(); };
+  dvRenderStats();
+})();
 
 /* =========================================================
    DEVOTIONAL NOTES (um bloco de notas por dia de devocional)
@@ -9161,9 +9309,9 @@ function findOrCreateTodayDevoBlock(){
   }
   return block;
 }
-async function addDevoNote(text){
+async function addDevoNote(text, extra){
   const block = findOrCreateTodayDevoBlock();
-  const note = {text: text || '', date: new Date().toLocaleDateString('pt-BR'), id: null};
+  const note = {text: text || '', date: new Date().toLocaleDateString('pt-BR'), id: null, pasta: extra&&extra.pasta, humor: extra&&extra.humor};
   block.notes.unshift(note);
   state.openDevoBlockId = block.id;
   renderDevoNoteBlocks();
@@ -9186,6 +9334,7 @@ async function addDevoNote(text){
   });
   if(errNota){ console.error('Erro ao salvar anotação do devocional:', errNota); return; }
   note.id = anotacaoId;
+  dvSetMeta(note);
 }
 async function deleteDevoNoteFromBlock(blockId, idx){
   const block = state.devoNoteBlocks.find(b=>b.id===blockId);
@@ -9224,20 +9373,23 @@ async function deleteDevoNoteBlock(blockId){
 }
 
 function renderDevoNoteBlocks(){
+  if(typeof dvRenderStats==='function') dvRenderStats();
   const list = document.getElementById('devo-note-blocks-list');
   if(!list) return;
   list.innerHTML = '';
-  if(state.devoNoteBlocks.length===0){
-    list.innerHTML = '<div class="card"><div class="muted">Suas anotações do devocional vão aparecer aqui. Salve a primeira anotação de hoje para criar o bloco do dia.</div></div>';
+  const dvVis = dvVisibleBlocks();
+  if(dvVis.length===0){
+    list.innerHTML = '<div class="dv-card" style="margin-top:0"><div class="muted">'+(state.devoNoteBlocks.length?'Nada encontrado com esse filtro.':'Suas anotações do devocional vão aparecer aqui. Salve a primeira anotação de hoje para criar o bloco do dia.')+'</div></div>';
     return;
   }
-  state.devoNoteBlocks.forEach(block=>{
+  dvVis.forEach(block=>{
     const isOpen = state.openDevoBlockId === block.id;
     const wrap = document.createElement('div');
     wrap.className = 'note-block' + (isOpen ? ' open' : '');
 
     const notesHtml = block.notes.length
       ? block.notes.map((n, idx)=>{
+          if(!dvMatch(n, dvFilter.q.trim().toLowerCase())) return '';
           const isEditing = state.editingDevoNote && state.editingDevoNote.blockId===block.id && state.editingDevoNote.idx===idx;
           if(isEditing){
             return `
@@ -9254,7 +9406,7 @@ function renderDevoNoteBlocks(){
             <div class="note-item-head">
               <span class="note-item-meta">
                 <span class="muted" style="font-size:.75rem;">${n.editedDate ? 'editado em ' + n.editedDate : n.date}</span>
-                <button class="note-item-edit" data-devo-editblock="${block.id}" data-devo-editidx="${idx}" title="Editar anotação">✏️</button>
+                ${dvBadge(n)}<button class="note-item-edit" data-devo-editblock="${block.id}" data-devo-editidx="${idx}" title="Editar anotação">✏️</button>
                 <button class="note-item-del" data-devo-block="${block.id}" data-devo-idx="${idx}" title="Excluir anotação">✕</button>
               </span>
             </div>
@@ -9899,6 +10051,7 @@ async function garantirBlocoNoBanco(block){
   const { data, error } = await db.rpc('criar_bloco_notas', { p_token: state.sessionToken, p_nome: block.name });
   if(error){ console.error('Erro ao criar bloco de notas:', error); return; }
   block.dbId = data;
+  if(typeof nbM!=='undefined' && nbM.b[block.id]){ nbM.b['d'+data]=nbM.b[block.id]; nbSave(); }
 }
 // Chamada a partir do botão "Anotar" de um versículo na Bíblia — o bloco criado
 // leva o nome do próprio versículo (ex: "João 3:16"), reaproveitado se anotar de novo.
@@ -9925,10 +10078,10 @@ async function addNoteBlock(name){
   renderNoteBlocks();
   if(state.sessionToken) await garantirBlocoNoBanco(block);
 }
-async function addNoteToBlock(blockId, tag, text){
+async function addNoteToBlock(blockId, tag, text, extra){
   const block = state.noteBlocks.find(b=>b.id===blockId);
   if(!block) return;
-  const note = {tag: tag || 'Geral', text: text || '', date: new Date().toLocaleDateString('pt-BR'), id: null};
+  const note = {tag: tag || 'Geral', text: text || '', date: new Date().toLocaleDateString('pt-BR'), id: null, mood: extra && extra.mood};
   block.notes.unshift(note);
   renderNoteBlocks();
 
@@ -9939,7 +10092,7 @@ async function addNoteToBlock(blockId, tag, text){
     p_token: state.sessionToken, p_bloco_id: block.dbId, p_tag: note.tag, p_texto: note.text
   });
   if(error){ console.error('Erro ao salvar anotação:', error); return; }
-  note.id = data;
+  note.id = data; nbSetN(note, {});
 }
 async function deleteNoteFromBlock(blockId, idx){
   const block = state.noteBlocks.find(b=>b.id===blockId);
@@ -9980,161 +10133,101 @@ async function deleteNoteBlock(blockId){
   }
 }
 
-function renderNoteBlocks(){
-  const list = document.getElementById('note-blocks-list');
-  list.innerHTML = '';
-  if(state.noteBlocks.length===0){
-    list.innerHTML = '<div class="card"><div class="muted">Você ainda não criou nenhum bloco de notas. Crie um acima para começar a registrar suas reflexões.</div></div>';
-    return;
-  }
-  state.noteBlocks.forEach(block=>{
-    const isOpen = state.openBlockId === block.id;
-    const wrap = document.createElement('div');
-    wrap.className = 'note-block' + (isOpen ? ' open' : '');
-
-    const notesHtml = block.notes.length
-      ? block.notes.map((n, idx)=>{
-          const isEditing = state.editingNote && state.editingNote.blockId===block.id && state.editingNote.idx===idx;
-          if(isEditing){
-            return `
-            <div class="note-item note-item-editing">
-              <input class="note-input" id="edit-tag-input" placeholder="Referência ou tema (ex: Salmos 23, Fé)">
-              <textarea class="notes-area" id="edit-text-textarea" style="margin-top:12px;" placeholder="Escreva sua reflexão…"></textarea>
-              <div class="note-toolbar-row">
-                <button class="btn btn-primary" data-save-edit="${block.id}::${idx}">Salvar alterações</button>
-                <button class="btn btn-ghost" data-cancel-edit="1">Cancelar</button>
-              </div>
-            </div>`;
-          }
-          return `
-          <div class="note-item">
-            <div class="note-item-head">
-              <span class="pill pill-sage">${escapeHtml(n.tag)}</span>
-              <span class="note-item-meta">
-                <span class="muted" style="font-size:.75rem;">${n.editedDate ? 'editado em ' + n.editedDate : n.date}</span>
-                <button class="note-item-edit" data-editblock="${block.id}" data-editidx="${idx}" title="Editar anotação">✏️</button>
-                <button class="note-item-del" data-block="${block.id}" data-idx="${idx}" title="Excluir anotação">✕</button>
-              </span>
-            </div>
-            <p style="margin-top:10px;line-height:1.7;">${n.text ? escapeHtml(n.text).replace(/\n/g,'<br>') : '<i class="muted">(sem texto ainda)</i>'}</p>
-          </div>`;
-        }).join('')
-      : '<div class="note-block-empty">Nenhuma anotação neste bloco ainda.</div>';
-
-    wrap.innerHTML = `
-      <div class="note-block-head" data-toggle="${block.id}">
-        <span class="note-block-title">📓 ${escapeHtml(block.name)}</span>
-        <span class="note-block-count">${block.notes.length} anotaç${block.notes.length===1?'ão':'ões'}</span>
-        <span class="note-block-chevron">▾</span>
-        <button class="note-block-del" data-delblock="${block.id}" title="Excluir bloco de notas">🗑️</button>
-      </div>
-      <div class="note-block-body">
-        <textarea class="notes-area" data-textarea="${block.id}" placeholder="Escreva uma nova reflexão neste bloco…"></textarea>
-        <div class="note-toolbar-row">
-          <input data-tag="${block.id}" class="note-input" placeholder="Referência ou tema (ex: Salmos 23, Fé)">
-          <button class="btn btn-primary" data-save="${block.id}">Salvar anotação</button>
-        </div>
-        <div style="margin-top:16px;display:flex;flex-direction:column;">${notesHtml}</div>
-      </div>`;
-    list.appendChild(wrap);
-  });
-
-  // Preenche o formulário de edição (via propriedades JS, evitando problemas de escaping em atributos)
-  if(state.editingNote){
-    const { blockId, idx } = state.editingNote;
-    const block = state.noteBlocks.find(b=>b.id===blockId);
-    const note = block && block.notes[idx];
-    const tagInput = document.getElementById('edit-tag-input');
-    const textArea = document.getElementById('edit-text-textarea');
-    if(note && tagInput && textArea){
-      tagInput.value = note.tag;
-      textArea.value = note.text;
-      textArea.focus();
-      const len = textArea.value.length;
-      textArea.setSelectionRange(len, len);
-    }
-  }
-
-  // Toggle abrir/fechar bloco
-  list.querySelectorAll('[data-toggle]').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      if(e.target.closest('[data-delblock]')) return;
-      const id = el.dataset.toggle;
-      state.openBlockId = (state.openBlockId === id) ? null : id;
-      renderNoteBlocks();
-    });
-  });
-  // Salvar anotação dentro de um bloco
-  list.querySelectorAll('[data-save]').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      const id = el.dataset.save;
-      const textarea = list.querySelector(`[data-textarea="${id}"]`);
-      const tagInput = list.querySelector(`[data-tag="${id}"]`);
-      const text = textarea.value;
-      const tag = tagInput.value || 'Geral';
-      if(!text.trim()) return toast('Escreva uma reflexão antes de salvar', '⚠️');
-      addNoteToBlock(id, tag, text);
-      toast('Anotação salva', '📝');
-    });
-  });
-  // Editar anotação individual
-  list.querySelectorAll('.note-item-edit').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      state.editingNote = { blockId: el.dataset.editblock, idx: parseInt(el.dataset.editidx, 10) };
-      renderNoteBlocks();
-    });
-  });
-  // Salvar alterações da anotação em edição
-  list.querySelectorAll('[data-save-edit]').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      const [blockId, idxStr] = el.dataset.saveEdit.split('::');
-      const idx = parseInt(idxStr, 10);
-      const tagInput = document.getElementById('edit-tag-input');
-      const textArea = document.getElementById('edit-text-textarea');
-      const text = textArea.value;
-      if(!text.trim()) return toast('A anotação não pode ficar vazia', '⚠️');
-      saveEditNote(blockId, idx, tagInput.value, text);
-      toast('Anotação atualizada', '✏️');
-    });
-  });
-  // Cancelar edição
-  list.querySelectorAll('[data-cancel-edit]').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      state.editingNote = null;
-      renderNoteBlocks();
-    });
-  });
-  // Excluir anotação individual
-  list.querySelectorAll('.note-item-del').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      deleteNoteFromBlock(el.dataset.block, parseInt(el.dataset.idx, 10));
-    });
-  });
-  // Excluir bloco inteiro (com confirmação)
-  list.querySelectorAll('[data-delblock]').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      const id = el.dataset.delblock;
-      const block = state.noteBlocks.find(b=>b.id===id);
-      if(!block) return;
-      openConfirm({
-        title: 'Excluir bloco de notas?',
-        text: `Tem certeza que deseja excluir o bloco "${block.name}"${block.notes.length ? ' e ' + block.notes.length + ' anotaç' + (block.notes.length===1?'ão':'ões') + ' dentro dele' : ''}? Essa ação não pode ser desfeita.`,
-        confirmLabel: 'Excluir bloco',
-        cancelLabel: 'Continuar com o bloco',
-        onConfirm: ()=>{
-          deleteNoteBlock(id);
-          toast('Bloco de notas excluído', '🗑️');
-        }
-      });
-    });
-  });
+function renderNoteBlocks(){ nbRender(); }
+/* NB — pastas coloridas, humor, favoritas, fixadas, sequência, voz, relembrar, exportar */
+var NB_COLORS=['#f0594d','#d3e24a','#7cc5f2','#f2a65a','#b58af0','#5fd0a5','#f28bb6'];
+var NB_EMOJIS=['📓','🙏','💛','📖','🎯','🕊️','🔥','🌿','⭐','✝️'];
+var NB_MOODS=['😊','🥰','🙏','😔','😰'];
+var NB_TAGS=['Fé','Gratidão','Promessa','Pergunta','Oração'];
+var nbM={b:{},n:{}}, nbF={q:'',fav:false}, nbDraft={text:'',tag:'',mood:null}, nbCust=false, nbRecall=null;
+try{ nbM=Object.assign(nbM,JSON.parse(localStorage.getItem('ipge_nb_meta_v1')||'{}')); }catch(e){}
+function nbSave(){ try{localStorage.setItem('ipge_nb_meta_v1',JSON.stringify(nbM));}catch(e){} }
+function nbBK(b){ return b.dbId?'d'+b.dbId:b.id; }
+function nbB(b){ const m=nbM.b[nbBK(b)]||nbM.b[b.id]||{}; const h=Math.abs([...b.name].reduce((a,c)=>(a*31+c.charCodeAt(0))|0,7)); return {c:m.c||NB_COLORS[h%NB_COLORS.length], e:m.e||'📓', p:!!m.p}; }
+function nbSetB(b,o){ const k=nbBK(b); nbM.b[k]=Object.assign({},nbB(b),o); nbSave(); }
+function nbN(n){ const m=(n.id&&nbM.n[n.id])||{}; return {m:n.mood||m.m, f:n.fav!=null?n.fav:!!m.f, p:n.pin!=null?n.pin:!!m.p}; }
+function nbSetN(n,o){ Object.assign(n,o); if(n.id){ const c=nbN(n); nbM.n[n.id]={m:c.m,f:c.f,p:c.p}; nbSave(); } }
+function nbAll(){ return state.noteBlocks.flatMap(b=>b.notes.map((n,i)=>({b,n,i}))); }
+function nbDayKey(s){ const p=(s||'').split('/'); return p.length===3?p[2]+'-'+p[1]+'-'+p[0]:''; }
+function nbStats(){
+  const $=id=>document.getElementById(id), all=nbAll(), days=new Set(all.map(x=>nbDayKey(x.n.date)));
+  $('nb-total').textContent=all.length; $('nb-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  let s=0,d=new Date(); if(!days.has(dvKey(d))) d.setDate(d.getDate()-1);
+  while(days.has(dvKey(d))){ s++; d.setDate(d.getDate()-1); }
+  $('nb-streak').textContent=s;
+  let w=''; for(let i=6;i>=0;i--){ const x=new Date(); x.setDate(x.getDate()-i); const on=days.has(dvKey(x)); w+='<div class="dv-day'+(on?' on':'')+(i?'':' today')+'">'+x.toLocaleDateString('pt-BR',{weekday:'narrow'})+'<i>'+(on?'✓':'')+'</i></div>'; }
+  $('nb-week').innerHTML=w;
 }
+function nbNoteHtml(x,showBlock){
+  const {b,n,i}=x, m=nbN(n), c=nbB(b).c, ed=state.editingNote&&state.editingNote.blockId===b.id&&state.editingNote.idx===i, at=`data-b="${b.id}" data-i="${i}"`;
+  if(ed) return `<div class="nb-note" style="--c:${c}"><input class="note-input" id="edit-tag-input" placeholder="Referência ou tema"><textarea class="notes-area" id="edit-text-textarea" style="margin-top:12px;"></textarea><div class="note-toolbar-row"><button class="btn btn-primary btn-sm" data-act="nsave" ${at}>Salvar alterações</button><button class="btn btn-ghost btn-sm" data-act="ncancel">Cancelar</button></div></div>`;
+  return `<div class="nb-note" style="--c:${c}"><div class="note-item-head"><span><span class="dv-tag" style="--c:${c};margin:0 6px 0 0">${escapeHtml(n.tag||'Geral')}</span>${m.m||''}${showBlock?'<small class="muted"> · '+escapeHtml(b.name)+'</small>':''}</span><span class="note-item-meta"><small class="muted">${n.editedDate?'editado em '+n.editedDate:n.date}</small><button class="nb-ic" data-act="nfav" ${at} title="Favoritar">${m.f?'⭐':'☆'}</button><button class="nb-ic" data-act="npin" ${at} title="Fixar no topo">${m.p?'📌':'📍'}</button><button class="nb-ic" data-act="nedit" ${at} title="Editar">✏️</button><button class="nb-ic" data-act="ncopy" ${at} title="Copiar">📋</button><button class="nb-ic" data-act="ndel" ${at} title="Excluir">✕</button></span></div><p>${n.text?escapeHtml(n.text).replace(/\n/g,'<br>'):'<i class="muted">(sem texto ainda)</i>'}</p></div>`;
+}
+function nbDetail(b){
+  const bm=nbB(b), en=b.notes.map((n,i)=>({b,n,i})).sort((x,y)=>nbN(y.n).p-nbN(x.n).p), chip=(a,v,on,l)=>`<button type="button" class="dv-chip${on?' on':''}" style="--c:${bm.c}" data-act="${a}" data-v="${v}">${l}</button>`;
+  return `<div class="dv-card" style="margin-top:0;--c:${bm.c}">
+    <div class="nb-oh"><h3>${bm.e} ${escapeHtml(b.name)}</h3><span class="dv-count">${b.notes.length} · criado em ${b.createdDate}</span><span class="sp"></span><button class="nb-ic" data-act="bpin" title="Fixar pasta">${bm.p?'📌':'📍'}</button><button class="nb-ic" data-act="bcust" title="Personalizar">🎨</button><button class="nb-ic" data-act="bexp" title="Exportar">⬇️</button><button class="nb-ic" data-act="bdel" title="Excluir bloco">🗑️</button></div>
+    ${nbCust?`<div class="dv-chips">${NB_EMOJIS.map(e=>chip('bemo',e,e===bm.e,e)).join('')}</div><div class="dv-chips">${NB_COLORS.map(c=>`<button type="button" class="nb-sw${c===bm.c?' on':''}" style="background:${c}" data-act="bcol" data-v="${c}" aria-label="Cor da pasta"></button>`).join('')}</div>`:''}
+    <div class="dv-mood">${NB_MOODS.map(h=>`<button type="button" data-act="mood" data-v="${h}" class="${nbDraft.mood===h?'on':''}">${h}</button>`).join('')}</div>
+    <div class="dv-chips">${NB_TAGS.map(t=>chip('tagc',t,nbDraft.tag===t,t)).join('')}</div>
+    <input id="nb-tag" class="note-input" style="width:100%;margin-bottom:10px;" placeholder="Referência ou tema (ex: Salmos 23)">
+    <textarea class="notes-area" id="nb-text" placeholder="O que Deus falou com você?"></textarea>
+    <div class="dv-bar"><button type="button" class="btn btn-ghost btn-sm" id="nb-mic" data-act="mic" title="Ditar por voz">🎤</button><span class="sp"></span><span class="dv-count" id="nb-cnt"></span><button type="button" class="btn btn-primary btn-sm" data-act="save">Salvar anotação</button></div>
+    <div>${en.length?en.map(x=>nbNoteHtml(x,false)).join(''):'<div class="note-block-empty" style="margin-top:14px;">Nenhuma anotação neste bloco ainda.</div>'}</div></div>`;
+}
+function nbRender(){
+  const $=id=>document.getElementById(id); if(!$('nb')) return;
+  nbStats();
+  const bl=[...state.noteBlocks].sort((a,b)=>nbB(b).p-nbB(a).p), q=nbF.q.trim().toLowerCase(), searching=q||nbF.fav;
+  $('nb-folders').innerHTML=bl.length?bl.map(b=>{ const m=nbB(b), on=state.openBlockId===b.id; return `<button type="button" class="fd${on?' on':''}" data-act="open" data-b="${b.id}" style="--c:${m.c}" aria-pressed="${on}"><span class="bk"></span><span class="sh"></span><span class="fr"><b>${m.p?'📌 ':''}${m.e} ${escapeHtml(b.name)}</b><em>${b.notes.length}</em></span></button>`; }).join(''):'<div class="dv-card" style="grid-column:1/-1;margin:0;">Você ainda não criou nenhum bloco. Crie um acima para começar a registrar suas reflexões.</div>';
+  $('nb-ffav').classList.toggle('on',nbF.fav);
+  const rc=nbRecall&&state.noteBlocks.find(b=>b.id===nbRecall.b), rn=rc&&rc.notes[nbRecall.i];
+  $('nb-recall').innerHTML=rn?`<div class="nb-recall"><small>✨ Lá de trás · ${escapeHtml(rc.name)} · ${rn.date}</small><p>${escapeHtml(rn.text).replace(/\n/g,'<br>')}</p><button data-act="open" data-b="${rc.id}">Abrir bloco</button> <button data-act="rand">🎲 Outra</button></div>`:'';
+  const list=$('note-blocks-list');
+  if(searching){
+    const r=nbAll().filter(x=>(!q||((x.n.text||'')+' '+(x.n.tag||'')).toLowerCase().includes(q))&&(!nbF.fav||nbN(x.n).f));
+    list.innerHTML=`<div class="dv-card" style="margin-top:0"><div class="dv-count">${r.length} resultado${r.length===1?'':'s'}</div>${r.map(x=>nbNoteHtml(x,true)).join('')||'<div class="note-block-empty" style="margin-top:10px;">Nada encontrado.</div>'}</div>`;
+  } else {
+    const ob=state.noteBlocks.find(b=>b.id===state.openBlockId);
+    list.innerHTML=ob?nbDetail(ob):(bl.length?'<div class="muted" style="text-align:center;padding:10px;">Toque em uma pasta para abrir e anotar ☝️</div>':'');
+  }
+  if(state.editingNote){ const b=state.noteBlocks.find(x=>x.id===state.editingNote.blockId), n=b&&b.notes[state.editingNote.idx], t=$('edit-tag-input'), a=$('edit-text-textarea'); if(n&&t&&a){ t.value=n.tag; a.value=n.text; a.focus(); a.setSelectionRange(a.value.length,a.value.length); } }
+  if($('nb-text')){ $('nb-text').value=nbDraft.text; $('nb-tag').value=nbDraft.tag; $('nb-cnt').textContent=nbDraft.text.length+' caracteres'; }
+}
+;(function(){
+  const $=id=>document.getElementById(id), root=$('nb');
+  const blk=id=>state.noteBlocks.find(b=>b.id===id);
+  root.addEventListener('input',e=>{
+    if(e.target.id==='nb-search'){ nbF.q=e.target.value; nbRender(); }
+    else if(e.target.id==='nb-text'){ nbDraft.text=e.target.value; $('nb-cnt').textContent=nbDraft.text.length+' caracteres'; }
+    else if(e.target.id==='nb-tag'){ nbDraft.tag=e.target.value; }
+  });
+  let rec=null;
+  root.addEventListener('click',e=>{
+    const el=e.target.closest('[data-act]'); if(!el) return;
+    const a=el.dataset.act, v=el.dataset.v, b=blk(el.dataset.b||state.openBlockId), i=parseInt(el.dataset.i,10), n=b&&b.notes[i];
+    if(a==='open'){ state.openBlockId=state.openBlockId===el.dataset.b?null:el.dataset.b; nbCust=false; nbF={q:'',fav:false}; $('nb-search').value=''; nbRender(); if(state.openBlockId) $('note-blocks-list').scrollIntoView({behavior:'smooth',block:'start'}); }
+    else if(a==='ffav'){ nbF.fav=!nbF.fav; nbRender(); }
+    else if(a==='rand'){ const p=nbAll().filter(x=>(x.n.text||'').trim().length>15); if(!p.length) return toast('Escreva mais algumas anotações para relembrar','📝'); const x=p[Math.floor(Math.random()*p.length)]; nbRecall={b:x.b.id,i:x.i}; nbRender(); }
+    else if(a==='mood'){ nbDraft.mood=nbDraft.mood===v?null:v; nbRender(); }
+    else if(a==='tagc'){ nbDraft.tag=nbDraft.tag===v?'':v; nbRender(); }
+    else if(a==='save'){ if(!nbDraft.text.trim()) return toast('Escreva uma reflexão antes de salvar','⚠️'); addNoteToBlock(b.id,nbDraft.tag||'Geral',nbDraft.text,{mood:nbDraft.mood}); nbDraft={text:'',tag:'',mood:null}; nbRender(); toast('Anotação salva','📝'); }
+    else if(a==='nfav'&&n){ nbSetN(n,{fav:!nbN(n).f}); nbRender(); }
+    else if(a==='npin'&&n){ nbSetN(n,{pin:!nbN(n).p}); nbRender(); }
+    else if(a==='nedit'&&n){ state.editingNote={blockId:b.id,idx:i}; nbRender(); }
+    else if(a==='ncancel'){ state.editingNote=null; nbRender(); }
+    else if(a==='nsave'&&n){ const t=$('edit-text-textarea').value; if(!t.trim()) return toast('A anotação não pode ficar vazia','⚠️'); saveEditNote(b.id,i,$('edit-tag-input').value,t); toast('Anotação atualizada','✏️'); }
+    else if(a==='ncopy'&&n){ navigator.clipboard&&navigator.clipboard.writeText(n.text+'\n— '+n.tag+' ('+b.name+')').then(()=>toast('Anotação copiada','📋')); }
+    else if(a==='ndel'&&n){ deleteNoteFromBlock(b.id,i); }
+    else if(a==='bpin'&&b){ nbSetB(b,{p:!nbB(b).p}); nbRender(); }
+    else if(a==='bcust'){ nbCust=!nbCust; nbRender(); }
+    else if(a==='bemo'&&b){ nbSetB(b,{e:v}); nbRender(); }
+    else if(a==='bcol'&&b){ nbSetB(b,{c:v}); nbRender(); }
+    else if(a==='bexp'&&b){ if(!b.notes.length) return toast('Nada para exportar ainda','⚠️'); const t=b.name+'\n\n'+b.notes.map(x=>(nbN(x).m||'')+' '+x.tag+' — '+x.date+'\n'+x.text).join('\n\n----\n\n'), l=document.createElement('a'); l.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'})); l.download=b.name.replace(/[^\w\-]+/g,'_')+'.txt'; l.click(); }
+    else if(a==='bdel'&&b){ openConfirm({title:'Excluir bloco de notas?',text:`Tem certeza que deseja excluir o bloco "${b.name}"${b.notes.length?' e '+b.notes.length+' anotaç'+(b.notes.length===1?'ão':'ões')+' dentro dele':''}? Essa ação não pode ser desfeita.`,confirmLabel:'Excluir bloco',cancelLabel:'Continuar com o bloco',onConfirm:()=>{ deleteNoteBlock(b.id); toast('Bloco de notas excluído','🗑️'); }}); }
+    else if(a==='mic'){ const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return toast('Seu navegador não suporta ditado por voz','⚠️'); if(rec){ rec.stop(); return; } rec=new SR(); rec.lang='pt-BR'; rec.continuous=true; el.classList.add('on'); rec.onresult=ev=>{ for(let k=ev.resultIndex;k<ev.results.length;k++) if(ev.results[k].isFinal){ const ta=$('nb-text'); ta.value+=(ta.value&&!/\s$/.test(ta.value)?' ':'')+ev.results[k][0].transcript; nbDraft.text=ta.value; $('nb-cnt').textContent=ta.value.length+' caracteres'; } }; rec.onend=()=>{ rec=null; el.classList.remove('on'); }; rec.start(); }
+  });
+})();
 
 document.getElementById('add-block-btn').addEventListener('click', ()=>{
   const input = document.getElementById('new-block-name');
