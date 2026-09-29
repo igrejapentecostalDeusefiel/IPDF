@@ -2219,6 +2219,56 @@ body.show-public-campaign #app-shell{display:none;}
 @media(max-width:480px){#view-devotional .dv{padding:20px 14px 24px;border-radius:22px;}}
 @media(prefers-reduced-motion:reduce){.fd,.dv-prog i,.dv-chk,.dv-mood button{transition:none;}}
 
+/* BB — Bíblia redesenhada */
+#view-bible .dv{--c1:#ffd9a0;--c2:#bfe3ff;--gl:color-mix(in srgb,var(--paper) 72%,transparent);margin-top:14px;padding:26px 20px 30px;border-radius:28px;background:linear-gradient(155deg,var(--c1) 0%,var(--parchment) 42%,var(--c2) 100%);}
+[data-theme="dark"] #view-bible .dv{--c1:#3d2a0e;--c2:#12304a;}
+#view-bible .bible-layout{grid-template-columns:300px 1fr;gap:18px;align-items:start;}
+@media(max-width:900px){#view-bible .bible-layout{grid-template-columns:1fr;}}
+#view-bible .bible-layout .dv-card{margin-top:0;}
+#view-bible .testament-tabs{background:var(--gl);border-radius:30px;padding:4px;margin-bottom:12px;}
+#view-bible .tab-btn{flex:1;border:0;background:transparent;border-radius:26px;padding:9px 14px;}
+#view-bible .tab-btn.active{background:var(--ink);color:var(--parchment);}
+[data-theme="dark"] #view-bible .tab-btn.active{background:var(--gold);color:var(--ink);}
+#view-bible .book-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-height:560px;padding:2px;}
+@media(max-width:900px){#view-bible .book-list{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));max-height:340px;}}
+#view-bible .book-item{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:3px;padding:12px 12px 10px;border-radius:14px;background:var(--paper);box-shadow:var(--shadow-sm);border:0;border-top:5px solid var(--c,var(--gold));text-align:left;color:var(--text);min-width:0;transition:transform .2s;cursor:pointer;}
+#view-bible .book-item:hover{transform:translateY(-2px);background:var(--paper);}
+#view-bible .book-item .bt-n{font-weight:700;font-size:.85rem;overflow-wrap:anywhere;line-height:1.2;}
+#view-bible .bt-bar{display:block;width:100%;height:4px;border-radius:4px;background:var(--line);margin-top:4px;overflow:hidden;}
+#view-bible .bt-bar i{display:block;height:100%;background:var(--c,var(--gold));}
+#view-bible .book-item.active{background:var(--c,var(--gold));color:#1a1408;}
+#view-bible .book-item.active .bt-bar{background:rgba(0,0,0,.15);}
+#view-bible .book-item.active .bt-bar i{background:#1a1408;}
+.bb-cont{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 16px;}
+.bb-go{border:0;text-align:left;border-radius:18px;padding:14px 16px;cursor:pointer;background:var(--gl);backdrop-filter:blur(8px);box-shadow:var(--shadow-sm);color:var(--text);display:flex;flex-direction:column;gap:4px;min-width:0;}
+.bb-go small{font-size:.66rem;letter-spacing:.08em;color:var(--text-dim);}
+.bb-go b{font-family:var(--font-display);font-size:1.05rem;color:var(--ink);overflow-wrap:anywhere;}
+.bb-go.pri{background:linear-gradient(135deg,#1A2540,#4a2f6b);}
+.bb-go.pri small{color:#e8c98a;}.bb-go.pri b{color:#fbf8f2;}
+.bb-res{display:block;width:100%;text-align:left;border:0;background:var(--paper);border-radius:14px;padding:10px 12px;margin-top:8px;cursor:pointer;color:var(--text);font-size:.85rem;line-height:1.5;overflow-wrap:anywhere;}
+.bb-res b{color:var(--gold);margin-right:6px;}
+.bb-res mark{background:#fff1a8;color:#1a1408;border-radius:3px;padding:0 2px;}
+#bb-results{margin-top:6px;}#bb-results:empty{display:none;}
+#view-bible .reader-card{padding:18px;}
+.bb-banner{background:linear-gradient(135deg,#1A2540,#4a2f6b);color:#fbf8f2;border-radius:20px;padding:20px 20px 18px;margin-bottom:14px;}
+.bb-banner .reader-head{margin:0;}
+.bb-banner .reader-title{font-family:var(--font-display);font-size:1.9rem;color:#fbf8f2;}
+.bb-banner .muted{color:#e8c98a !important;}
+.bb-banner .btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#fbf8f2;border-radius:20px;}
+.bb-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px;}
+.bb-tools .sp{flex:1;}
+#bb-read.on{background:var(--sage);border-color:var(--sage);color:#fff;}
+#view-bible .chapter-nav{max-height:132px;overflow-y:auto;}
+#view-bible .chap-dot{border-radius:50%;background:var(--paper);}
+#view-bible .chap-dot.read{background:var(--sage);border-color:var(--sage);color:#fff;}
+#view-bible .chap-dot.active{background:var(--gold);border-color:var(--gold);color:var(--ink);}
+#view-bible .verse-text{font-size:calc(1rem * var(--bbfs,1) * 1.05);}
+.verse.hl{background:color-mix(in srgb,var(--hl) 60%,transparent);box-shadow:inset 4px 0 0 var(--hl);}
+[data-theme="dark"] .verse.hl{background:color-mix(in srgb,var(--hl) 22%,transparent);}
+.bb-pager{display:flex;gap:10px;margin-top:22px;}
+.bb-pager .btn{flex:1;justify-content:center;}
+@media(max-width:480px){#view-bible .dv{padding:20px 14px 24px;border-radius:22px;}.bb-banner .reader-title{font-size:1.5rem;}}
+
 /* NB — Minhas anotações redesenhado */
 #view-notes .dv{--c1:#b8f0dc;--c2:#c4d6ff;--gl:color-mix(in srgb,var(--paper) 72%,transparent);margin-top:14px;padding:26px 20px 30px;border-radius:28px;background:linear-gradient(155deg,var(--c1) 0%,var(--parchment) 42%,var(--c2) 100%);}
 [data-theme="dark"] #view-notes .dv{--c1:#10382d;--c2:#1c2a55;}
@@ -4319,45 +4369,68 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <!-- ============ BIBLE ============ -->
       <section class="view" id="view-bible">
         <button type="button" class="view-back-btn" data-goto="home"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>Voltar ao início</button>
-        <div class="page-head" style="--ph-tone:var(--gold-soft);">
-          <div class="page-head-icon">📖</div>
-          <div class="page-head-text">
-            <div class="page-head-eyebrow">Escrituras</div>
-            <h1 class="page-head-title">Bíblia Sagrada</h1>
-            <p class="page-head-sub">Navegue por livro e capítulo. Toque em um versículo para favoritar, anotar ou compartilhar.</p>
+        <div class="dv bb" id="bb">
+          <div class="dv-top">
+            <div>
+              <h1 class="dv-title">Bíblia</h1>
+              <div class="dv-sub">A Palavra viva</div>
+              <p class="dv-date" id="bb-date"></p>
+            </div>
+            <div class="dv-streak"><b id="bb-streak">0</b><span>dias lendo</span></div>
           </div>
-        </div>
-
-        <div class="bible-layout" style="margin-top:22px;">
-          <div>
-            <div class="testament-tabs">
-              <button class="tab-btn active" data-testament="AT">Antigo</button>
-              <button class="tab-btn" data-testament="NT">Novo</button>
-            </div>
-            <div class="card" style="padding:12px;">
-              <div class="book-list" id="book-list"></div>
-            </div>
+          <div class="dv-week" id="bb-week"></div>
+          <div class="dv-total"><span>CAPÍTULOS LIDOS</span><b id="bb-total">0</b></div>
+          <div style="margin:0 4px 16px;"><div class="dv-prog" style="margin-top:0;"><i id="bb-prog"></i></div><div class="dv-count" id="bb-prog-t"></div></div>
+          <div id="bb-continue"></div>
+          <div class="dv-card" style="margin-top:0;margin-bottom:18px;">
+            <input type="search" class="dv-search" id="bb-search" style="width:100%;" placeholder="Buscar palavra ou ir direto (ex: João 3:16, amor, fé)">
+            <div id="bb-results"></div>
           </div>
 
-          <div class="card reader-card">
-            <div class="reader-head">
-              <div>
-                <div class="reader-title" id="reader-book-title">Gênesis</div>
-                <div class="muted" id="reader-book-sub">Antigo Testamento · Lei</div>
+          <div class="bible-layout">
+            <div>
+              <div class="testament-tabs">
+                <button class="tab-btn active" data-testament="AT">Antigo</button>
+                <button class="tab-btn" data-testament="NT">Novo</button>
               </div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <div class="bible-version-picker" id="bible-version-picker">
-                  <button class="btn btn-ghost btn-sm" id="btn-bible-version" aria-haspopup="true" aria-expanded="false" title="Escolher versão da Bíblia">
-                    <span class="em">📖</span><span id="bible-version-badge">ARC</span><span class="bv-caret">▾</span>
-                  </button>
-                  <div class="bible-version-menu" id="bible-version-menu" hidden></div>
+              <div class="dv-card" style="padding:12px;">
+                <div class="book-list" id="book-list"></div>
+              </div>
+            </div>
+
+            <div class="dv-card reader-card">
+              <div class="bb-banner">
+                <div class="reader-head">
+                  <div>
+                    <div class="reader-title" id="reader-book-title">Gênesis</div>
+                    <div class="muted" id="reader-book-sub">Antigo Testamento · Lei</div>
+                  </div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <div class="bible-version-picker" id="bible-version-picker">
+                      <button class="btn btn-ghost btn-sm" id="btn-bible-version" aria-haspopup="true" aria-expanded="false" title="Escolher versão da Bíblia">
+                        <span class="em">📖</span><span id="bible-version-badge">ARC</span><span class="bv-caret">▾</span>
+                      </button>
+                      <div class="bible-version-menu" id="bible-version-menu" hidden></div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" id="btn-favorite-chapter">❤️ Favoritar capítulo</button>
+                  </div>
                 </div>
-                <button class="btn btn-ghost btn-sm" id="btn-favorite-chapter">❤️ Favoritar capítulo</button>
+              </div>
+              <div class="bb-tools">
+                <button type="button" class="btn btn-ghost btn-sm" id="bb-read">Marcar como lido</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="bb-listen">🔊 Ouvir</button>
+                <span class="sp"></span>
+                <button type="button" class="btn btn-ghost btn-sm" data-fs="-1" aria-label="Diminuir letra">A−</button>
+                <button type="button" class="btn btn-ghost btn-sm" data-fs="1" aria-label="Aumentar letra">A+</button>
+              </div>
+              <div class="chapter-nav" id="chapter-nav"></div>
+              <div class="chapter-heading" id="chapter-heading"></div>
+              <div id="verse-list" style="display:flex;flex-direction:column;"></div>
+              <div class="bb-pager">
+                <button type="button" class="btn btn-ghost" data-step="-1">← Anterior</button>
+                <button type="button" class="btn btn-primary" data-step="1">Próximo →</button>
               </div>
             </div>
-            <div class="chapter-nav" id="chapter-nav"></div>
-            <div class="chapter-heading" id="chapter-heading"></div>
-            <div id="verse-list" style="display:flex;flex-direction:column;"></div>
           </div>
         </div>
       </section>
@@ -7456,7 +7529,9 @@ function renderBookList(){
     const chapNums = Object.keys(b.chapters);
     const div = document.createElement('button');
     div.className = 'book-item' + (idx===state.currentBookIdx ? ' active' : '');
-    div.innerHTML = `<span>${b.book}</span><span class="chip-count">${chapNums.length} cap.</span>`;
+    const rdN = chapNums.filter(c=>bbIsRead(b.book+' '+c)).length;
+    div.style.setProperty('--c', bbCatColor(b));
+    div.innerHTML = `<span class="bt-n">${b.book}</span><span class="chip-count">${rdN}/${chapNums.length} cap.</span><span class="bt-bar"><i style="width:${Math.round(rdN/chapNums.length*100)}%"></i></span>`;
     div.addEventListener('click', ()=>{
       state.currentBookIdx = idx;
       state.currentChapter = parseInt(chapNums[0]);
@@ -8839,7 +8914,7 @@ function renderReader(){
   navEl.innerHTML = '';
   chapNums.forEach(c=>{
     const dot = document.createElement('button');
-    dot.className = 'chap-dot' + (parseInt(c)===state.currentChapter ? ' active' : '');
+    dot.className = 'chap-dot' + (bbIsRead(book.book+' '+c) ? ' read' : '') + (parseInt(c)===state.currentChapter ? ' active' : '');
     dot.textContent = c;
     dot.addEventListener('click', ()=>{ state.currentChapter = parseInt(c); renderReader(); });
     navEl.appendChild(dot);
@@ -8860,7 +8935,9 @@ function renderReader(){
     const ref = `${book.book} ${state.currentChapter}:${verseNum}`;
     const isFav = state.favorites.some(f=>f.ref===ref);
     const row = document.createElement('div');
-    row.className = 'verse' + (isFav ? ' favorited' : '');
+    const hlI = bbHlGet(ref);
+    row.className = 'verse' + (isFav ? ' favorited' : '') + (hlI!=null ? ' hl' : '');
+    if(hlI!=null) row.style.setProperty('--hl', BB_HL[hlI]);
     row.dataset.verse = verseNum;
     row.innerHTML = `
       <span class="vnum">${i+1}</span>
@@ -8868,6 +8945,8 @@ function renderReader(){
       <span class="verse-actions">
         <button class="vbtn fav-btn" title="Favoritar">${isFav ? '❤️' : '🤍'}</button>
         <button class="vbtn note-btn" title="Anotar">📝</button>
+        <button class="vbtn hl-btn" title="Destacar">🖍️</button>
+        <button class="vbtn copy-btn" title="Copiar">📋</button>
         <button class="vbtn share-btn" title="Compartilhar">🔗</button>
       </span>`;
     row.querySelector('.fav-btn').addEventListener('click', (e)=>{
@@ -8887,9 +8966,16 @@ function renderReader(){
         abrirCompartilharVersiculo(ref, text);
       }
     });
+    row.querySelector('.hl-btn').addEventListener('click', (e)=>{ e.stopPropagation(); bbCycleHl(ref); renderReader(); });
+    row.querySelector('.copy-btn').addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const t = row.querySelector('.verse-text').textContent.trim();
+      if(navigator.clipboard) navigator.clipboard.writeText('“' + t + '” — ' + ref).then(()=>toast('Versículo copiado','📋'));
+    });
     versesEl.appendChild(row);
   });
   updateFavoriteChapterBtn();
+  bbAfter(book);
 }
 
 document.getElementById('btn-favorite-chapter').addEventListener('click', ()=>{
@@ -8988,6 +9074,107 @@ function goToFavoriteRef(ref){
     }
   }, 220);
 }
+
+/* BB — Bíblia redesenhada: leitura acompanhada, destaques, busca, ouvir, tamanho da letra */
+var BB_HL=['#fff1a8','#ffc9de','#c4f0dc','#c8dcff'];
+var BB_CAT={'Lei':'#f0594d','Históricos':'#f2a65a','História':'#f2a65a','Poesia':'#b58af0','Sabedoria':'#b58af0','Profetas':'#7cc5f2','Profetas Maiores':'#7cc5f2','Profetas Menores':'#5fb0e8','Evangelhos':'#d3e24a','Cartas':'#5fd0a5','Profecia':'#f28bb6'};
+var BB_FS=[0.9,1,1.12,1.25,1.4];
+var bbRead={r:{}}, bbHLm={}, bbFS=1, bbLast=null;
+try{ bbRead=Object.assign({r:{}},JSON.parse(localStorage.getItem('ipge_bb_read_v1')||'{}')); }catch(e){}
+try{ bbHLm=JSON.parse(localStorage.getItem('ipge_bb_hl_v1')||'{}')||{}; }catch(e){}
+try{ bbFS=parseFloat(localStorage.getItem('ipge_bb_fs_v1'))||1; }catch(e){}
+try{ bbLast=JSON.parse(localStorage.getItem('ipge_bb_last_v1')||'null'); }catch(e){}
+function bbSv(k,v){ try{ localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v)); }catch(e){} }
+function bbIsRead(ref){ return !!(bbRead && bbRead.r && bbRead.r[ref]); }
+function bbHlGet(ref){ return (bbHLm && bbHLm[ref]!=null) ? bbHLm[ref] : null; }
+function bbCycleHl(ref){ const cur=bbHlGet(ref), nx=cur==null?0:cur+1; if(nx>=BB_HL.length) delete bbHLm[ref]; else bbHLm[ref]=nx; bbSv('ipge_bb_hl_v1',bbHLm); }
+function bbCatColor(b){ return ((typeof BB_CAT!=='undefined'&&BB_CAT)||{})[b.cat]||'#d3e24a'; }
+function bbNorm(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+function bbRefNow(){ const bk=getBible()[state.currentBookIdx]; return bk?bk.book+' '+state.currentChapter:''; }
+function bbStats(){
+  const $=id=>document.getElementById(id); if(!$('bb-total')) return;
+  const r=bbRead.r||{}, refs=Object.keys(r), days=new Set(refs.map(k=>r[k]));
+  $('bb-total').textContent=refs.length;
+  $('bb-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  let s=0,d=new Date(); if(!days.has(dvKey(d))) d.setDate(d.getDate()-1);
+  while(days.has(dvKey(d))){ s++; d.setDate(d.getDate()-1); }
+  $('bb-streak').textContent=s;
+  let w=''; for(let i=6;i>=0;i--){ const x=new Date(); x.setDate(x.getDate()-i); const on=days.has(dvKey(x)); w+='<div class="dv-day'+(on?' on':'')+(i?'':' today')+'">'+x.toLocaleDateString('pt-BR',{weekday:'narrow'})+'<i>'+(on?'✓':'')+'</i></div>'; }
+  $('bb-week').innerHTML=w;
+  $('bb-prog').style.width=Math.min(100,refs.length/1189*100)+'%';
+  $('bb-prog-t').textContent=refs.length+' de 1189 capítulos da Bíblia ('+(refs.length/1189*100).toFixed(1).replace('.',',')+'%)';
+  $('bb-continue').innerHTML='<div class="bb-cont">'+(bbLast?'<button type="button" class="bb-go pri" data-ref="'+escapeHtml(bbLast.ref)+'"><small>CONTINUAR LENDO</small><b>'+escapeHtml(bbLast.ref)+'</b></button>':'')+'<button type="button" class="bb-go" data-rand="1"><small>SURPREENDA-ME</small><b>🎲 Capítulo aleatório</b></button></div>';
+}
+function bbAfter(book){
+  bbLast={ref:book.book+' '+state.currentChapter}; bbSv('ipge_bb_last_v1',bbLast);
+  const b=document.getElementById('bb-read');
+  if(b){ const on=bbIsRead(bbRefNow()); b.textContent=on?'✓ Lido':'Marcar como lido'; b.classList.toggle('on',on); }
+  const bb=document.getElementById('bb'); if(bb) bb.style.setProperty('--bbfs',bbFS);
+  bbStats();
+}
+function bbStep(d){
+  const bl=getBible(); let bi=state.currentBookIdx, chs=Object.keys(bl[bi].chapters).map(Number), pos=chs.indexOf(state.currentChapter)+d;
+  if(pos>=chs.length){ bi++; if(bi>=bl.length) return toast('Você chegou ao fim da Bíblia 🙌','📖'); chs=Object.keys(bl[bi].chapters).map(Number); pos=0; }
+  else if(pos<0){ bi--; if(bi<0) return; chs=Object.keys(bl[bi].chapters).map(Number); pos=chs.length-1; }
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  state.currentBookIdx=bi; state.currentChapter=chs[pos]; state.testamentFilter=bl[bi].testament;
+  document.querySelectorAll('.tab-btn[data-testament]').forEach(b=>b.classList.toggle('active',b.dataset.testament===state.testamentFilter));
+  renderBookList(); renderReader();
+  document.getElementById('reader-book-title').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function bbSearch(qraw){
+  const box=document.getElementById('bb-results'), q=qraw.trim();
+  if(q.length<2){ box.innerHTML=''; return; }
+  const nq=bbNorm(q), bl=getBible(); let html='';
+  const m=q.match(/^(.+?)\s+(\d+)(?:\s*[:.,]\s*(\d+))?$/);
+  if(m){
+    const nb=bbNorm(m[1]); let bj=bl.findIndex(b=>bbNorm(b.book)===nb); if(bj<0) bj=bl.findIndex(b=>bbNorm(b.book).startsWith(nb));
+    const ch=parseInt(m[2],10);
+    if(bj>=0&&bl[bj].chapters[ch]){ const ref=bl[bj].book+' '+ch+(m[3]?':'+parseInt(m[3],10):''); html+='<button type="button" class="bb-res" data-ref="'+escapeHtml(ref)+'"><b>➜ Ir para '+escapeHtml(ref)+'</b></button>'; }
+  }
+  if(!/\d/.test(q)){
+    const bs=bl.filter(b=>bbNorm(b.book).includes(nq)).slice(0,6);
+    if(bs.length) html+='<div class="dv-chips" style="margin-top:10px;">'+bs.map(b=>'<button type="button" class="dv-chip" style="--c:'+bbCatColor(b)+'" data-ref="'+escapeHtml(b.book+' '+Object.keys(b.chapters)[0])+'">📖 '+escapeHtml(b.book)+'</button>').join('')+'</div>';
+  }
+  let n=0; const out=[];
+  if(nq.length>=3){
+    outer: for(const b of bl){ for(const c in b.chapters){ const vs=b.chapters[c]; for(let i=0;i<vs.length;i++){
+      const t=String(vs[i]).replace(/<[^>]+>/g,''), at=bbNorm(t).indexOf(nq);
+      if(at>=0){ n++; if(out.length<25) out.push({ref:b.book+' '+c+':'+(i+1),t,at}); if(n>=300) break outer; }
+    } } }
+  }
+  if(out.length){
+    html+='<div class="dv-count" style="margin-top:10px;">'+(n>=300?'300+':n)+' versículo'+(n===1?'':'s')+(n>25?' (mostrando os 25 primeiros)':'')+'</div>';
+    html+=out.map(o=>{ const s=Math.max(0,o.at-50); return '<button type="button" class="bb-res" data-ref="'+escapeHtml(o.ref)+'"><b>'+escapeHtml(o.ref)+'</b>'+(s>0?'…':'')+escapeHtml(o.t.slice(s,o.at))+'<mark>'+escapeHtml(o.t.slice(o.at,o.at+nq.length))+'</mark>'+escapeHtml(o.t.slice(o.at+nq.length,o.at+nq.length+110))+'…</button>'; }).join('');
+  }
+  box.innerHTML=html||'<div class="note-block-empty" style="padding:8px 2px;">Nada encontrado.</div>';
+}
+;(function(){
+  const $=id=>document.getElementById(id), root=$('bb'); let t=null;
+  $('bb-search').addEventListener('input',e=>{ clearTimeout(t); t=setTimeout(()=>bbSearch(e.target.value),250); });
+  $('bb-search').addEventListener('keydown',e=>{ if(e.key==='Enter'){ clearTimeout(t); bbSearch(e.target.value); } });
+  root.addEventListener('click',e=>{
+    const go=e.target.closest('[data-ref]'), rn=e.target.closest('[data-rand]'), st=e.target.closest('[data-step]'), fs=e.target.closest('[data-fs]');
+    if(go){ $('bb-search').value=''; $('bb-results').innerHTML=''; goToFavoriteRef(go.dataset.ref); return; }
+    if(rn){ const bl=getBible(), b=bl[Math.floor(Math.random()*bl.length)], chs=Object.keys(b.chapters); goToFavoriteRef(b.book+' '+chs[Math.floor(Math.random()*chs.length)]); return; }
+    if(st){ bbStep(parseInt(st.dataset.step,10)); return; }
+    if(fs){ let i=BB_FS.indexOf(bbFS); if(i<0) i=1; i=Math.max(0,Math.min(BB_FS.length-1,i+parseInt(fs.dataset.fs,10))); bbFS=BB_FS[i]; bbSv('ipge_bb_fs_v1',String(bbFS)); root.style.setProperty('--bbfs',bbFS); return; }
+    if(e.target.closest('#bb-read')){
+      const ref=bbRefNow(), bk=getBible()[state.currentBookIdx];
+      if(bbIsRead(ref)) delete bbRead.r[ref]; else {
+        bbRead.r[ref]=dvKey(new Date()); toast('Capítulo lido: '+ref,'✅');
+        const chs=Object.keys(bk.chapters); if(chs.every(c=>bbIsRead(bk.book+' '+c))) toast('Você terminou '+bk.book+'! 🎉','🎉');
+      }
+      bbSv('ipge_bb_read_v1',bbRead); renderBookList(); renderReader(); return;
+    }
+    if(e.target.closest('#bb-listen')){
+      if(!('speechSynthesis' in window)) return toast('Seu navegador não lê em voz alta','⚠️');
+      if(speechSynthesis.speaking){ speechSynthesis.cancel(); return; }
+      const txt=[...document.querySelectorAll('#verse-list .verse-text')].map(x=>x.textContent).join(' ');
+      const u=new SpeechSynthesisUtterance(bbRefNow()+'. '+txt); u.lang='pt-BR'; speechSynthesis.speak(u);
+    }
+  });
+})();
 
 /* init bible: show the offline sample instantly, then fetch the full Bible
    (na versão salva do usuário, ou ARC por padrão) em segundo plano */
