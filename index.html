@@ -669,6 +669,25 @@ svg.leaflet-image-layer.leaflet-interactive path {
 		print-color-adjust: exact;
 		}
 	}
+/* Entrada do capítulo ao escolher um livro */
+@keyframes readerPop{from{opacity:0;transform:translateY(28px) scale(.985);}to{opacity:1;transform:none;}}
+.reader-pop{animation:readerPop .8s cubic-bezier(.2,.8,.2,1) both;}
+/* Botão flutuante: voltar ao topo */
+#back-to-top{
+  position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#1A2540,#4a2f6b);color:#e8c98a;
+  box-shadow:0 6px 18px rgba(0,0,0,.28);
+  z-index:210;opacity:0;visibility:hidden;transform:translateY(14px);
+  transition:opacity .25s ease,transform .25s ease,visibility .25s;
+  -webkit-tap-highlight-color:transparent;
+}
+#back-to-top.show{opacity:1;visibility:visible;transform:translateY(0);}
+#back-to-top:hover{filter:brightness(1.12);}
+#back-to-top:active{transform:scale(.94);}
+#back-to-top svg{width:20px;height:20px;}
+@media(max-width:600px){#back-to-top{right:12px;width:42px;height:42px;}}
 </style>
 <script>/* @preserve
  * Leaflet 1.9.4, a JS library for interactive maps. https://leafletjs.com
@@ -7521,6 +7540,72 @@ function atualizarNomeConta(){
 /* =========================================================
    BIBLE READER
    ========================================================= */
+/* Rolagem animada (easing) — substitui o smooth nativo, que ficava travado
+   por brigar com o scroll-behavior do CSS e com chamadas repetidas. */
+let __ipgeScrollAnim = null;
+function ipgeSmoothScroll(scroller, targetY, duration){
+  // scroller: elemento que rola (ex.: #auth-shell) ou null para a janela
+  if(__ipgeScrollAnim) __ipgeScrollAnim.cancel();
+  const root = document.documentElement;
+  const getY = ()=> scroller ? scroller.scrollTop : (window.pageYOffset || root.scrollTop || 0);
+  const setY = y => { if(scroller) scroller.scrollTop = y; else window.scrollTo(0, y); };
+  const startY = getY();
+  const maxY = scroller ? (scroller.scrollHeight - scroller.clientHeight)
+                        : (Math.max(root.scrollHeight, document.body.scrollHeight) - window.innerHeight);
+  const endY = Math.max(0, Math.min(targetY, maxY));
+  const dist = endY - startY;
+  if(Math.abs(dist) < 2) return;
+
+  const dur = duration || Math.min(1500, Math.max(800, Math.abs(dist) * 0.7));
+  const ease = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; // easeInOutCubic
+
+  // desliga o que atrapalha durante a animação
+  const prevBehavior = root.style.scrollBehavior;
+  root.style.scrollBehavior = 'auto';
+  const prevSnap = scroller ? scroller.style.scrollSnapType : '';
+  if(scroller) scroller.style.scrollSnapType = 'none';
+
+  let raf = 0, done = false;
+  const t0 = performance.now();
+  const stopEvents = ['wheel','touchstart','mousedown','keydown'];
+  const finish = ()=>{
+    if(done) return; done = true;
+    cancelAnimationFrame(raf);
+    stopEvents.forEach(e=>window.removeEventListener(e, onUser, true));
+    root.style.scrollBehavior = prevBehavior;
+    if(scroller) scroller.style.scrollSnapType = prevSnap;
+    if(__ipgeScrollAnim && __ipgeScrollAnim.cancel === finish) __ipgeScrollAnim = null;
+  };
+  const onUser = ()=> finish(); // se o usuário mexer, a animação para
+  stopEvents.forEach(e=>window.addEventListener(e, onUser, {capture:true, passive:true}));
+  __ipgeScrollAnim = { cancel: finish };
+
+  (function step(now){
+    if(done) return;
+    const p = Math.min(1, (now - t0) / dur);
+    setY(startY + dist * ease(p));
+    if(p < 1) raf = requestAnimationFrame(step); else finish();
+  })(t0);
+}
+window.ipgeSmoothScroll = ipgeSmoothScroll;
+
+/* Rola (animado) até o título do capítulo, descontando a barra fixa do topo */
+function scrollToReaderTitle(){
+  requestAnimationFrame(()=>{
+    const el = document.getElementById('reader-book-title');
+    if(!el) return;
+    const bar = document.getElementById('topbar');
+    const barH = (bar && getComputedStyle(bar).position==='sticky') ? bar.offsetHeight : 0;
+    const top = el.getBoundingClientRect().top + (window.pageYOffset || 0) - barH - 16;
+    ipgeSmoothScroll(null, top);
+    // entrada suave do cartão do capítulo (também dá movimento quando a distância é curta)
+    const card = el.closest('.reader-card');
+    if(card){
+      card.classList.remove('reader-pop'); void card.offsetWidth; card.classList.add('reader-pop');
+      setTimeout(()=>card.classList.remove('reader-pop'), 900);
+    }
+  });
+}
 function renderBookList(){
   const listEl = document.getElementById('book-list');
   listEl.innerHTML = '';
@@ -7538,17 +7623,9 @@ function renderBookList(){
       renderBookList();
       renderReader();
 
-      // Em smartphones e tablets, após escolher o livro,
-      // leva automaticamente o usuário até os versículos.
-      setTimeout(()=>{
-        const tituloBiblia = document.querySelector('#reader-book-title');
-        if(tituloBiblia && window.innerWidth <= 900){
-          window.scrollTo({
-            top: tituloBiblia.offsetTop - 20,
-            behavior:'smooth'
-          });
-        }
-      }, 120);
+      // Após escolher o livro, leva o usuário até o título do capítulo
+      // (ex.: "Gênesis 1 · A criação do mundo") e não para o topo da página.
+      scrollToReaderTitle();
     });
     listEl.appendChild(div);
   });
@@ -15931,6 +16008,37 @@ if(mobileSearchBtn && globalSearchBox){
 renderHomeStats();
 renderHomeContinue();
 
+})();
+</script>
+<button type="button" id="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
+</button>
+<script>
+(function initBackToTop(){
+  const btn = document.getElementById('back-to-top');
+  if(!btn) return;
+  const shells = ['auth-shell','public-campaign-shell'];
+  const shellEl = id => document.getElementById(id);
+  function currentScroller(){
+    if(document.body.classList.contains('show-public-campaign')) return shellEl('public-campaign-shell');
+    if(document.body.classList.contains('show-auth')) return shellEl('auth-shell');
+    return null; // app normal: rola a janela
+  }
+  function pos(){
+    const sc = currentScroller();
+    return sc ? sc.scrollTop : (window.pageYOffset || document.documentElement.scrollTop || 0);
+  }
+  function update(){ btn.classList.toggle('show', pos() > 320); }
+  window.addEventListener('scroll', update, {passive:true});
+  shells.forEach(id=>{ const el=shellEl(id); if(el) el.addEventListener('scroll', update, {passive:true}); });
+  btn.addEventListener('click', ()=>{
+    const sc = currentScroller();
+    if(window.ipgeSmoothScroll) window.ipgeSmoothScroll(sc, 0);
+    else if(sc) sc.scrollTo({top:0, behavior:'smooth'});
+    else window.scrollTo({top:0, behavior:'smooth'});
+  });
+  new MutationObserver(update).observe(document.body,{attributes:true,attributeFilter:['class']});
+  update();
 })();
 </script>
 </body>
