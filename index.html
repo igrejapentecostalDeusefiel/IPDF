@@ -1069,6 +1069,7 @@ h1,h2,h3{font-family:var(--font-display);color:var(--ink);letter-spacing:-.01em;
   cursor:pointer;
   transition:all .18s ease;
 }
+#admin-shell #view-galeria .view-back-btn{display:none !important;}
 .view-back-btn svg{flex-shrink:0;transition:transform .18s ease;}
 .view-back-btn:hover{border-color:var(--gold);color:var(--ink);transform:translateX(-2px);}
 .view-back-btn:hover svg{transform:translateX(-2px);}
@@ -3554,6 +3555,344 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   }
 }
 
+
+/* =========================================================
+   GALERIA DA IGREJA — aba "Fotos da igreja" (sub-item de Comunidade)
+   ========================================================= */
+.nav-item-sub{margin-left:14px;width:calc(100% - 14px);font-size:.86rem;padding-top:7px;padding-bottom:7px;}
+.nav-item-sub::before{
+  content:"";position:absolute;left:-7px;top:-9px;height:calc(50% + 9px);width:8px;
+  border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);border-bottom-left-radius:7px;pointer-events:none;
+}
+#toast{z-index:9990 !important;}
+
+.gal-root{max-width:980px;margin:0 auto;padding-bottom:96px;}
+.gal-root [hidden],.gal-lb [hidden],.gal-bulk [hidden],.gal-modal [hidden]{display:none !important;}
+
+/* ---- Cabeçalho ---- */
+.gal-head{display:flex;align-items:center;gap:26px;margin:6px 0 28px;}
+.gal-avatar{
+  flex-shrink:0;width:104px;height:104px;border-radius:50%;padding:5px;
+  border:2.5px solid var(--gold);background:var(--parchment);
+}
+.gal-avatar-in{
+  width:100%;height:100%;border-radius:50%;background:#15120E;color:#F6F0E2;
+  display:grid;place-items:center;
+}
+.gal-avatar-in svg{width:46px;height:46px;}
+.gal-head-text{min-width:0;flex:1;}
+.gal-title{
+  font-family:var(--font-display);font-weight:700;font-size:clamp(1.75rem,4.8vw,2.45rem);
+  line-height:1.05;letter-spacing:-.012em;color:var(--ink);
+}
+.gal-sub{color:var(--text-dim);font-size:1.03rem;margin-top:7px;}
+.gal-rule{width:54px;height:3px;border-radius:3px;background:var(--gold);margin:11px 0 14px;}
+.gal-desc{color:var(--text-dim);font-size:.93rem;line-height:1.6;max-width:540px;}
+.gal-head-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;}
+.gal-pill{
+  display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;
+  border:1px solid var(--line);background:var(--paper);color:var(--text-dim);font-size:.8rem;font-weight:600;
+}
+.gal-pill svg{width:15px;height:15px;color:var(--gold);}
+
+/* ---- Categorias em círculos ---- */
+.gal-stories{
+  display:flex;gap:clamp(10px,2.2vw,24px);overflow-x:auto;padding:8px 4px 6px;margin:0 -4px 10px;
+  scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.gal-stories::-webkit-scrollbar{display:none;}
+.gal-story{
+  --s:clamp(68px,13.4vw,112px);flex:0 0 auto;min-width:var(--s);display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:none;border:none;cursor:pointer;scroll-snap-align:start;position:relative;
+  padding:0 0 9px;color:var(--text-dim);font-family:inherit;
+}
+.gal-ring{
+  position:relative;width:var(--s);aspect-ratio:1;border-radius:50%;padding:4px;box-sizing:border-box;
+  border:2px solid color-mix(in srgb, var(--gold) 68%, transparent);
+  transition:transform .28s cubic-bezier(.2,.8,.2,1), border-color .25s, box-shadow .25s;
+}
+.gal-story:hover .gal-ring{transform:translateY(-3px);}
+.gal-story:active .gal-ring{transform:scale(.96);}
+.gal-story.active .gal-ring{
+  border-color:var(--gold);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--gold) 20%, transparent), var(--shadow-sm);
+}
+.gal-ring-in{
+  width:100%;height:100%;border-radius:50%;overflow:hidden;background:#15120E;color:#F6F0E2;
+  display:grid;place-items:center;
+}
+.gal-ring-in img{width:100%;height:100%;object-fit:cover;display:block;}
+.gal-ring-in svg{width:34%;height:34%;}
+.gal-ring-emoji{font-size:clamp(1.3rem,3.4vw,1.9rem);filter:grayscale(.2);}
+.gal-story-n{
+  position:absolute;top:-2px;right:-2px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;
+  background:var(--gold);color:#fff;font-size:.68rem;font-weight:700;display:grid;place-items:center;
+  border:2px solid var(--parchment);
+}
+.gal-story-label{font-size:.82rem;font-weight:500;white-space:nowrap;transition:color .2s;}
+.gal-story.active .gal-story-label{color:var(--ink);font-weight:700;}
+.gal-story::after{
+  content:"";position:absolute;left:6%;right:6%;bottom:0;height:2px;border-radius:2px;background:var(--gold);
+  transform:scaleX(0);transition:transform .3s ease;
+}
+.gal-story.active::after{transform:scaleX(1);}
+.gal-story:focus-visible,.gal-tab:focus-visible,.gal-tile:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:12px;}
+
+/* ---- Abas (grade / apresentação / linha do tempo) ---- */
+.gal-tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line);margin:6px 0 18px;}
+.gal-tab{
+  position:relative;display:flex;align-items:center;justify-content:center;gap:9px;padding:15px 0 13px;
+  background:none;border:none;cursor:pointer;color:var(--text-faint);font-family:inherit;font-weight:600;font-size:.82rem;
+  transition:color .2s;
+}
+.gal-tab svg{width:27px;height:27px;flex-shrink:0;}
+.gal-tab .gal-tab-lbl{display:none;}
+@media(min-width:720px){.gal-tab .gal-tab-lbl{display:inline;}}
+.gal-tab:hover{color:var(--text-dim);}
+.gal-tab[aria-selected="true"]{color:var(--ink);}
+.gal-tab::after{
+  content:"";position:absolute;left:14%;right:14%;bottom:-1px;height:2px;background:var(--gold);border-radius:2px;
+  transform:scaleX(0);transition:transform .3s ease;
+}
+.gal-tab[aria-selected="true"]::after{transform:scaleX(1);}
+
+/* ---- Grade de fotos ---- */
+.gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(4px,1.5vw,14px);}
+.gal-grid.compact{gap:clamp(3px,1vw,10px);}
+@media(min-width:720px){.gal-grid.compact{grid-template-columns:repeat(4,1fr);}}
+.gal-tile{
+  position:relative;aspect-ratio:1.06/1;border-radius:clamp(4px,1vw,8px);overflow:hidden;background:var(--parchment-dim);
+  cursor:pointer;animation:galIn .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 45ms);
+}
+.gal-tile img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .7s cubic-bezier(.2,.8,.2,1), filter .3s;
+}
+.gal-tile::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,8,5,0) 48%,rgba(10,8,5,.74));opacity:0;transition:opacity .3s;
+}
+.gal-tile-cap{
+  position:absolute;left:12px;right:42px;bottom:10px;z-index:2;color:#fff;font-size:.8rem;font-weight:600;line-height:1.3;
+  opacity:0;transform:translateY(6px);transition:opacity .3s, transform .3s;pointer-events:none;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 6px rgba(0,0,0,.5);
+}
+@media(hover:hover){
+  .gal-tile:hover img{transform:scale(1.07);}
+  .gal-tile:hover::after,.gal-tile:hover .gal-tile-cap{opacity:1;}
+  .gal-tile:hover .gal-tile-cap{transform:none;}
+}
+.gal-tile:focus-visible::after,.gal-tile:focus-visible .gal-tile-cap{opacity:1;}
+.gal-check{
+  position:absolute;top:10px;right:10px;z-index:3;width:22px;height:22px;padding:0;border-radius:6px;
+  background:rgba(255,255,255,.93);border:1px solid rgba(0,0,0,.14);color:transparent;cursor:pointer;
+  display:grid;place-items:center;transition:background .18s, color .18s, transform .18s, border-color .18s;
+}
+.gal-check::before{content:"";position:absolute;inset:-9px;}
+.gal-check svg{width:14px;height:14px;}
+.gal-check:hover{transform:scale(1.1);}
+.gal-tile.sel{outline:3px solid var(--gold);outline-offset:-3px;}
+.gal-tile.sel img{filter:brightness(.82);}
+.gal-tile.sel .gal-check{background:var(--gold);border-color:var(--gold);color:#fff;}
+.gal-skel{
+  aspect-ratio:1.06/1;border-radius:8px;
+  background:linear-gradient(100deg,var(--parchment-dim) 30%,color-mix(in srgb,var(--paper) 55%,var(--parchment-dim)) 50%,var(--parchment-dim) 70%);
+  background-size:300% 100%;animation:galShimmer 1.5s linear infinite;
+}
+@keyframes galShimmer{from{background-position:100% 0}to{background-position:0 0}}
+@keyframes galIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes galFade{from{opacity:0}to{opacity:1}}
+
+.gal-more{display:flex;justify-content:center;margin:26px 0 0;}
+.gal-empty{
+  text-align:center;padding:54px 20px 46px;border:1.5px dashed color-mix(in srgb,var(--gold) 55%,var(--line));
+  border-radius:var(--radius-lg);background:color-mix(in srgb,var(--gold-soft) 16%,transparent);
+}
+.gal-empty-frames{position:relative;width:132px;height:92px;margin:0 auto 20px;}
+.gal-empty-frames i{
+  position:absolute;width:70px;height:70px;border-radius:12px;background:var(--paper);border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);display:grid;place-items:center;font-style:normal;font-size:1.5rem;
+}
+.gal-empty-frames i:nth-child(1){left:0;top:14px;transform:rotate(-9deg);}
+.gal-empty-frames i:nth-child(2){left:30px;top:0;z-index:2;}
+.gal-empty-frames i:nth-child(3){right:0;top:14px;transform:rotate(9deg);}
+.gal-empty h3{font-family:var(--font-display);font-size:1.15rem;color:var(--ink);font-weight:600;}
+.gal-empty p{color:var(--text-dim);font-size:.9rem;margin:7px auto 18px;max-width:380px;line-height:1.55;}
+
+/* ---- Linha do tempo ---- */
+.gal-month{
+  display:flex;align-items:center;gap:12px;margin:30px 0 13px;font-family:var(--font-display);
+  font-weight:600;font-size:1.12rem;color:var(--ink);
+}
+.gal-month:first-child{margin-top:6px;}
+.gal-month::before{
+  content:"";width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 24%,transparent);
+}
+.gal-month::after{content:"";flex:1;height:1px;background:var(--line);order:3;}
+.gal-month small{font-family:var(--font-body);font-size:.74rem;color:var(--text-faint);font-weight:600;order:2;}
+
+/* ---- Apresentação ---- */
+.gal-show{
+  position:relative;border-radius:var(--radius-lg);overflow:hidden;background:#0E0C09;aspect-ratio:16/10;
+  box-shadow:var(--shadow);cursor:pointer;isolation:isolate;
+}
+.gal-show:fullscreen{aspect-ratio:auto;border-radius:0;}
+.gal-show-img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.3s ease;
+}
+.gal-show-img.on{opacity:1;animation:galKen 9s ease-out both;}
+.gal-show-img.prev{opacity:0;transform:scale(1.12);}
+@keyframes galKen{from{transform:scale(1.02)}to{transform:scale(1.12)}}
+.gal-show::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,8,5,.35) 0%,rgba(10,8,5,0) 24%,rgba(10,8,5,0) 52%,rgba(10,8,5,.82) 100%);
+}
+.gal-show-prog{position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);z-index:4;}
+.gal-show-prog.run{animation:galProg var(--dur,6s) linear forwards;}
+@keyframes galProg{from{width:0}to{width:100%}}
+.gal-show-cap{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px clamp(16px,4vw,32px);color:#fff;}
+.gal-show-cap b{display:block;font-family:var(--font-display);font-weight:600;font-size:clamp(1.05rem,2.6vw,1.6rem);line-height:1.2;}
+.gal-show-cap span{display:block;margin-top:5px;font-size:.9rem;opacity:.86;max-width:640px;}
+.gal-show-ctrl{position:absolute;right:14px;top:14px;z-index:5;display:flex;gap:8px;align-items:center;}
+.gal-show-count{color:#fff;font-size:.78rem;font-weight:600;letter-spacing:.05em;padding:0 6px;text-shadow:0 1px 4px rgba(0,0,0,.6);}
+.gal-glass{
+  width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(20,16,10,.38);
+  backdrop-filter:blur(8px);color:#fff;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .2s, transform .2s;
+}
+.gal-glass:hover{background:rgba(20,16,10,.6);transform:scale(1.06);}
+.gal-glass svg{width:19px;height:19px;}
+.gal-show-hint{margin-top:12px;text-align:center;color:var(--text-faint);font-size:.8rem;}
+
+/* ---- Barra de seleção ---- */
+.gal-bulk{
+  position:fixed;left:50%;bottom:22px;z-index:300;transform:translate(-50%,30px);opacity:0;visibility:hidden;
+  display:flex;align-items:center;gap:6px;padding:8px 8px 8px 18px;border-radius:999px;background:#15120E;color:#F6F0E2;
+  box-shadow:0 18px 44px -12px rgba(0,0,0,.6);max-width:calc(100vw - 20px);
+  transition:opacity .25s, transform .3s cubic-bezier(.2,.9,.3,1.2), visibility .25s;
+}
+.gal-bulk.show{opacity:1;visibility:visible;transform:translate(-50%,0);}
+.gal-bulk-n{font-size:.84rem;font-weight:600;white-space:nowrap;margin-right:4px;}
+.gal-bulk button,.gal-bulk select{
+  height:36px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#F6F0E2;
+  padding:0 14px;font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  transition:background .2s;
+}
+.gal-bulk select{padding:0 10px;max-width:130px;}
+.gal-bulk select option{color:#222;}
+.gal-bulk button:hover,.gal-bulk select:hover{background:rgba(255,255,255,.18);}
+.gal-bulk button svg{width:16px;height:16px;}
+.gal-bulk .danger{background:var(--rose);border-color:transparent;}
+.gal-bulk .danger:hover{filter:brightness(1.1);background:var(--rose);}
+.gal-bulk .x{width:36px;padding:0;justify-content:center;}
+@media(max-width:560px){
+  .gal-bulk{padding-left:12px;gap:4px;}
+  .gal-bulk .lbl{display:none;}
+  .gal-bulk button{padding:0 11px;}
+}
+
+/* ---- Visualizador (lightbox) ---- */
+.gal-lb{
+  position:fixed;inset:0;z-index:450;display:none;flex-direction:column;background:#0A0805;color:#F6F0E2;
+}
+.gal-lb.show{display:flex;animation:galFade .25s ease both;}
+.gal-lb-amb{
+  position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;
+  filter:blur(46px) brightness(.5) saturate(1.2);opacity:.9;pointer-events:none;
+}
+.gal-lb-top{
+  position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;
+  padding:max(12px,env(safe-area-inset-top)) 12px 6px 18px;
+}
+.gal-lb-count{font-size:.84rem;font-weight:600;letter-spacing:.06em;opacity:.85;}
+.gal-lb-actions{display:flex;gap:2px;}
+.gal-lb-btn{
+  width:44px;height:44px;border-radius:50%;border:none;background:transparent;color:#F6F0E2;display:grid;place-items:center;
+  cursor:pointer;transition:background .2s;
+}
+.gal-lb-btn:hover{background:rgba(255,255,255,.14);}
+.gal-lb-btn svg{width:21px;height:21px;}
+.gal-lb-btn.danger:hover{background:var(--rose);}
+.gal-lb-stage{
+  position:relative;z-index:2;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:pan-y;
+}
+.gal-lb-img{
+  max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;cursor:zoom-in;
+  transition:transform .28s ease, opacity .3s ease;box-shadow:0 20px 70px rgba(0,0,0,.55);
+}
+.gal-lb-img.zoomed{transform:scale(2.3);cursor:zoom-out;}
+.gal-lb-img.swap{opacity:.2;}
+.gal-lb-nav{
+  position:absolute;top:50%;z-index:4;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.2);background:rgba(20,16,10,.45);backdrop-filter:blur(6px);color:#F6F0E2;
+  display:grid;place-items:center;cursor:pointer;transition:background .2s, opacity .2s, transform .2s;padding:0;
+}
+.gal-lb-nav:hover{background:rgba(20,16,10,.75);transform:translateY(-50%) scale(1.06);}
+.gal-lb-nav[disabled]{opacity:.25;pointer-events:none;}
+.gal-lb-nav svg{width:22px;height:22px;}
+.gal-lb-nav.prev{left:14px;}
+.gal-lb-nav.next{right:14px;}
+@media(max-width:640px){.gal-lb-nav{width:40px;height:40px;}.gal-lb-nav.prev{left:6px;}.gal-lb-nav.next{right:6px;}}
+.gal-lb-cap{position:relative;z-index:3;text-align:center;padding:14px 22px max(20px,env(safe-area-inset-bottom));}
+.gal-lb-cap b{display:block;font-family:var(--font-display);font-weight:600;font-size:1.15rem;line-height:1.25;}
+.gal-lb-cap p{margin:6px auto 0;max-width:640px;font-size:.9rem;line-height:1.55;opacity:.85;}
+.gal-lb-meta{margin-top:9px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;font-size:.76rem;}
+.gal-lb-chip{padding:4px 11px;border-radius:999px;border:1px solid rgba(232,201,138,.45);color:#E8C98A;font-weight:600;}
+.gal-lb-date{padding:4px 2px;opacity:.65;}
+
+/* ---- Modais de envio / edição ---- */
+.gal-modal{max-width:600px !important;text-align:left !important;padding:24px !important;max-height:calc(100dvh - 40px);overflow-y:auto;}
+.gal-modal .confirm-title{text-align:left;}
+.gal-modal .confirm-text{text-align:left;margin-top:5px;}
+.gal-drop{
+  margin-top:16px;border:2px dashed color-mix(in srgb,var(--gold) 65%,transparent);border-radius:var(--radius-md);
+  padding:26px 16px;text-align:center;cursor:pointer;background:color-mix(in srgb,var(--gold-soft) 20%,transparent);
+  transition:background .2s, border-color .2s, transform .2s;color:var(--text-dim);font-size:.88rem;
+}
+.gal-drop:hover,.gal-drop.over{border-color:var(--gold);background:color-mix(in srgb,var(--gold-soft) 42%,transparent);}
+.gal-drop.over{transform:scale(1.012);}
+.gal-drop svg{width:34px;height:34px;color:var(--gold);margin-bottom:8px;}
+.gal-drop b{display:block;color:var(--ink);font-size:.95rem;margin-bottom:3px;}
+.gal-up-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px;margin-top:14px;max-height:224px;overflow-y:auto;padding:2px;}
+.gal-up-item{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--parchment-dim);}
+.gal-up-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.gal-up-item.busy img,.gal-up-item.wait img{opacity:.45;}
+.gal-up-item.erro{outline:2px solid var(--rose);outline-offset:-2px;}
+.gal-up-rm{
+  position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:none;padding:0;cursor:pointer;
+  background:rgba(20,16,10,.7);color:#fff;display:grid;place-items:center;
+}
+.gal-up-rm svg{width:12px;height:12px;}
+.gal-up-st{
+  position:absolute;left:4px;bottom:4px;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:999px;
+  background:rgba(20,16,10,.72);color:#fff;
+}
+.gal-up-item.ok .gal-up-st{background:var(--sage);}
+.gal-up-item.erro .gal-up-st{background:var(--rose);}
+.gal-spin{
+  position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;
+  border:3px solid rgba(255,255,255,.5);border-top-color:var(--gold);animation:galSpin .8s linear infinite;
+}
+@keyframes galSpin{to{transform:rotate(360deg)}}
+.gal-up-fields{display:grid;gap:12px;margin-top:16px;}
+.gal-up-fields label{display:block;}
+.gal-up-prog{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:16px;}
+.gal-up-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));transition:width .35s ease;}
+.gal-up-msg{margin-top:9px;font-size:.82rem;color:var(--text-dim);min-height:1.2em;}
+.gal-up-msg.err{color:var(--rose);}
+
+@media(max-width:640px){
+  .gal-head{gap:16px;align-items:flex-start;}
+  .gal-avatar{width:76px;height:76px;padding:4px;border-width:2px;}
+  .gal-avatar-in svg{width:34px;height:34px;}
+  .gal-desc{font-size:.86rem;}
+}
+@media(prefers-reduced-motion:reduce){
+  .gal-tile,.gal-lb.show{animation:none;}
+  .gal-show-img.on{animation:none;transform:none;}
+  .gal-skel{animation:none;}
+  .gal-tile img,.gal-ring,.gal-lb-img{transition:none;}
+}
 </style>
 </head>
 <body class="show-auth">
@@ -3977,6 +4316,9 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
         <button class="admin-nav-item" data-admin-tab="comunidade">
           <span class="admin-nav-ic">&#127963;&#65039;</span> Comunidade
         </button>
+        <button class="admin-nav-item" data-admin-tab="galeria">
+          <span class="admin-nav-ic">&#128248;</span> Fotos da igreja
+        </button>
         <button class="admin-nav-item" data-admin-tab="perfil">
           <span class="admin-nav-ic">&#128100;</span> Perfil
         </button>
@@ -4259,6 +4601,7 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <button class="nav-item nav-item-comum" data-view="campaigns"><span class="ic">🔥</span>Campanhas Proféticas</button>
       <button class="nav-item" data-view="conversas"><span class="ic">💬</span>Conversas<span class="badge" id="conv-nav-badge" style="display:none;background:var(--rose);color:#fff;">0</span></button>
       <button class="nav-item" data-view="comunidade"><span class="ic">🏛️</span>Comunidade</button>
+      <button class="nav-item nav-item-sub" data-view="galeria"><span class="ic">📸</span>Fotos da igreja</button>
       <button class="nav-item" data-view="localidade"><span class="ic">📍</span>Ver localidade</button>
     </div>
 
@@ -4982,6 +5325,39 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
         </div>
       </section>
 
+      <!-- ============ GALERIA DA IGREJA (Fotos da igreja) ============ -->
+      <section class="view" id="view-galeria">
+        <button type="button" class="view-back-btn" data-goto="comunidade"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>Voltar à Comunidade</button>
+
+        <div class="gal-root">
+          <header class="gal-head">
+            <div class="gal-avatar"><div class="gal-avatar-in" data-gal-icon="church"></div></div>
+            <div class="gal-head-text">
+              <h1 class="gal-title">Galeria da Igreja</h1>
+              <div class="gal-sub">Fotos que contam a nossa história</div>
+              <div class="gal-rule"></div>
+              <p class="gal-desc">Cultos, eventos, vidas transformadas e muito mais.<br>Aqui você encontra os melhores momentos da nossa igreja.</p>
+              <div class="gal-head-meta">
+                <span class="gal-pill"><span data-gal-icon="grid"></span><span id="gal-total-pill">— fotos</span></span>
+                <button type="button" class="btn btn-primary btn-sm gal-admin-only" id="gal-add-btn" hidden><span data-gal-icon="plus" style="display:inline-flex;width:16px;height:16px;"></span>Adicionar fotos</button>
+              </div>
+            </div>
+          </header>
+
+          <nav class="gal-stories" id="gal-stories" aria-label="Categorias de fotos"></nav>
+
+          <div class="gal-tabs" role="tablist" aria-label="Modo de exibição">
+            <button type="button" class="gal-tab" role="tab" data-aba="grade" aria-selected="true" aria-label="Fotos em grade"><span data-gal-icon="grid"></span><span class="gal-tab-lbl">Fotos</span></button>
+            <button type="button" class="gal-tab" role="tab" data-aba="apresentacao" aria-selected="false" aria-label="Apresentação de slides"><span data-gal-icon="play"></span><span class="gal-tab-lbl">Apresentação</span></button>
+            <button type="button" class="gal-tab" role="tab" data-aba="linha" aria-selected="false" aria-label="Linha do tempo"><span data-gal-icon="calendar"></span><span class="gal-tab-lbl">Linha do tempo</span></button>
+          </div>
+
+          <div id="gal-body" aria-live="polite"></div>
+          <div class="gal-more" id="gal-more" hidden><button type="button" class="btn btn-ghost" id="gal-more-btn">Carregar mais fotos</button></div>
+          <div id="gal-sentinel" style="height:1px;"></div>
+        </div>
+      </section>
+
       <!-- ============ LOCALIDADE ============ -->
       <section class="view" id="view-localidade">
         <button type="button" class="view-back-btn" data-goto="home"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>Voltar ao início</button>
@@ -5542,6 +5918,97 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <button class="btn btn-primary" id="oracao-msg-save-btn">Salvar mensagem</button>
     </div>
   </div>
+</div>
+
+<!-- ===== GALERIA: modal de envio (somente admin) ===== -->
+<div class="confirm-overlay" id="galeria-up-overlay">
+  <div class="confirm-box gal-modal" role="dialog" aria-modal="true" aria-labelledby="gal-up-title">
+    <div class="confirm-title" id="gal-up-title">Adicionar fotos à galeria</div>
+    <div class="confirm-text">Escolha várias fotos de uma vez. Elas são otimizadas automaticamente antes de subir.</div>
+
+    <div class="gal-drop" id="gal-drop" tabindex="0" role="button" aria-label="Escolher fotos do dispositivo">
+      <span data-gal-icon="upload" style="display:block;"></span>
+      <b>Toque para escolher ou arraste as fotos aqui</b>
+      JPG, PNG ou WebP · até 30 fotos por envio
+    </div>
+    <input type="file" id="gal-file" accept="image/*" multiple hidden>
+
+    <div class="gal-up-grid" id="gal-up-grid" hidden></div>
+
+    <div class="gal-up-fields">
+      <label><span class="field-label">Categoria</span>
+        <select class="field-input" id="gal-up-cat"></select>
+      </label>
+      <label><span class="field-label">Título (opcional)</span>
+        <input type="text" class="field-input" id="gal-up-titulo" maxlength="80" placeholder="Ex.: Culto de Santa Ceia">
+      </label>
+      <label><span class="field-label">Legenda (opcional)</span>
+        <textarea class="field-input" id="gal-up-legenda" rows="2" maxlength="300" placeholder="Conte o que aconteceu nesse momento…"></textarea>
+      </label>
+    </div>
+    <div class="gal-up-msg" id="gal-up-note">Título e legenda valem para todas as fotos deste envio.</div>
+
+    <div class="gal-up-prog" id="gal-up-prog" hidden><i id="gal-up-bar"></i></div>
+    <div class="gal-up-msg" id="gal-up-msg"></div>
+
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-ghost" id="gal-up-cancel">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="gal-up-send" disabled>Publicar fotos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GALERIA: modal de edição (somente admin) ===== -->
+<div class="confirm-overlay" id="galeria-edit-overlay">
+  <div class="confirm-box gal-modal" style="max-width:460px !important;" role="dialog" aria-modal="true" aria-labelledby="gal-edit-title">
+    <div class="confirm-title" id="gal-edit-title">Editar foto</div>
+    <div class="gal-up-fields">
+      <label><span class="field-label">Categoria</span>
+        <select class="field-input" id="gal-edit-cat"></select>
+      </label>
+      <label><span class="field-label">Título</span>
+        <input type="text" class="field-input" id="gal-edit-titulo" maxlength="80" placeholder="Sem título">
+      </label>
+      <label><span class="field-label">Legenda</span>
+        <textarea class="field-input" id="gal-edit-legenda" rows="3" maxlength="300" placeholder="Sem legenda"></textarea>
+      </label>
+    </div>
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-ghost" id="gal-edit-cancel">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="gal-edit-save">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GALERIA: visualizador de foto ===== -->
+<div class="gal-lb" id="galeria-lightbox" role="dialog" aria-modal="true" aria-label="Visualizador de fotos">
+  <img class="gal-lb-amb" id="gal-lb-amb" alt="">
+  <div class="gal-lb-top">
+    <span class="gal-lb-count" id="gal-lb-count"></span>
+    <div class="gal-lb-actions">
+      <button type="button" class="gal-lb-btn" id="gal-lb-zoom" aria-label="Ampliar" data-gal-icon="zoom"></button>
+      <button type="button" class="gal-lb-btn" id="gal-lb-share" aria-label="Compartilhar" data-gal-icon="share"></button>
+      <button type="button" class="gal-lb-btn" id="gal-lb-download" aria-label="Baixar foto" data-gal-icon="download"></button>
+      <button type="button" class="gal-lb-btn gal-admin-only" id="gal-lb-edit" aria-label="Editar foto" data-gal-icon="edit" hidden></button>
+      <button type="button" class="gal-lb-btn danger gal-admin-only" id="gal-lb-del" aria-label="Excluir foto" data-gal-icon="trash" hidden></button>
+      <button type="button" class="gal-lb-btn" id="gal-lb-close" aria-label="Fechar" data-gal-icon="close"></button>
+    </div>
+  </div>
+  <div class="gal-lb-stage" id="gal-lb-stage">
+    <button type="button" class="gal-lb-nav prev" id="gal-lb-prev" aria-label="Foto anterior" data-gal-icon="chevL"></button>
+    <img class="gal-lb-img" id="gal-lb-img" alt="">
+    <button type="button" class="gal-lb-nav next" id="gal-lb-next" aria-label="Próxima foto" data-gal-icon="chevR"></button>
+  </div>
+  <div class="gal-lb-cap" id="gal-lb-cap"></div>
+</div>
+
+<!-- ===== GALERIA: barra de seleção ===== -->
+<div class="gal-bulk" id="galeria-bulk" role="region" aria-label="Fotos selecionadas">
+  <span class="gal-bulk-n" id="gal-bulk-n">0 selecionadas</span>
+  <button type="button" id="gal-bulk-dl"><span data-gal-icon="download" style="display:inline-flex;"></span><span class="lbl">Baixar</span></button>
+  <select id="gal-bulk-move" class="gal-admin-only" aria-label="Mover para categoria" hidden></select>
+  <button type="button" class="danger gal-admin-only" id="gal-bulk-del" hidden><span data-gal-icon="trash" style="display:inline-flex;"></span><span class="lbl">Excluir</span></button>
+  <button type="button" class="x" id="gal-bulk-clear" aria-label="Limpar seleção" data-gal-icon="close"></button>
 </div>
 
 <div class="confirm-overlay" id="comunidade-form-overlay">
@@ -7060,6 +7527,11 @@ function switchView(view){
   } else if(previousView==='comunidade'){
     if(typeof pararPollingComunidade === 'function') pararPollingComunidade();
     if(typeof fecharCanalComunidade === 'function') fecharCanalComunidade();
+  }
+  if(view==='galeria'){
+    if(typeof carregarGaleria === 'function') carregarGaleria();
+  } else if(previousView==='galeria' && typeof galeriaAoSair === 'function'){
+    galeriaAoSair();
   }
   if(previousView==='media' && view!=='media' && typeof closeMediaPlayer === 'function') closeMediaPlayer();
   // Saiu da tela do Quiz bíblico: reinicia XP, acertos, erros e conquistas da sessão
@@ -13436,11 +13908,12 @@ async function migrarInscricaoPushSeNecessario() {
     'bible':       { icon:'\ud83d\udcd6', title:'Bíblia',                sub:'Leitura da Palavra' },
     'conversas':   { icon:'\ud83d\udcac', title:'Conversas',             sub:'Converse diretamente com os membros' },
     'comunidade':  { icon:'\ud83c\udfdb\ufe0f', title:'Comunidade',      sub:'Mural, canais, cultos e aniversariantes' },
+    'galeria':     { icon:'\ud83d\udcf8', title:'Fotos da igreja',       sub:'Adicione, edite e organize as fotos da galeria' },
     'perfil':         { icon:'\ud83d\udc64', title:'Perfil',                sub:'Suas informações e preferências' },
     'notificacoes':   { icon:'\ud83d\udd14', title:'Notificações Push',     sub:'Envie mensagens para todos os membros inscritos' },
   };
   // Abas que reaproveitam telas já existentes do app (em vez de um painel de estatísticas)
-  const ADMIN_TAB_PARA_VIEW = { bible:'bible', conversas:'conversas', comunidade:'comunidade', perfil:'settings' };
+  const ADMIN_TAB_PARA_VIEW = { bible:'bible', conversas:'conversas', comunidade:'comunidade', galeria:'galeria', perfil:'settings' };
   const topbarIcon  = document.getElementById('admin-topbar-icon');
   const topbarTitle = document.getElementById('admin-topbar-title');
   const topbarSub   = document.getElementById('admin-topbar-sub');
@@ -13461,6 +13934,9 @@ async function migrarInscricaoPushSeNecessario() {
         if(tabAtiva === 'oracoes')       await carregarAdminOracoes();
         else if(tabAtiva === 'membros')  await carregarAdminMembros();
         else if(tabAtiva === 'mensagens')    await carregarAdminMensagens();
+        else if(tabAtiva === 'galeria' && typeof carregarGaleria === 'function'){
+          galeria_forcarRecarga();
+        }
         else if(tabAtiva === 'notificacoes') {
           await carregarAdminPushHistorico();
           await carregarAdminPushInscritos();
@@ -13489,6 +13965,7 @@ async function migrarInscricaoPushSeNecessario() {
           if(typeof pararPollingComunidade === 'function') pararPollingComunidade();
           if(typeof fecharCanalComunidade === 'function') fecharCanalComunidade();
         }
+        if(state.view === 'galeria' && typeof galeriaAoSair === 'function') galeriaAoSair();
         state.view = null;
         document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
         document.querySelectorAll('.admin-panel').forEach(p=>p.classList.toggle('active', p.id === 'admin-panel-'+tab));
@@ -14700,7 +15177,7 @@ function aplicarPermissoesAdmin(){
     // (em vez de ficarem no site "normal", que o admin não usa mais).
     const adminContent = document.querySelector('#admin-shell .admin-content');
     if(adminContent){
-      ['view-bible', 'view-conversas', 'view-comunidade', 'view-settings'].forEach(id=>{
+      ['view-bible', 'view-conversas', 'view-comunidade', 'view-galeria', 'view-settings'].forEach(id=>{
         const el = document.getElementById(id);
         if(el && el.parentElement !== adminContent) adminContent.appendChild(el);
       });
@@ -14716,7 +15193,7 @@ function aplicarPermissoesAdmin(){
     // até ela.
     const appContent = document.getElementById('content');
     if(appContent){
-      ['view-bible', 'view-conversas', 'view-comunidade', 'view-settings'].forEach(id=>{
+      ['view-bible', 'view-conversas', 'view-comunidade', 'view-galeria', 'view-settings'].forEach(id=>{
         const el = document.getElementById(id);
         if(el && el.parentElement !== appContent) appContent.appendChild(el);
       });
@@ -16040,6 +16517,890 @@ if(mobileSearchBtn && globalSearchBox){
 // Preenche os cartões da home já na primeira carga da página (view inicial é 'home')
 renderHomeStats();
 renderHomeContinue();
+
+/* =========================================================================
+   GALERIA DA IGREJA — aba "Fotos da igreja"
+   - Todos os membros: veem a galeria, abrem, baixam e compartilham.
+   - Somente administrador: adiciona, edita, move e exclui (os botões só
+     aparecem para admin, e o banco confere de novo via validar_admin).
+   Depende de: db, state, toast, escapeHtml, openConfirm (script principal).
+   ========================================================================= */
+(function(){
+'use strict';
+
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+const CATS = [
+  { key:'todos',             label:'Todos',             emoji:'▦'  },
+  { key:'cultos',            label:'Cultos',            emoji:'🎶' },
+  { key:'eventos',           label:'Eventos',           emoji:'🎤' },
+  { key:'confraternizacoes', label:'Confraternizações', emoji:'🍽️' },
+  { key:'pastores',          label:'Pastores',          emoji:'📖' },
+  { key:'jovens',            label:'Jovens',            emoji:'🔥' },
+  { key:'outros',            label:'Outros',            emoji:'📷' }
+];
+const CAT_REAIS = CATS.filter(c => c.key !== 'todos');
+const catLabel = k => (CATS.find(c => c.key === k) || {}).label || 'Outros';
+
+const PAGINA = 24;
+const MAX_ARQUIVOS = 30;
+const SLIDE_MS = 6000;
+const CACHE_MAX = 14;
+
+const ICONS = {
+  church:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.4v4M10 4.2h4"/><path d="M4.5 12.4L12 7l7.5 5.4"/><path d="M6 11v9.6h12V11"/><path d="M10 20.6v-4.4a2 2 0 0 1 4 0v4.4"/></svg>',
+  grid:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>',
+  play:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4.5"/><path d="M3 9h18M9 3l3 6M15 3l3 6"/><path d="M10.2 12.8v4.4l3.6-2.2z" fill="currentColor"/></svg>',
+  calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg>',
+  close:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  chevL:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  chevR:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>',
+  share:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg>',
+  trash:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+  edit:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>',
+  zoom:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8v6M8 11h6"/></svg>',
+  plus:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  check:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  pause:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M8.5 5v14M15.5 5v14"/></svg>',
+  playTri:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 4.5v15l12-7.5z"/></svg>',
+  full:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+  upload:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M21 16l-5-5-8 9M12 20"/></svg>'
+};
+$$('[data-gal-icon]').forEach(el => { el.innerHTML = ICONS[el.dataset.galIcon] || ''; });
+
+/* ------------------------------------------------------------------ estado */
+const galeria = {
+  token: null,
+  categoria: 'todos',
+  aba: 'grade',
+  fotos: [],
+  total: 0,
+  fim: false,
+  carregando: false,
+  erro: null,
+  reqId: 0,
+  resumo: {},            // { cultos:{total,capa}, ... }
+  sel: new Set(),
+  cache: new Map(),      // id -> Promise<dataURL> (imagem grande)
+  lb: { i: -1, token: 0, aberto: false },
+  show: { i: 0, timer: null, tok: 0, playing: true, flip: false },
+  up: { itens: [], fila: Promise.resolve(), enviando: false }
+};
+
+const ehAdmin = () => !!(state.perfil && state.perfil.admin);
+const fmtData = (iso, opts) => {
+  try { return new Date(iso).toLocaleDateString('pt-BR', opts || { day:'2-digit', month:'long', year:'numeric' }); }
+  catch(e){ return ''; }
+};
+const plural = (n, s, p) => n === 1 ? s : p;
+
+function aplicarPermissoes(){
+  const adm = ehAdmin();
+  $$('.gal-admin-only').forEach(el => { el.hidden = !adm; });
+}
+
+function erroAmigavel(error){
+  const msg = (error && (error.message || error.details)) || '';
+  if(/Could not find the function|PGRST202|schema cache/i.test(msg)){
+    return ehAdmin()
+      ? 'A galeria ainda não foi criada no banco. Rode o arquivo galeria_fotos.sql no SQL Editor do Supabase.'
+      : 'A galeria ainda não está disponível. Tente novamente mais tarde.';
+  }
+  if(/Acesso restrito/i.test(msg)) return 'Somente a administração pode fazer isso.';
+  return msg || 'Não foi possível concluir. Tente novamente.';
+}
+
+/* ------------------------------------------------------------ carregamento */
+async function carregarGaleria(){
+  if(!state.sessionToken) return;
+  if(galeria.token !== state.sessionToken){
+    resetar();
+    galeria.token = state.sessionToken;
+  }
+  aplicarPermissoes();
+  montarSelects();
+  renderStories();
+  await Promise.all([carregarResumo(), recarregar()]);
+}
+
+function resetar(){
+  galeria.categoria = 'todos';
+  galeria.fotos = []; galeria.total = 0; galeria.fim = false; galeria.erro = null;
+  galeria.resumo = {}; galeria.sel.clear(); galeria.cache.clear();
+  galeria.reqId++;
+}
+
+async function carregarResumo(){
+  const { data, error } = await db.rpc('resumo_galeria', { p_token: state.sessionToken });
+  if(error){ console.error('Erro no resumo da galeria:', error); return; }
+  const r = {};
+  (data || []).forEach(l => { r[l.categoria] = { total: Number(l.total) || 0, capa: l.capa || null }; });
+  galeria.resumo = r;
+  renderStories();
+  renderPill();
+}
+
+async function recarregar(){
+  galeria.reqId++;
+  galeria.fotos = []; galeria.total = 0; galeria.fim = false; galeria.erro = null; galeria.carregando = false;
+  galeria.sel.clear(); atualizarSelecao();
+  renderCorpo({ esqueleto:true });
+  await carregarPagina();
+}
+
+async function carregarPagina(){
+  if(galeria.carregando || galeria.fim) return;
+  galeria.carregando = true;
+  const req = galeria.reqId;
+  const antes = galeria.fotos.length;
+  const { data, error } = await db.rpc('listar_fotos_galeria', {
+    p_token: state.sessionToken,
+    p_categoria: galeria.categoria === 'todos' ? null : galeria.categoria,
+    p_limite: PAGINA,
+    p_offset: antes
+  });
+  if(req !== galeria.reqId) return;           // resposta antiga: descarta
+  galeria.carregando = false;
+  if(error){
+    console.error('Erro ao listar fotos:', error);
+    galeria.erro = erroAmigavel(error);
+    renderCorpo();
+    return;
+  }
+  const novas = data || [];
+  const ids = new Set(galeria.fotos.map(f => f.id));
+  novas.forEach(f => { if(!ids.has(f.id)) galeria.fotos.push(f); });
+  galeria.total = novas.length ? Number(novas[0].total) : galeria.fotos.length;
+  galeria.fim = novas.length < PAGINA || galeria.fotos.length >= galeria.total;
+  renderCorpo({ anexarDesde: antes });
+}
+
+/* ------------------------------------------------------------------ render */
+function totalGeral(){
+  return CAT_REAIS.reduce((s, c) => s + ((galeria.resumo[c.key] || {}).total || 0), 0);
+}
+
+function renderPill(){
+  const n = totalGeral();
+  const el = $('#gal-total-pill');
+  if(el) el.textContent = n + ' ' + plural(n, 'foto', 'fotos');
+}
+
+function renderStories(){
+  const box = $('#gal-stories');
+  if(!box) return;
+  box.innerHTML = '';
+  CATS.forEach(c => {
+    const info = c.key === 'todos' ? { total: totalGeral(), capa: null } : (galeria.resumo[c.key] || { total: 0, capa: null });
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gal-story' + (c.key === galeria.categoria ? ' active' : '');
+    b.dataset.cat = c.key;
+    b.setAttribute('aria-pressed', c.key === galeria.categoria ? 'true' : 'false');
+    b.setAttribute('aria-label', c.label + ', ' + info.total + ' ' + plural(info.total, 'foto', 'fotos'));
+
+    const ring = document.createElement('span'); ring.className = 'gal-ring';
+    const inner = document.createElement('span'); inner.className = 'gal-ring-in';
+    if(c.key === 'todos'){
+      inner.innerHTML = ICONS.grid;
+    } else if(info.capa){
+      const img = document.createElement('img'); img.alt = ''; img.src = info.capa; img.decoding = 'async';
+      inner.appendChild(img);
+    } else {
+      const em = document.createElement('span'); em.className = 'gal-ring-emoji'; em.textContent = c.emoji;
+      inner.appendChild(em);
+    }
+    ring.appendChild(inner);
+    if(info.total > 0){
+      const n = document.createElement('span'); n.className = 'gal-story-n';
+      n.textContent = info.total > 99 ? '99+' : String(info.total);
+      ring.appendChild(n);
+    }
+    const lb = document.createElement('span'); lb.className = 'gal-story-label'; lb.textContent = c.label;
+    b.appendChild(ring); b.appendChild(lb);
+    box.appendChild(b);
+  });
+}
+
+function criarTile(foto, idx, atraso){
+  const t = document.createElement('div');
+  t.className = 'gal-tile' + (galeria.sel.has(foto.id) ? ' sel' : '');
+  t.dataset.id = foto.id;
+  t.tabIndex = 0;
+  t.setAttribute('role', 'button');
+  t.setAttribute('aria-label', 'Abrir foto' + (foto.titulo ? ': ' + foto.titulo : ''));
+  t.style.setProperty('--i', String(Math.min(atraso, 12)));
+
+  const img = document.createElement('img');
+  img.src = foto.miniatura; img.alt = foto.titulo || foto.legenda || 'Foto da igreja';
+  img.loading = 'lazy'; img.decoding = 'async';
+  t.appendChild(img);
+
+  if(foto.titulo){
+    const cap = document.createElement('span'); cap.className = 'gal-tile-cap'; cap.textContent = foto.titulo;
+    t.appendChild(cap);
+  }
+  const ck = document.createElement('button');
+  ck.type = 'button'; ck.className = 'gal-check'; ck.innerHTML = ICONS.check;
+  ck.setAttribute('role', 'checkbox');
+  ck.setAttribute('aria-checked', galeria.sel.has(foto.id) ? 'true' : 'false');
+  ck.setAttribute('aria-label', 'Selecionar foto');
+  t.appendChild(ck);
+  return t;
+}
+
+function blocoVazio(){
+  const adm = ehAdmin();
+  const nomeCat = galeria.categoria === 'todos' ? '' : ' em ' + catLabel(galeria.categoria);
+  const d = document.createElement('div');
+  d.className = 'gal-empty';
+  d.innerHTML = `
+    <div class="gal-empty-frames"><i>⛪</i><i>🙌</i><i>🕊️</i></div>
+    <h3>${adm ? 'Nenhuma foto' + nomeCat + ' ainda' : 'Em breve, nossas fotos por aqui'}</h3>
+    <p>${adm ? 'Adicione a primeira foto para começar a contar a história da igreja.' : 'A administração ainda não publicou fotos' + nomeCat + '. Volte em breve!'}</p>`;
+  if(adm){
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'btn btn-primary'; b.textContent = 'Adicionar fotos';
+    b.addEventListener('click', abrirEnvio);
+    d.appendChild(b);
+  }
+  return d;
+}
+
+function blocoErro(msg){
+  const d = document.createElement('div');
+  d.className = 'gal-empty';
+  d.innerHTML = `<div class="gal-empty-frames"><i>📷</i><i>⚠️</i><i>📷</i></div><h3>Não foi possível abrir a galeria</h3><p></p>`;
+  d.querySelector('p').textContent = msg;
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'btn btn-ghost'; b.textContent = 'Tentar de novo';
+  b.addEventListener('click', () => { carregarResumo(); recarregar(); });
+  d.appendChild(b);
+  return d;
+}
+
+function renderCorpo(opts){
+  opts = opts || {};
+  const body = $('#gal-body');
+  if(!body) return;
+  const more = $('#gal-more');
+
+  if(opts.esqueleto){
+    pararShow();
+    body.innerHTML = '';
+    const g = document.createElement('div'); g.className = 'gal-grid';
+    for(let i = 0; i < 9; i++){ const s = document.createElement('div'); s.className = 'gal-skel'; g.appendChild(s); }
+    body.appendChild(g);
+    more.hidden = true;
+    return;
+  }
+  if(galeria.erro){ pararShow(); body.innerHTML = ''; body.appendChild(blocoErro(galeria.erro)); more.hidden = true; return; }
+  if(!galeria.fotos.length){ pararShow(); body.innerHTML = ''; body.appendChild(blocoVazio()); more.hidden = true; return; }
+
+  if(galeria.aba === 'grade'){
+    let grid = $('#gal-grid');
+    if(!grid || opts.anexarDesde === undefined || opts.anexarDesde === 0){
+      body.innerHTML = '';
+      grid = document.createElement('div'); grid.className = 'gal-grid'; grid.id = 'gal-grid';
+      body.appendChild(grid);
+      opts.anexarDesde = 0;
+    }
+    const frag = document.createDocumentFragment();
+    for(let i = opts.anexarDesde; i < galeria.fotos.length; i++){
+      frag.appendChild(criarTile(galeria.fotos[i], i, i - opts.anexarDesde));
+    }
+    grid.appendChild(frag);
+  }
+  else if(galeria.aba === 'linha'){
+    pararShow();
+    body.innerHTML = '';
+    let mesAtual = '', grid = null, cont = 0, cab = null;
+    galeria.fotos.forEach((f, i) => {
+      const mes0 = fmtData(f.criado_em, { month:'long', year:'numeric' });
+      const mes = mes0.charAt(0).toUpperCase() + mes0.slice(1);
+      if(mes !== mesAtual){
+        mesAtual = mes; cont = 0;
+        cab = document.createElement('div'); cab.className = 'gal-month';
+        cab.innerHTML = '<span></span><small></small>';
+        cab.firstChild.textContent = mes;
+        body.appendChild(cab);
+        grid = document.createElement('div'); grid.className = 'gal-grid compact';
+        body.appendChild(grid);
+      }
+      cont++;
+      cab.lastChild.textContent = cont + ' ' + plural(cont, 'foto', 'fotos');
+      grid.appendChild(criarTile(f, i, cont - 1));
+    });
+  }
+  else if(galeria.aba === 'apresentacao'){
+    if(!$('#gal-show')) montarShow();
+  }
+  more.hidden = galeria.fim;
+}
+
+/* ------------------------------------------------------------------ seleção */
+function alternarSelecao(id){
+  if(galeria.sel.has(id)) galeria.sel.delete(id); else galeria.sel.add(id);
+  atualizarSelecao();
+}
+function atualizarSelecao(){
+  $$('#gal-body .gal-tile').forEach(t => {
+    const on = galeria.sel.has(t.dataset.id);
+    t.classList.toggle('sel', on);
+    const ck = $('.gal-check', t);
+    if(ck) ck.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+  const n = galeria.sel.size;
+  const bar = $('#galeria-bulk');
+  $('#gal-bulk-n').textContent = n + ' ' + plural(n, 'selecionada', 'selecionadas');
+  bar.classList.toggle('show', n > 0);
+}
+
+/* --------------------------------------------------------- cache da imagem */
+function obterFull(foto){
+  if(galeria.cache.has(foto.id)){
+    const p = galeria.cache.get(foto.id);
+    galeria.cache.delete(foto.id); galeria.cache.set(foto.id, p);   // mantém "recente"
+    return p;
+  }
+  const p = db.rpc('obter_foto_galeria', { p_token: state.sessionToken, p_foto_id: foto.id })
+    .then(({ data, error }) => {
+      if(error || !data){ throw error || new Error('Imagem indisponível'); }
+      return data;
+    })
+    .catch(e => { galeria.cache.delete(foto.id); throw e; });
+  galeria.cache.set(foto.id, p);
+  while(galeria.cache.size > CACHE_MAX){ galeria.cache.delete(galeria.cache.keys().next().value); }
+  return p;
+}
+
+/* -------------------------------------------------------------- visualizador */
+function abrirLb(i){
+  if(i < 0 || i >= galeria.fotos.length) return;
+  galeria.lb.aberto = true;
+  $('#galeria-lightbox').classList.add('show');
+  document.body.classList.add('no-scroll');
+  aplicarPermissoes();
+  mostrarLb(i, true);
+}
+function fecharLb(){
+  if(!galeria.lb.aberto) return;
+  galeria.lb.aberto = false; galeria.lb.token++;
+  $('#galeria-lightbox').classList.remove('show');
+  document.body.classList.remove('no-scroll');
+  const img = $('#gal-lb-img'); img.classList.remove('zoomed'); img.removeAttribute('src');
+}
+function mostrarLb(i, primeira){
+  const foto = galeria.fotos[i];
+  if(!foto) return;
+  galeria.lb.i = i;
+  const tk = ++galeria.lb.token;
+  const img = $('#gal-lb-img');
+  img.classList.remove('zoomed');
+  img.style.transformOrigin = '50% 50%';
+  img.alt = foto.titulo || foto.legenda || 'Foto da igreja';
+  img.src = foto.miniatura;                 // mostra a miniatura na hora…
+  if(!galeria.cache.has(foto.id)) img.classList.add('swap'); else img.classList.remove('swap');
+  $('#gal-lb-amb').src = foto.miniatura;
+  $('#gal-lb-count').textContent = (i + 1) + ' / ' + galeria.total;
+  $('#gal-lb-prev').disabled = i === 0;
+  $('#gal-lb-next').disabled = i >= galeria.fotos.length - 1 && galeria.fim;
+
+  const cap = $('#gal-lb-cap'); cap.innerHTML = '';
+  if(foto.titulo){ const b = document.createElement('b'); b.textContent = foto.titulo; cap.appendChild(b); }
+  if(foto.legenda){ const p = document.createElement('p'); p.textContent = foto.legenda; cap.appendChild(p); }
+  const meta = document.createElement('div'); meta.className = 'gal-lb-meta';
+  const chip = document.createElement('span'); chip.className = 'gal-lb-chip'; chip.textContent = catLabel(foto.categoria);
+  const dt = document.createElement('span'); dt.className = 'gal-lb-date'; dt.textContent = fmtData(foto.criado_em);
+  meta.appendChild(chip); meta.appendChild(dt); cap.appendChild(meta);
+
+  obterFull(foto).then(src => {                // …e troca pela versão grande
+    if(tk !== galeria.lb.token) return;
+    const pre = new Image();
+    pre.onload = () => {
+      if(tk !== galeria.lb.token) return;
+      img.src = src; img.classList.remove('swap');
+    };
+    pre.onerror = () => { if(tk === galeria.lb.token) img.classList.remove('swap'); };
+    pre.src = src;
+  }).catch(() => { if(tk === galeria.lb.token){ img.classList.remove('swap'); toast('Não foi possível carregar a foto em alta qualidade', '⚠️'); } });
+
+  [i + 1, i - 1].forEach(j => { if(galeria.fotos[j]) obterFull(galeria.fotos[j]).catch(()=>{}); });
+}
+async function irLb(delta){
+  let i = galeria.lb.i + delta;
+  if(i < 0) return;
+  if(i >= galeria.fotos.length){
+    if(galeria.fim) return;
+    await carregarPagina();
+    if(i >= galeria.fotos.length) return;
+  }
+  mostrarLb(i);
+  if(i >= galeria.fotos.length - 3 && !galeria.fim) carregarPagina();   // pré-carrega a próxima página
+}
+function zoomLb(ev){
+  const img = $('#gal-lb-img');
+  const z = img.classList.toggle('zoomed');
+  if(z && ev && ev.clientX !== undefined){
+    const r = img.getBoundingClientRect();
+    img.style.transformOrigin = (((ev.clientX - r.left) / r.width) * 100) + '% ' + (((ev.clientY - r.top) / r.height) * 100) + '%';
+  }
+}
+
+/* ------------------------------------------------------- baixar / compartilhar */
+function nomeArquivo(f){
+  const base = (f.titulo || 'foto-igreja').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'foto-igreja';
+  return base + '-' + String(f.id).slice(0, 6) + '.jpg';
+}
+async function baixar(f){
+  try{
+    const src = await obterFull(f);
+    const a = document.createElement('a');
+    a.href = src; a.download = nomeArquivo(f);
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){ toast('Não foi possível baixar a foto', '⚠️'); }
+}
+async function compartilhar(f){
+  try{
+    const src = await obterFull(f);
+    const blob = await (await fetch(src)).blob();
+    const file = new File([blob], nomeArquivo(f), { type: blob.type || 'image/jpeg' });
+    if(navigator.canShare && navigator.canShare({ files: [file] })){
+      await navigator.share({ files: [file], title: f.titulo || 'Galeria da Igreja', text: f.legenda || 'Igreja Pentecostal Deus é Fiel' });
+      return;
+    }
+  }catch(e){ if(e && e.name === 'AbortError') return; }
+  baixar(f);
+}
+
+/* --------------------------------------------------------------- apresentação */
+function montarShow(){
+  const body = $('#gal-body');
+  body.innerHTML = `
+    <div class="gal-show" id="gal-show" aria-label="Apresentação de slides">
+      <img class="gal-show-img" id="gal-show-a" alt="">
+      <img class="gal-show-img" id="gal-show-b" alt="">
+      <div class="gal-show-prog" id="gal-show-prog"></div>
+      <div class="gal-show-ctrl">
+        <span class="gal-show-count" id="gal-show-count"></span>
+        <button type="button" class="gal-glass" id="gal-show-prev" aria-label="Anterior"></button>
+        <button type="button" class="gal-glass" id="gal-show-pp" aria-label="Pausar"></button>
+        <button type="button" class="gal-glass" id="gal-show-next" aria-label="Próxima"></button>
+        <button type="button" class="gal-glass" id="gal-show-full" aria-label="Tela cheia"></button>
+      </div>
+      <div class="gal-show-cap" id="gal-show-cap"></div>
+    </div>
+    <div class="gal-show-hint">Toque na foto para abri-la em tamanho grande.</div>`;
+  $('#gal-show-prev').innerHTML = ICONS.chevL;
+  $('#gal-show-next').innerHTML = ICONS.chevR;
+  $('#gal-show-full').innerHTML = ICONS.full;
+  galeria.show.playing = true; galeria.show.flip = false;
+  atualizarBotaoPlay();
+  irShow(0);
+}
+function atualizarBotaoPlay(){
+  const b = $('#gal-show-pp'); if(!b) return;
+  b.innerHTML = galeria.show.playing ? ICONS.pause : ICONS.playTri;
+  b.setAttribute('aria-label', galeria.show.playing ? 'Pausar' : 'Reproduzir');
+}
+async function irShow(i){
+  const s = galeria.show, n = galeria.fotos.length;
+  if(!n || !$('#gal-show')) return;
+  i = ((i % n) + n) % n;
+  s.i = i;
+  const tk = ++s.tok;
+  clearTimeout(s.timer);
+  const foto = galeria.fotos[i];
+  let src;
+  try{ src = await obterFull(foto); }catch(e){ src = foto.miniatura; }
+  if(tk !== s.tok || !$('#gal-show')) return;
+
+  const a = $('#gal-show-a'), b = $('#gal-show-b');
+  const prox = s.flip ? a : b, atual = s.flip ? b : a;
+  s.flip = !s.flip;
+  prox.src = src;
+  try{ await prox.decode(); }catch(e){}
+  if(tk !== s.tok || !$('#gal-show')) return;
+  atual.classList.remove('on'); atual.classList.add('prev');
+  prox.classList.remove('prev'); prox.classList.add('on');
+
+  $('#gal-show-count').textContent = (i + 1) + ' / ' + n;
+  const cap = $('#gal-show-cap'); cap.innerHTML = '';
+  if(foto.titulo){ const b2 = document.createElement('b'); b2.textContent = foto.titulo; cap.appendChild(b2); }
+  if(foto.legenda){ const sp = document.createElement('span'); sp.textContent = foto.legenda; cap.appendChild(sp); }
+
+  const prog = $('#gal-show-prog');
+  prog.classList.remove('run'); void prog.offsetWidth;
+  if(s.playing){
+    prog.style.setProperty('--dur', SLIDE_MS + 'ms'); prog.classList.add('run');
+    s.timer = setTimeout(() => irShow(i + 1), SLIDE_MS);
+  }
+  if(galeria.fotos[(i + 1) % n]) obterFull(galeria.fotos[(i + 1) % n]).catch(()=>{});
+  if(i >= n - 2 && !galeria.fim) carregarPagina();
+}
+function pararShow(){
+  clearTimeout(galeria.show.timer); galeria.show.tok++;
+  if(document.fullscreenElement && document.exitFullscreen){ document.exitFullscreen().catch(()=>{}); }
+}
+
+/* ------------------------------------------------------------------ envio (admin) */
+function montarSelects(){
+  const opts = CAT_REAIS.map(c => `<option value="${c.key}">${c.emoji} ${escapeHtml(c.label)}</option>`).join('');
+  ['#gal-up-cat', '#gal-edit-cat'].forEach(sel => { const el = $(sel); if(el && !el.options.length) el.innerHTML = opts; });
+  const mv = $('#gal-bulk-move');
+  if(mv && !mv.options.length) mv.innerHTML = '<option value="">Mover para…</option>' + opts;
+}
+
+function abrirEnvio(){
+  if(!ehAdmin()){ toast('Somente a administração pode adicionar fotos', '🔒'); return; }
+  galeria.up.itens = []; galeria.up.enviando = false;
+  $('#gal-up-titulo').value = ''; $('#gal-up-legenda').value = '';
+  $('#gal-up-cat').value = galeria.categoria === 'todos' ? 'cultos' : galeria.categoria;
+  $('#gal-up-msg').textContent = ''; $('#gal-up-msg').classList.remove('err');
+  $('#gal-up-prog').hidden = true; $('#gal-up-bar').style.width = '0';
+  renderEnvio();
+  $('#galeria-up-overlay').classList.add('show');
+}
+function fecharEnvio(){
+  if(galeria.up.enviando) return;
+  $('#galeria-up-overlay').classList.remove('show');
+  galeria.up.itens = [];
+}
+
+function carregarImg(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('Formato não suportado')); };
+    img.src = url;
+  });
+}
+function carregarBitmap(file){
+  if('createImageBitmap' in window){
+    return createImageBitmap(file, { imageOrientation: 'from-image' }).catch(() => carregarImg(file));
+  }
+  return carregarImg(file);
+}
+function redimensionar(src, max, q){
+  const w0 = src.width || src.naturalWidth, h0 = src.height || src.naturalHeight;
+  const esc = Math.min(1, max / Math.max(w0, h0));
+  const w = Math.max(1, Math.round(w0 * esc)), h = Math.max(1, Math.round(h0 * esc));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(src, 0, 0, w, h);
+  return { url: c.toDataURL('image/jpeg', q), w, h };
+}
+async function processarArquivo(file){
+  const bmp = await carregarBitmap(file);
+  let full = redimensionar(bmp, 1600, 0.8);
+  if(full.url.length > 2200000) full = redimensionar(bmp, 1280, 0.65);
+  const thumb = redimensionar(bmp, 520, 0.7);
+  if(bmp.close) bmp.close();
+  if(full.url.length > 2400000) throw new Error('Foto muito pesada');
+  return { full: full.url, thumb: thumb.url, w: full.w, h: full.h };
+}
+
+function adicionarArquivos(files){
+  const validos = Array.from(files).filter(f => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.name));
+  if(!validos.length){ toast('Escolha arquivos de imagem', '⚠️'); return; }
+  const livres = MAX_ARQUIVOS - galeria.up.itens.length;
+  if(validos.length > livres) toast('Limite de ' + MAX_ARQUIVOS + ' fotos por envio', '⚠️');
+  validos.slice(0, Math.max(0, livres)).forEach(file => {
+    const it = { id: Math.random().toString(36).slice(2), file, status: 'processando', preview: null, full: null, thumb: null, w: 0, h: 0 };
+    galeria.up.itens.push(it);
+    galeria.up.fila = galeria.up.fila.then(async () => {
+      if(!galeria.up.itens.includes(it)) return;
+      try{
+        const r = await processarArquivo(file);
+        it.full = r.full; it.thumb = r.thumb; it.w = r.w; it.h = r.h; it.preview = r.thumb; it.status = 'pronto';
+      }catch(e){ it.status = 'erro'; it.erro = e.message || 'Falha ao processar'; }
+      renderEnvio();
+    });
+  });
+  renderEnvio();
+}
+
+function renderEnvio(){
+  const grid = $('#gal-up-grid'), its = galeria.up.itens;
+  grid.hidden = !its.length;
+  grid.innerHTML = '';
+  its.forEach(it => {
+    const d = document.createElement('div');
+    d.className = 'gal-up-item ' + ({ processando:'wait', pronto:'', enviando:'busy', ok:'ok', erro:'erro' }[it.status] || '');
+    if(it.preview){ const im = document.createElement('img'); im.src = it.preview; im.alt = ''; d.appendChild(im); }
+    if(it.status === 'processando' || it.status === 'enviando'){ const sp = document.createElement('span'); sp.className = 'gal-spin'; d.appendChild(sp); }
+    const st = { ok:'Enviada', erro:'Erro' }[it.status];
+    if(st){ const s = document.createElement('span'); s.className = 'gal-up-st'; s.textContent = st; if(it.erro) s.title = it.erro; d.appendChild(s); }
+    if(!galeria.up.enviando && it.status !== 'ok'){
+      const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'gal-up-rm'; rm.innerHTML = ICONS.close;
+      rm.setAttribute('aria-label', 'Remover da lista');
+      rm.addEventListener('click', e => { e.stopPropagation(); galeria.up.itens = galeria.up.itens.filter(x => x !== it); renderEnvio(); });
+      d.appendChild(rm);
+    }
+    grid.appendChild(d);
+  });
+  const prontas = its.filter(i => i.status === 'pronto').length;
+  const processando = its.some(i => i.status === 'processando');
+  const btn = $('#gal-up-send');
+  btn.disabled = galeria.up.enviando || processando || prontas === 0;
+  btn.textContent = prontas > 0 ? 'Publicar ' + prontas + ' ' + plural(prontas, 'foto', 'fotos') : 'Publicar fotos';
+  $('#gal-up-cancel').disabled = galeria.up.enviando;
+}
+
+async function enviarFotos(){
+  const fila = galeria.up.itens.filter(i => i.status === 'pronto');
+  if(!fila.length) return;
+  const titulo = $('#gal-up-titulo').value.trim(), legenda = $('#gal-up-legenda').value.trim();
+  const cat = $('#gal-up-cat').value;
+  const msg = $('#gal-up-msg'), barra = $('#gal-up-bar');
+  galeria.up.enviando = true;
+  $('#gal-up-prog').hidden = false; barra.style.width = '0'; msg.classList.remove('err');
+  let feitas = 0, falhas = 0;
+  for(const it of fila){
+    it.status = 'enviando'; renderEnvio();
+    msg.textContent = 'Enviando ' + (feitas + falhas + 1) + ' de ' + fila.length + '…';
+    const { error } = await db.rpc('adicionar_foto_galeria', {
+      p_token: state.sessionToken, p_titulo: titulo, p_legenda: legenda, p_categoria: cat,
+      p_imagem: it.full, p_miniatura: it.thumb, p_largura: it.w, p_altura: it.h
+    });
+    if(error){ it.status = 'erro'; it.erro = erroAmigavel(error); falhas++; console.error('Erro ao enviar foto:', error); }
+    else { it.status = 'ok'; it.full = null; feitas++; }
+    barra.style.width = Math.round(((feitas + falhas) / fila.length) * 100) + '%';
+    renderEnvio();
+  }
+  galeria.up.enviando = false;
+  renderEnvio();
+  if(feitas){
+    galeria.cache.clear();
+    await Promise.all([carregarResumo(), recarregar()]);
+  }
+  if(!falhas){
+    toast(feitas + ' ' + plural(feitas, 'foto publicada', 'fotos publicadas') + ' na galeria', '📸');
+    galeria.up.itens = [];
+    $('#galeria-up-overlay').classList.remove('show');
+  } else {
+    msg.classList.add('err');
+    msg.textContent = falhas + ' ' + plural(falhas, 'foto não foi enviada', 'fotos não foram enviadas') + '. ' + (feitas ? feitas + ' foram publicadas. ' : '') + 'Remova as marcadas com erro ou tente de novo.';
+    galeria.up.itens = galeria.up.itens.filter(i => i.status !== 'ok');
+    renderEnvio();
+  }
+}
+
+/* ------------------------------------------------------------ edição / exclusão */
+function abrirEdicao(foto){
+  if(!ehAdmin() || !foto) return;
+  galeria._editando = foto.id;
+  $('#gal-edit-titulo').value = foto.titulo || '';
+  $('#gal-edit-legenda').value = foto.legenda || '';
+  $('#gal-edit-cat').value = foto.categoria;
+  $('#galeria-edit-overlay').classList.add('show');
+}
+async function salvarEdicao(){
+  const id = galeria._editando; if(!id) return;
+  const btn = $('#gal-edit-save'); btn.disabled = true;
+  const titulo = $('#gal-edit-titulo').value.trim(), legenda = $('#gal-edit-legenda').value.trim(), cat = $('#gal-edit-cat').value;
+  const { error } = await db.rpc('editar_foto_galeria', { p_token: state.sessionToken, p_foto_id: id, p_titulo: titulo, p_legenda: legenda, p_categoria: cat });
+  btn.disabled = false;
+  if(error){ toast(erroAmigavel(error), '⚠️'); return; }
+  $('#galeria-edit-overlay').classList.remove('show');
+  const f = galeria.fotos.find(x => x.id === id);
+  const mudouCat = f && f.categoria !== cat;
+  if(f){ f.titulo = titulo || null; f.legenda = legenda || null; f.categoria = cat; }
+  toast('Foto atualizada', '✅');
+  if(mudouCat && galeria.categoria !== 'todos'){ removerLocal([id]); }
+  else { renderCorpo({ anexarDesde: 0 }); if(galeria.lb.aberto) mostrarLb(galeria.lb.i); }
+  carregarResumo();
+}
+function removerLocal(ids){
+  const set = new Set(ids);
+  const posLb = galeria.lb.i;
+  galeria.fotos = galeria.fotos.filter(f => !set.has(f.id));
+  galeria.total = Math.max(0, galeria.total - ids.length);
+  ids.forEach(i => { galeria.sel.delete(i); galeria.cache.delete(i); });
+  atualizarSelecao();
+  if(galeria.lb.aberto){
+    if(!galeria.fotos.length) fecharLb();
+    else mostrarLb(Math.min(posLb, galeria.fotos.length - 1));
+  }
+  if(galeria.aba === 'apresentacao'){ pararShow(); const sh = $('#gal-show'); if(sh) sh.remove(); }
+  renderCorpo({ anexarDesde: 0 });
+}
+function confirmarExclusao(ids){
+  if(!ehAdmin() || !ids.length) return;
+  const um = ids.length === 1;
+  openConfirm({
+    title: um ? 'Excluir esta foto?' : 'Excluir ' + ids.length + ' fotos?',
+    text: um ? 'A foto sai da galeria para todos os membros. Essa ação não pode ser desfeita.'
+             : 'As fotos saem da galeria para todos os membros. Essa ação não pode ser desfeita.',
+    confirmLabel: 'Excluir',
+    onConfirm: async () => {
+      const { error } = um
+        ? await db.rpc('excluir_foto_galeria', { p_token: state.sessionToken, p_foto_id: ids[0] })
+        : await db.rpc('excluir_fotos_galeria', { p_token: state.sessionToken, p_ids: ids });
+      if(error){ toast(erroAmigavel(error), '⚠️'); return; }
+      removerLocal(ids);
+      toast(um ? 'Foto excluída' : ids.length + ' fotos excluídas', '🗑️');
+      carregarResumo();
+      if(!galeria.fim && galeria.fotos.length < PAGINA) carregarPagina();
+    }
+  });
+}
+
+/* ------------------------------------------------------------------ eventos */
+document.addEventListener('click', e => {
+  const story = e.target.closest('#gal-stories .gal-story');
+  if(story){
+    if(story.dataset.cat === galeria.categoria) return;
+    galeria.categoria = story.dataset.cat;
+    $$('#gal-stories .gal-story').forEach(b => {
+      const on = b === story; b.classList.toggle('active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    story.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+    recarregar();
+    return;
+  }
+  const tab = e.target.closest('.gal-tab');
+  if(tab){
+    if(tab.dataset.aba === galeria.aba) return;
+    galeria.aba = tab.dataset.aba;
+    $$('.gal-tab').forEach(t => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+    pararShow();
+    renderCorpo({ anexarDesde: 0 });
+    return;
+  }
+  const ck = e.target.closest('#gal-body .gal-check');
+  if(ck){ e.stopPropagation(); alternarSelecao(ck.closest('.gal-tile').dataset.id); return; }
+  const tile = e.target.closest('#gal-body .gal-tile');
+  if(tile){
+    const id = tile.dataset.id;
+    if(galeria.sel.size > 0){ alternarSelecao(id); return; }
+    abrirLb(galeria.fotos.findIndex(f => f.id === id));
+    return;
+  }
+  if(e.target.closest('#gal-show-prev')){ e.stopPropagation(); irShow(galeria.show.i - 1); return; }
+  if(e.target.closest('#gal-show-next')){ e.stopPropagation(); irShow(galeria.show.i + 1); return; }
+  if(e.target.closest('#gal-show-pp')){
+    e.stopPropagation();
+    const s = galeria.show, prog = $('#gal-show-prog');
+    s.playing = !s.playing; atualizarBotaoPlay();
+    clearTimeout(s.timer); prog.classList.remove('run');
+    if(s.playing){
+      void prog.offsetWidth;
+      prog.style.setProperty('--dur', SLIDE_MS + 'ms'); prog.classList.add('run');
+      s.timer = setTimeout(() => irShow(s.i + 1), SLIDE_MS);
+    }
+    return;
+  }
+  if(e.target.closest('#gal-show-full')){
+    e.stopPropagation();
+    const sh = $('#gal-show');
+    if(document.fullscreenElement) document.exitFullscreen(); else if(sh && sh.requestFullscreen) sh.requestFullscreen().catch(()=>{});
+    return;
+  }
+  const show = e.target.closest('#gal-show');
+  if(show){ abrirLb(galeria.show.i); return; }
+});
+document.addEventListener('keydown', e => {
+  const tile = e.target.closest && e.target.closest('#gal-body .gal-tile');
+  if(tile && e.target === tile && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); tile.click(); return; }
+  if(!galeria.lb.aberto) return;
+  if(e.key === 'Escape'){ if(!$('.confirm-overlay.show')) fecharLb(); }
+  else if(e.key === 'ArrowRight') irLb(1);
+  else if(e.key === 'ArrowLeft') irLb(-1);
+});
+
+$('#gal-more-btn')?.addEventListener('click', carregarPagina);
+$('#gal-add-btn')?.addEventListener('click', abrirEnvio);
+
+/* rolagem infinita */
+if('IntersectionObserver' in window){
+  new IntersectionObserver(es => {
+    if(es.some(x => x.isIntersecting) && state.view === 'galeria' && galeria.aba !== 'apresentacao') carregarPagina();
+  }, { rootMargin:'400px' }).observe($('#gal-sentinel'));
+}
+
+/* visualizador */
+$('#gal-lb-close')?.addEventListener('click', fecharLb);
+$('#gal-lb-prev')?.addEventListener('click', () => irLb(-1));
+$('#gal-lb-next')?.addEventListener('click', () => irLb(1));
+$('#gal-lb-zoom')?.addEventListener('click', () => zoomLb());
+$('#gal-lb-img')?.addEventListener('click', zoomLb);
+$('#gal-lb-img')?.addEventListener('mousemove', e => {
+  const img = e.currentTarget;
+  if(!img.classList.contains('zoomed')) return;
+  const r = img.getBoundingClientRect();
+  img.style.transformOrigin = (((e.clientX - r.left) / r.width) * 100) + '% ' + (((e.clientY - r.top) / r.height) * 100) + '%';
+});
+$('#gal-lb-stage')?.addEventListener('click', e => { if(e.target.id === 'gal-lb-stage') fecharLb(); });
+$('#gal-lb-download')?.addEventListener('click', () => { const f = galeria.fotos[galeria.lb.i]; if(f) baixar(f); });
+$('#gal-lb-share')?.addEventListener('click', () => { const f = galeria.fotos[galeria.lb.i]; if(f) compartilhar(f); });
+$('#gal-lb-edit')?.addEventListener('click', () => abrirEdicao(galeria.fotos[galeria.lb.i]));
+$('#gal-lb-del')?.addEventListener('click', () => { const f = galeria.fotos[galeria.lb.i]; if(f) confirmarExclusao([f.id]); });
+(function swipe(){
+  const st = $('#gal-lb-stage'); if(!st) return;
+  let x0 = 0, y0 = 0, ativo = false;
+  st.addEventListener('pointerdown', e => { if(e.pointerType === 'mouse') return; ativo = true; x0 = e.clientX; y0 = e.clientY; });
+  st.addEventListener('pointerup', e => {
+    if(!ativo) return; ativo = false;
+    const dx = e.clientX - x0, dy = e.clientY - y0;
+    if($('#gal-lb-img').classList.contains('zoomed')) return;
+    if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.4) irLb(dx < 0 ? 1 : -1);
+  });
+  st.addEventListener('pointercancel', () => { ativo = false; });
+})();
+
+/* barra de seleção */
+$('#gal-bulk-clear')?.addEventListener('click', () => { galeria.sel.clear(); atualizarSelecao(); });
+$('#gal-bulk-dl')?.addEventListener('click', async () => {
+  const fs = galeria.fotos.filter(f => galeria.sel.has(f.id));
+  if(!fs.length) return;
+  toast('Baixando ' + fs.length + ' ' + plural(fs.length, 'foto', 'fotos') + '…', '⬇️');
+  for(const f of fs){ await baixar(f); await new Promise(r => setTimeout(r, 400)); }
+});
+$('#gal-bulk-del')?.addEventListener('click', () => confirmarExclusao(Array.from(galeria.sel)));
+$('#gal-bulk-move')?.addEventListener('change', async e => {
+  const cat = e.target.value; if(!cat) return;
+  const ids = Array.from(galeria.sel);
+  e.target.value = '';
+  const { error } = await db.rpc('mover_fotos_galeria', { p_token: state.sessionToken, p_ids: ids, p_categoria: cat });
+  if(error){ toast(erroAmigavel(error), '⚠️'); return; }
+  toast(ids.length + ' ' + plural(ids.length, 'foto movida', 'fotos movidas') + ' para ' + catLabel(cat), '📁');
+  galeria.sel.clear(); atualizarSelecao();
+  await Promise.all([carregarResumo(), recarregar()]);
+});
+
+/* modal de envio */
+const drop = $('#gal-drop'), input = $('#gal-file');
+drop?.addEventListener('click', () => input.click());
+drop?.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); input.click(); } });
+input?.addEventListener('change', () => { if(input.files.length) adicionarArquivos(input.files); input.value = ''; });
+['dragenter','dragover'].forEach(ev => drop?.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop?.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop?.addEventListener('drop', e => { if(e.dataTransfer && e.dataTransfer.files.length) adicionarArquivos(e.dataTransfer.files); });
+$('#gal-up-cancel')?.addEventListener('click', fecharEnvio);
+$('#gal-up-send')?.addEventListener('click', enviarFotos);
+$('#galeria-up-overlay')?.addEventListener('click', e => { if(e.target.id === 'galeria-up-overlay') fecharEnvio(); });
+
+/* modal de edição */
+$('#gal-edit-cancel')?.addEventListener('click', () => $('#galeria-edit-overlay').classList.remove('show'));
+$('#gal-edit-save')?.addEventListener('click', salvarEdicao);
+$('#galeria-edit-overlay')?.addEventListener('click', e => { if(e.target.id === 'galeria-edit-overlay') e.currentTarget.classList.remove('show'); });
+
+/* ------------------------------------------------- ganchos usados por switchView */
+window.carregarGaleria = carregarGaleria;
+window.galeria_forcarRecarga = function(){ galeria.token = null; return carregarGaleria(); };
+window.galeriaAoSair = function(){
+  fecharLb(); pararShow();
+  galeria.sel.clear(); atualizarSelecao();
+  $('#galeria-up-overlay')?.classList.remove('show');
+  $('#galeria-edit-overlay')?.classList.remove('show');
+};
+})();
 
 })();
 </script>
