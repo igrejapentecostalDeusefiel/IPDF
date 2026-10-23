@@ -2184,7 +2184,7 @@ body.show-public-campaign #app-shell{display:none;}
 [data-theme="dark"] #view-devotional .dv{--c1:#3b3210;--c2:#3a1f45;}
 .dv-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
 .dv-title{font-size:clamp(2.2rem,8vw,3.2rem);font-weight:800;line-height:1;margin:0;}
-.dv-sub{font-family:var(--font-display);font-size:clamp(1.6rem,6vw,2.3rem);font-weight:700;line-height:1.15;background:linear-gradient(90deg,var(--text-faint),transparent 90%);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.75;}
+.dv-sub{font-family:var(--font-display);font-size:clamp(1.6rem,6vw,2.3rem);font-weight:700;line-height:1.15;display:block;width:fit-content;max-width:100%;color:color-mix(in srgb,var(--gold) 65%,var(--ink));background:linear-gradient(90deg,color-mix(in srgb,var(--gold) 58%,var(--ink)),color-mix(in srgb,var(--gold) 82%,var(--ink)));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 .dv-date{font-size:.85rem;color:var(--text-dim);margin-top:10px;text-transform:capitalize;}
 .dv-streak{text-align:center;background:var(--gl);backdrop-filter:blur(8px);border-radius:18px;padding:10px 14px;box-shadow:var(--shadow-sm);flex:none;}
 .dv-streak b{display:block;font-family:var(--font-display);font-size:1.7rem;color:var(--ink);line-height:1.1;}
@@ -3607,7 +3607,8 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   padding:0 0 9px;color:var(--text-dim);font-family:inherit;
 }
 .gal-ring{
-  position:relative;width:var(--s);aspect-ratio:1;border-radius:50%;padding:4px;box-sizing:border-box;
+  position:relative;flex:none;width:var(--s);height:var(--s);min-width:var(--s);min-height:var(--s);max-width:var(--s);max-height:var(--s);
+  aspect-ratio:1/1;border-radius:50%;padding:4px;box-sizing:border-box;
   border:2px solid color-mix(in srgb, var(--gold) 68%, transparent);
   transition:transform .28s cubic-bezier(.2,.8,.2,1), border-color .25s, box-shadow .25s;
 }
@@ -3618,10 +3619,10 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
   box-shadow:0 0 0 4px color-mix(in srgb, var(--gold) 20%, transparent), var(--shadow-sm);
 }
 .gal-ring-in{
-  width:100%;height:100%;border-radius:50%;overflow:hidden;background:#15120E;color:#F6F0E2;
+  position:relative;width:100%;height:100%;min-width:0;min-height:0;border-radius:50%;overflow:hidden;background:#15120E;color:#F6F0E2;
   display:grid;place-items:center;
 }
-.gal-ring-in img{width:100%;height:100%;object-fit:cover;display:block;}
+.gal-ring-in img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:center;display:block;}
 .gal-ring-in svg{width:34%;height:34%;}
 .gal-ring-emoji{font-size:clamp(1.3rem,3.4vw,1.9rem);filter:grayscale(.2);}
 .gal-story-n{
@@ -4588,7 +4589,6 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
       <button class="nav-item nav-item-comum" data-view="devotional"><span class="ic">🙏</span>Devocional diário</button>
       <button class="nav-item nav-item-comum" data-view="plans"><span class="ic">📅</span>Plano de leitura</button>
       <button class="nav-item nav-item-comum" data-view="studies"><span class="ic">🕊️</span>Estudos bíblicos</button>
-      <button class="nav-item nav-item-comum" data-view="ai"><span class="ic">✨</span>Perguntar à IA</button>
     </div>
 
     <div class="nav-group">
@@ -4659,7 +4659,6 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
             <button class="chip-btn" data-goto="bible"><span class="em">📖</span>Ler Bíblia</button>
             <button class="chip-btn" data-goto="devotional"><span class="em">🙏</span>Fazer devocional</button>
             <button class="chip-btn" data-goto="plans"><span class="em">📅</span>Plano de leitura</button>
-            <button class="chip-btn" data-goto="ai"><span class="em">🤖</span>Perguntar à IA</button>
             <button class="chip-btn" data-goto="media"><span class="em">🎧</span>Ouvir Bíblia</button>
             <button class="chip-btn" data-goto="favorites"><span class="em">❤️</span>Favoritos</button>
             <button class="chip-btn" data-goto="notes"><span class="em">📝</span>Minhas anotações</button>
@@ -4794,39 +4793,6 @@ hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0;}
                 <button type="button" class="btn btn-primary" data-step="1">Próximo →</button>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============ AI ============ -->
-      <section class="view" id="view-ai">
-        <button type="button" class="view-back-btn" data-goto="home"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>Voltar ao início</button>
-        <div class="page-head is-ink" style="--ph-tone:var(--gold-soft);">
-          <div class="page-head-icon">✨</div>
-          <div class="page-head-text">
-            <div class="page-head-eyebrow">Assistente</div>
-            <h1 class="page-head-title">Perguntar à IA</h1>
-            <p class="page-head-sub">Tire dúvidas, peça explicações de versículos ou gere um devocional — tudo fundamentado nas Escrituras.</p>
-          </div>
-        </div>
-
-        <div class="chat-wrap" style="margin-top:22px;">
-          <div class="chat-head">
-            <div class="chat-avatar"><img src="ChatGPT Image 6 de ago. de 2026, 12_48_36.png" alt="Assistente IA" style="width:100%;height:100%;object-fit:contain;border-radius:10px;"></div>
-            <div>
-              <div style="font-weight:600;color:var(--ink);font-size:.92rem;">Assistente IPDF</div>
-              <div class="muted" style="font-size:.76rem;">Respostas baseadas na Palavra</div>
-            </div>
-          </div>
-          <div class="chat-body" id="chat-body"></div>
-          <div class="chat-suggestions">
-            
-          </div>
-          <div class="chat-input-row">
-            <input id="chat-input" placeholder="Pergunte algo sobre a Bíblia…">
-            <button class="send-btn" id="chat-send" aria-label="Enviar">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
-            </button>
           </div>
         </div>
       </section>
@@ -7555,7 +7521,6 @@ const CONTINUE_MAP = {
   devotional: { icon:'🙏', title:'Devocional diário', sub:'Retome o devocional de hoje.', btn:'Continuar devocional' },
   plans:      { icon:'📅', title:'Plano de leitura', sub:'Continue seguindo seu plano de leitura.', btn:'Continuar plano' },
   studies:    { icon:'🕊️', title:'Estudos bíblicos', sub:'Continue o estudo que você começou.', btn:'Continuar estudo' },
-  ai:         { icon:'✨', title:'Perguntar à IA', sub:'Volte para sua conversa com a IA.', btn:'Continuar conversa' },
   notes:      { icon:'📝', title:'Minhas anotações', sub:'Veja e continue suas anotações.', btn:'Continuar anotações' },
   favorites:  { icon:'❤️', title:'Favoritos', sub:'Veja os versículos que você favoritou.', btn:'Ver favoritos' },
   prayer:     { icon:'🙌', title:'Oração', sub:'Continue seu momento de oração.', btn:'Continuar oração' },
@@ -9822,111 +9787,6 @@ document.addEventListener('click', (e)=>{
 document.addEventListener('keydown', (e)=>{
   if(e.key === 'Escape') closeBibleVersionMenu();
 });
-
-const SYSTEM_PROMPT = `IDIOMA OBRIGATÓRIO: Responda SEMPRE e EXCLUSIVAMENTE em português do Brasil, independentemente do idioma da pergunta do usuário. Nunca responda em inglês ou em qualquer outro idioma, em nenhuma hipótese.
-
-ORTOGRAFIA E GRAMÁTICA: Escreva sempre com ortografia perfeita em português brasileiro. Use corretamente todos os acentos (á, é, í, ó, ú, â, ê, ô, ã, õ, ç). Nunca omita acentos. Nunca escreva palavras em inglês no meio de frases em português. Use pontuação correta.
-
-Você é o assistente espiritual da IPDF - Igreja Pentecostal Deus é Fiel, chamado Shalom. Você responde sempre em português do Brasil, com gentileza, calor pastoral e embasamento nas Escrituras. Suas respostas devem:
-- Explicar versículos bíblicos com profundidade e aplicação prática
-- Citar referências bíblicas relevantes ao tema perguntado
-- Criar devocionais estruturados (versículo, reflexão, aplicação, oração) quando solicitado
-- Sugerir passagens sobre temas como fé, ansiedade, esperança, perdão, etc.
-- Usar emojis moderadamente para tornar a conversa mais acolhedora (🙏📖✝️)
-- Manter um tom pastoral, amoroso e edificante
-- Formatar as respostas usando **negrito** e linhas em branco para facilitar a leitura
-- Nunca inventar versículos — apenas citar os que realmente existem
-- Sempre que for perguntado sobre coisas que não entram no âmbito religioso, como por exemplo: quem ganhou a copa do mundo?, quando vai ser o próximo show do Zé Neto e Cristiano — responda de forma educada e cristã que não pode responder essa pergunta.
-Você está inserido no aplicativo de estudos bíblicos IPDF e representa a palavra de Deus com fidelidade e amor.
-
-LEMBRETE FINAL: toda a sua resposta, do início ao fim, deve estar 100% em português do Brasil, com ortografia perfeita, sem nenhuma palavra em outro idioma.`;
-
-/* =========================================================
-   AI CHAT — Google Gemini
-   (config e helper geminiGenerate() ficam no topo do script)
-   ========================================================= */
-const chatBody = document.getElementById('chat-body');
-const chatHistory = [];
-
-function addMsg(html, who){
-  const m = document.createElement('div');
-  m.className = 'msg ' + who;
-  m.innerHTML = html;
-  chatBody.appendChild(m);
-  chatBody.scrollTop = chatBody.scrollHeight;
-  return m;
-}
-
-function formatText(text){
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
-    .replace(/\n/g, '<br>');
-}
-
-addMsg('Que a paz esteja com você! Sou o assistente da IPDF, me chamo Shalom, movido por inteligência artificial. Posso explicar versículos, resumir livros da Bíblia, sugerir passagens por tema, criar devocionais e muito mais — tudo fundamentado nas Escrituras. 🙏', 'ai');
-
-async function sendChat(text){
-  if(!text.trim()) return;
-  const inputEl = document.getElementById('chat-input');
-  const sendBtn = document.getElementById('chat-send');
-
-  if(!GEMINI_API_KEY || GEMINI_API_KEY === 'COLOQUE_SUA_CHAVE_AQUI'){
-    addMsg('⚠️ <b>Chave não configurada.</b><br>Abra o index.html e coloque sua chave do Gemini em <code>GEMINI_API_KEY</code>.<br><small>Obtenha gratuitamente em: <a href=\"https://aistudio.google.com/apikey\" target=\"_blank\">aistudio.google.com/apikey</a></small>', 'ai');
-    return;
-  }
-
-  addMsg(text, 'user');
-  inputEl.value = '';
-  inputEl.disabled = true;
-  sendBtn.disabled = true;
-
-  chatHistory.push({ role: 'user', content: text });
-
-  const typing = addMsg('<span class="typing-dots"><span></span><span></span><span></span></span>', 'ai');
-
-  let lastError = null;
-
-  for(let i = 0; i < MODELS_FALLBACK.length; i++){
-    const model = MODELS_FALLBACK[i];
-    try {
-      const rawText = await geminiGenerate(model, {
-        system: SYSTEM_PROMPT,
-        messages: chatHistory,
-        maxTokens: 2048
-      });
-      const aiText  = formatText(rawText);
-
-      typing.innerHTML = aiText;
-      chatHistory.push({ role: 'assistant', content: rawText });
-      lastError = null;
-      break; // sucesso — não tenta os próximos modelos
-
-    } catch(err) {
-      lastError = err.message || String(err);
-      console.warn('Modelo indisponível (' + model + '):', lastError);
-      // tenta o próximo modelo da lista automaticamente
-    }
-  }
-
-  if(lastError){
-    console.error('Erro Gemini (todos os modelos falharam):', lastError);
-    const friendly = geminiFriendlyError(lastError);
-    typing.innerHTML = friendly
-      ? '⚠️ ' + friendly
-      : '⚠️ <b>Erro:</b> ' + lastError + '<br><small>Não foi possível obter resposta da IA no momento. Tente novamente em instantes.</small>';
-    chatHistory.pop();
-  }
-
-  inputEl.disabled = false;
-  sendBtn.disabled = false;
-  inputEl.focus();
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-document.getElementById('chat-send').addEventListener('click', ()=>sendChat(document.getElementById('chat-input').value));
-document.getElementById('chat-input').addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(e.target.value); });
-document.querySelectorAll('.sugg').forEach(s=>s.addEventListener('click', ()=>sendChat(s.dataset.ask)));
-
 
 /* =========================================================
    DEVOTIONAL — gerado por IA diariamente
